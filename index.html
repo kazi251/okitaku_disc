@@ -34,5 +34,38 @@
       document.getElementById("result").innerText = `🎲 出目: ${result}`;
     }
   </script>
+  <h2>クトゥルフ用 ダイスロール (CCB)</h2>
+<label for="ccb-input">技能値（例: 75）:</label>
+<input type="number" id="ccb-input" placeholder="例: 75" min="1" max="100">
+<button onclick="rollCCB()">判定</button>
+<div id="ccb-result">🎲 結果がここに表示されます</div>
+
+<script>
+  async function rollCCB() {
+    const skill = document.getElementById('ccb-input').value;
+    if (!skill || skill < 1 || skill > 100) {
+      alert("技能値は1～100の間で入力してください");
+      return;
+    }
+
+    const command = `CCB<=${skill}`;
+    const url = `https://bcdice.trpg.net/v1/game_system/Cthulhu/dice`;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command })
+      });
+
+      const result = await response.json();
+      document.getElementById("ccb-result").innerText = `🎲 ${result.text}`;
+    } catch (error) {
+      document.getElementById("ccb-result").innerText = "エラーが発生しました";
+      console.error(error);
+    }
+  }
+</script>
+
 </body>
 </html>
