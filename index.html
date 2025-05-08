@@ -24,17 +24,7 @@
   </style>
 </head>
 <body>
-  <h1>TRPG ダイスツール（1d6）</h1>
-  <button onclick="rollDice()">ダイスを振る</button>
-  <div id="result">🎲</div>
-
-  <script>
-    function rollDice() {
-      const result = Math.floor(Math.random() * 6) + 1;
-      document.getElementById("result").innerText = `🎲 出目: ${result}`;
-    }
-  </script>
-  <h2>クトゥルフ用 ダイスロール (CCB)</h2>
+<h2>クトゥルフ用 ダイスロール (CCB)</h2>
 <label for="ccb-input">技能値（例: 75）:</label>
 <input type="number" id="ccb-input" placeholder="例: 75" min="1" max="100">
 <button onclick="rollCCB()">判定</button>
