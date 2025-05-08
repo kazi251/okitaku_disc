@@ -2,101 +2,160 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クトゥルフTRPG ツール</title>
+  <title>クトゥルフTRPGツール</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    textarea, input { width: 100%; margin-bottom: 10px; padding: 8px; }
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    #result {
+      margin-top: 10px;
+    }
     #suggestions {
       border: 1px solid #ccc;
-      max-height: 150px;
+      max-height: 120px;
       overflow-y: auto;
-      margin-top: -10px;
-      margin-bottom: 10px;
+      position: absolute;
       background: white;
-      position: relative;
-      z-index: 10;
+      width: 300px;
+      display: none;
     }
     #suggestions div {
-      padding: 5px;
+      padding: 4px;
       cursor: pointer;
-      border-bottom: 1px solid #eee;
     }
     #suggestions div:hover {
-      background: #eef;
+      background-color: #eee;
+    }
+    #chat-palette {
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
 
-  <h2>セリフ送信（探索者 太郎）</h2>
-  <input type="text" id="say-text" placeholder="セリフを入力">
-  <button onclick="sendSay()">送信</button>
+<h2>ダイスロール</h2>
+<input type="text" id="dice-command" placeholder="コマンドを入力または検索" oninput="showSuggestions()" autocomplete="off" style="width: 300px;">
+<div id="suggestions"></div>
+<button onclick="rollDice()">ダイス実行</button>
+<div id="result">🎲 結果がここに表示されます</div>
 
-  <h2>ダイスコマンド実行</h2>
-  <input type="text" id="dice-command" placeholder="例: CCB<=75" oninput="showSuggestions()">
-  <div id="suggestions"></div>
-  <button onclick="rollDice()">ダイス実行</button>
-  <div id="dice-result">🎲 結果がここに表示されます</div>
+<h2>セリフ送信</h2>
+<textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
+<button onclick="sendSay()">送信</button>
 
-  <h2>チャットパレット（貼り付けて保存）</h2>
-  <textarea id="chat-palette" rows="10" placeholder="チャットパレットをここに貼り付けてください"></textarea>
+<div id="chat-palette">
+  <h2>チャットパレット貼り付け欄</h2>
+  <textarea id="palette-input" rows="15" cols="60" placeholder="チャットパレットをここに貼り付けてください"></textarea><br>
   <button onclick="savePalette()">保存</button>
+</div>
 
-  <script>
-    const diceWorkerUrl = "https://rollworker.kai-chan-tsuru.workers.dev/";
-    const sayWorkerUrl = "https://sayworker.kai-chan-tsuru.workers.dev/";
+<script>
+  const paletteKey = "chatPalette";
+  let chatPalette = [];
 
-    function sendSay() {
-      const content = document.getElementById("say-text").value;
-      if (!content) return alert("セリフを入力してください");
-      fetch(sayWorkerUrl, {
-        method: "POST",
-        body: JSON.stringify({ content }),
-      });
-      document.getElementById("say-text").value = "";
+  function savePalette() {
+    const raw = document.getElementById("palette-input").value;
+    chatPalette = raw.split("\n").filter(line => line.trim());
+    localStorage.setItem(paletteKey, JSON.stringify(chatPalette));
+    alert("保存しました！");
+  }
+
+  function loadPalette() {
+    const saved = localStorage.getItem(paletteKey);
+    if (saved) {
+      chatPalette = JSON.parse(saved);
+      document.getElementById("palette-input").value = chatPalette.join("\n");
+    }
+  }
+
+  function showSuggestions() {
+    const input = document.getElementById("dice-command").value.toLowerCase();
+    const suggestions = document.getElementById("suggestions");
+    suggestions.innerHTML = "";
+
+    if (!input) {
+      suggestions.style.display = "none";
+      return;
     }
 
-    async function rollDice() {
-      const command = document.getElementById("dice-command").value;
-      if (!command) return alert("ダイスコマンドを入力してください");
-      const url = new URL(diceWorkerUrl);
-      url.searchParams.set("command", command);
-      url.searchParams.set("say", "true");
+    const matches = chatPalette.filter(line => line.toLowerCase().includes(input));
+    if (matches.length === 0) {
+      suggestions.style.display = "none";
+      return;
+    }
 
-      try {
-        const res = await fetch(url.toString());
-        const data = await res.json();
-        document.getElementById("dice-result").innerText = `🎲 結果: ${data.ok ? data.text : "エラー: " + data.reason}`;
-      } catch (e) {
-        document.getElementById("dice-result").innerText = "⚠️ 通信エラー";
+    matches.forEach(match => {
+      const div = document.createElement("div");
+      div.textContent = match;
+      div.onclick = () => {
+        document.getElementById("dice-command").value = match;
+        suggestions.style.display = "none";
+      };
+      suggestions.appendChild(div);
+    });
+
+    suggestions.style.display = "block";
+  }
+
+  async function rollDice() {
+    const command = document.getElementById("dice-command").value.trim();
+    if (!command) {
+      alert("コマンドを入力してください");
+      return;
+    }
+
+    const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+    workerUrl.searchParams.append("command", command);
+
+    try {
+      const response = await fetch(workerUrl.toString());
+      const result = await response.json();
+      const text = result.ok ? result.text : "エラー: " + result.reason;
+      document.getElementById("result").innerText = `🎲 結果: ${text}`;
+
+      // 成功したらDiscordへ送信
+      if (result.ok) {
+        await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: text })
+        });
       }
+    } catch (error) {
+      document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
+      console.error("Fetch error:", error);
+    }
+  }
+
+  async function sendSay() {
+    const content = document.getElementById("say-content").value.trim();
+    if (!content) {
+      alert("セリフを入力してください");
+      return;
     }
 
-    function savePalette() {
-      const raw = document.getElementById("chat-palette").value;
-      const lines = raw.split("\n").map(line => line.trim()).filter(line => line);
-      localStorage.setItem("palette", JSON.stringify(lines));
-      alert("保存しました！");
-    }
-
-    function showSuggestions() {
-      const input = document.getElementById("dice-command").value.toLowerCase();
-      const suggestions = document.getElementById("suggestions");
-      suggestions.innerHTML = "";
-      if (!input) return;
-
-      const palette = JSON.parse(localStorage.getItem("palette") || "[]");
-      const matches = palette.filter(line => line.toLowerCase().includes(input));
-      matches.forEach(match => {
-        const div = document.createElement("div");
-        div.textContent = match;
-        div.onclick = () => {
-          document.getElementById("dice-command").value = match;
-          suggestions.innerHTML = "";
-        };
-        suggestions.appendChild(div);
+    try {
+      const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content })
       });
+
+      if (!response.ok) {
+        throw new Error("送信失敗");
+      }
+
+      document.getElementById("say-content").value = "";
+      alert("送信しました！");
+    } catch (error) {
+      alert("セリフ送信中にエラーが発生しました");
+      console.error(error);
     }
-  </script>
+  }
+
+  loadPalette();
+</script>
+
 </body>
 </html>
