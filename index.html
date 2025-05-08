@@ -120,8 +120,8 @@ async function rollDice() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          usr: "探索者 太郎",
-          content: text
+          name: "探索者 太郎",
+          message: text
         })
       });
     }
@@ -144,26 +144,26 @@ async function sendSay() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        usr: "探索者 太郎",
-        content
+        name: "探索者 太郎",
+        message: content
       })
     });
 
     if (!response.ok) {
-      throw new Error("送信失敗");
+      const errorText = await response.text();
+      throw new Error(`送信失敗: ${response.status} ${errorText}`);
     }
 
     document.getElementById("say-content").value = "";
     alert("送信しました！");
   } catch (error) {
-    alert("セリフ送信中にエラーが発生しました");
+    alert(`セリフ送信中にエラーが発生しました: ${error.message}`);
     console.error(error);
   }
 }
 
-
   loadPalette();
 </script>
 </body>
-2345
+2351
 </html>
