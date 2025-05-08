@@ -38,17 +38,10 @@
   </script>
 
 <h2>セリフ送信</h2>
-<label for="name-input">キャラ名:</label>
-<input type="text" id="name-input" placeholder="例: アーカム教授">
-
-<br>
-<label for="message-input">セリフ:</label>
-<input type="text" id="message-input" placeholder="例: 私のSAN値が…！">
-
-<br>
-<button onclick="sendMessage()">送信</button>
-
-<div id="say-result">🗨️ 結果がここに表示されます</div>
+<label>キャラ名：<input id="name-input" /></label><br />
+<label>セリフ　：<input id="message-input" /></label><br />
+<button onclick="sendMessage()">セリフ送信</button>
+<div id="say-result"></div>
 
 <script>
   async function sendMessage() {
@@ -57,36 +50,29 @@
     const resultDiv = document.getElementById("say-result");
 
     if (!name || !message) {
-      alert("キャラ名とセリフの両方を入力してください");
+      alert("キャラ名とセリフを入力してください");
       return;
     }
 
-    const webhookUrl = "https://discord.com/api/webhooks/1350631419793248326/yl6qQPM3Ihntd9tOYw2MZSMgcx5pa8FAyVMgTNeB6Rro7kgtOxYsTzSMSSqOi8bMqiDl";
-
     try {
-      const response = await fetch(webhookUrl, {
+      const response = await fetch("https://YOUR_SAYWORKER_URL.workers.dev/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: name,
-          content: message
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, message }),
       });
 
       if (response.ok) {
         resultDiv.innerText = "✅ セリフを送信しました";
       } else {
-        resultDiv.innerText = `⚠️ エラーが発生しました: ${response.status}`;
+        resultDiv.innerText = "⚠️ 送信に失敗しました";
       }
-    } catch (error) {
+    } catch (err) {
       resultDiv.innerText = "⚠️ 通信エラー";
-      console.error("Error:", error);
+      console.error(err);
     }
   }
 </script>
 
-1632
+1643
 </body>
 </html>
