@@ -20,15 +20,15 @@
       }
 
       const command = `CCB<=${skill}`;
-      const url = "https://bcdice.onlinesession.app/v2/game_system/Cthulhu/roll";
+      const workerUrl = "https://rollworker.kai-chan-tsuru.workers.dev/"; // Cloudflare WorkerのURL
 
       try {
-        const response = await fetch(url, {
-          method: "POST",
+        const response = await fetch(workerUrl, {
+          method: "GET", // Cloudflare WorkerはGETでコマンドを受け取るように変更しました
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json" // Worker側で処理するので、application/jsonで送っても問題ありません
           },
-          body: JSON.stringify({ command })
+          body: JSON.stringify({ command }) // コマンドをJSON形式でWorkerに送信
         });
 
         const result = await response.json();
@@ -39,6 +39,6 @@
       }
     }
   </script>
-1116
+1506
 </body>
 </html>
