@@ -13,33 +13,34 @@
   <div id="ccb-result">🎲 結果がここに表示されます</div>
 
   <script>
-    async function rollCCB() {
-      const name = document.getElementById("name-input").value || "DiceBot";
-      workerUrl.searchParams.append("command", command);
-      workerUrl.searchParams.append("name", name);
+  async function rollCCB() {
+    const skill = document.getElementById("ccb-input").value;
+    const name = document.getElementById("name-input").value || "DiceBot";
 
-      const skill = document.getElementById('ccb-input').value;
-      if (!skill || skill < 1 || skill > 100) {
-        alert("技能値は1～100の間で入力してください");
-        return;
-      }
-
-      const command = `CCB<=${skill}`;
-      const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
-      workerUrl.searchParams.append("command", command); // クエリパラメータとして追加
-
-      try {
-        const response = await fetch(workerUrl.toString(), {
-          method: "GET",
-        });
-
-        const result = await response.json();
-        document.getElementById("ccb-result").innerText = `🎲 結果: ${result.ok ? result.text : "エラー: " + result.reason}`;
-      } catch (error) {
-        document.getElementById("ccb-result").innerText = "⚠️ 通信エラーが発生しました";
-        console.error("Fetch error:", error);
-      }
+    if (!skill || skill < 1 || skill > 100) {
+      alert("技能値は1～100の間で入力してください");
+      return;
     }
+
+    const command = `CCB<=${skill}`;
+    const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/"); // ← 先に定義！
+
+    // クエリパラメータを追加
+    workerUrl.searchParams.append("command", command);
+    workerUrl.searchParams.append("name", name);
+
+    try {
+      const response = await fetch(workerUrl.toString(), {
+        method: "GET",
+      });
+
+      const result = await response.json();
+      document.getElementById("ccb-result").innerText = `🎲 結果: ${result.ok ? result.text : "エラー: " + result.reason}`;
+    } catch (error) {
+      document.getElementById("ccb-result").innerText = "⚠️ 通信エラーが発生しました";
+      console.error("Fetch error:", error);
+    }
+  }
   </script>
 
 <h2>セリフ送信</h2>
@@ -78,6 +79,6 @@
   }
 </script>
 
-1658
+1704
 </body>
 </html>
