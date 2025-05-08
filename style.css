@@ -1,0 +1,28 @@
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 20px;
+  }
+  #result {
+    margin-top: 10px;
+  }
+  #suggestions {
+    border: 1px solid #ccc;
+    max-height: 120px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    width: 300px;
+    display: none;
+  }
+  #suggestions div {
+    padding: 4px;
+    cursor: pointer;
+  }
+  #suggestions div:hover {
+    background-color: #eee;
+  }
+  #chat-palette {
+    margin-top: 40px;
+  }
+</style>
