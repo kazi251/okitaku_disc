@@ -20,15 +20,12 @@
       }
 
       const command = `CCB<=${skill}`;
-      const workerUrl = "https://rollworker.kai-chan-tsuru.workers.dev/"; // Cloudflare WorkerのURL
+      const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+      workerUrl.searchParams.append("command", command); // クエリパラメータとして追加
 
       try {
-        const response = await fetch(workerUrl, {
-          method: "GET", // Cloudflare WorkerはGETでコマンドを受け取るように変更しました
-          headers: {
-            "Content-Type": "application/json" // Worker側で処理するので、application/jsonで送っても問題ありません
-          },
-          body: JSON.stringify({ command }) // コマンドをJSON形式でWorkerに送信
+        const response = await fetch(workerUrl.toString(), {
+          method: "GET",
         });
 
         const result = await response.json();
@@ -39,6 +36,6 @@
       }
     }
   </script>
-1506
+1512
 </body>
 </html>
