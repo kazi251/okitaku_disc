@@ -2,83 +2,75 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クトゥルフ CCB ダイス</title>
+  <title>TRPG ツール</title>
 </head>
 <body>
-  <h2>クトゥルフ用 CCB ダイス</h2>
-  <input type="text" id="name-input" placeholder="キャラ名を入力（例: アルフ）">
-  <label for="ccb-input">技能値（例: 75）:</label>
-  <input type="number" id="ccb-input" placeholder="例: 75" min="1" max="100">
-  <button onclick="rollCCB()">判定</button>
-  <div id="ccb-result">🎲 結果がここに表示されます</div>
+  <h2>🎤 セリフ送信</h2>
+  <input type="text" id="name-input" placeholder="名前（例：KP太郎）">
+  <input type="text" id="say-input" placeholder="セリフを入力">
+  <button onclick="sendSay()">送信</button>
+
+  <h2>🎲 チャットパレット（保存・検索・実行）</h2>
+  <textarea id="chat-palette" rows="10" cols="60" placeholder="ここにコマンドを貼り付けて保存してください"></textarea>
+  <br>
+  <input type="text" id="search-input" placeholder="キーワードで検索（例：目星）">
+  <button onclick="searchCommand()">検索</button>
+  <br>
+  <select id="command-list"></select>
+  <button onclick="rollSelectedCommand()">このコマンドで振る</button>
+  <div id="dice-result">🎲 ダイス結果がここに表示されます</div>
 
   <script>
-  async function rollCCB() {
-    const skill = document.getElementById("ccb-input").value;
-    const name = document.getElementById("name-input").value || "DiceBot";
+    const sayWorkerUrl = "https://sayworker.kai-chan-tsuru.workers.dev/";
+    const rollWorkerUrl = "https://rollworker.kai-chan-tsuru.workers.dev/";
 
-    if (!skill || skill < 1 || skill > 100) {
-      alert("技能値は1～100の間で入力してください");
-      return;
-    }
+    function sendSay() {
+      const name = document.getElementById("name-input").value;
+      const text = document.getElementById("say-input").value;
 
-    const command = `CCB<=${skill}`;
-    const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/"); // ← 先に定義！
-
-    // クエリパラメータを追加
-    workerUrl.searchParams.append("command", command);
-    workerUrl.searchParams.append("name", name);
-
-    try {
-      const response = await fetch(workerUrl.toString(), {
-        method: "GET",
-      });
-
-      const result = await response.json();
-      document.getElementById("ccb-result").innerText = `🎲 結果: ${result.ok ? result.text : "エラー: " + result.reason}`;
-    } catch (error) {
-      document.getElementById("ccb-result").innerText = "⚠️ 通信エラーが発生しました";
-      console.error("Fetch error:", error);
-    }
-  }
-  </script>
-
-<h2>セリフ送信</h2>
-<label>キャラ名：<input id="name-input" /></label><br />
-<label>セリフ　：<input id="message-input" /></label><br />
-<button onclick="sendMessage()">セリフ送信</button>
-<div id="say-result"></div>
-
-<script>
-  async function sendMessage() {
-    const name = document.getElementById("name-input").value.trim();
-    const message = document.getElementById("message-input").value.trim();
-    const resultDiv = document.getElementById("say-result");
-
-    if (!name || !message) {
-      alert("キャラ名とセリフを入力してください");
-      return;
-    }
-
-    try {
-      const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+      fetch(sayWorkerUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, message }),
+        body: JSON.stringify({ name, text }),
+      }).then(() => {
+        document.getElementById("say-input").value = "";
       });
-
-      if (response.ok) {
-        resultDiv.innerText = "✅ セリフを送信しました";
-      } else {
-        resultDiv.innerText = "⚠️ 送信に失敗しました";
-      }
-    } catch (err) {
-      resultDiv.innerText = "⚠️ 通信エラー";
-      console.error(err);
     }
-  }
-</script>
 
-1704
+    function searchCommand() {
+      const query = document.getElementById("search-input").value.toLowerCase();
+      const palette = document.getElementById("chat-palette").value.split("\n");
+      const list = document.getElementById("command-list");
+      list.innerHTML = "";
+      for (const line of palette) {
+        if (line.toLowerCase().includes(query)) {
+          const option = document.createElement("option");
+          option.text = line;
+          option.value = line;
+          list.appendChild(option);
+        }
+      }
+    }
+
+    async function rollSelectedCommand() {
+      const command = document.getElementById("command-list").value;
+      const url = new URL(rollWorkerUrl);
+      url.searchParams.append("command", command);
+
+      const response = await fetch(url.toString());
+      const result = await response.json();
+
+      const name = document.getElementById("name-input").value;
+      if (result.ok) {
+        const message = `${name} のロール：${command} → ${result.text}`;
+        await fetch(sayWorkerUrl, {
+          method: "POST",
+          body: JSON.stringify({ name, text: message }),
+        });
+        document.getElementById("dice-result").innerText = `🎲 ${result.text}`;
+      } else {
+        document.getElementById("dice-result").innerText = `⚠️ エラー: ${result.reason}`;
+      }
+    }
+  </script>
 </body>
 </html>
