@@ -107,6 +107,7 @@ async function rollDice() {
 
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
+  workerUrl.searchParams.append("name", "探索者 太郎");
 
   try {
     const response = await fetch(workerUrl.toString());
@@ -114,17 +115,6 @@ async function rollDice() {
     const text = result.ok ? result.text : "エラー: " + result.reason;
     document.getElementById("result").innerText = `🎲 結果: ${text}`;
 
-    // 成功したらDiscordへ送信
-    if (result.ok) {
-      await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: "探索者 太郎",
-          message: text
-        })
-      });
-    }
   } catch (error) {
     document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
     console.error("Fetch error:", error);
@@ -165,5 +155,5 @@ async function sendSay() {
   loadPalette();
 </script>
 </body>
-2351
+0008
 </html>
