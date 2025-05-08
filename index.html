@@ -34,15 +34,15 @@
 </head>
 <body>
 
+<h2>セリフ送信</h2>
+<textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
+<button onclick="sendSay()">送信</button>
+
 <h2>ダイスロール</h2>
 <input type="text" id="dice-command" placeholder="コマンドを入力または検索" oninput="showSuggestions()" autocomplete="off" style="width: 300px;">
 <div id="suggestions"></div>
 <button onclick="rollDice()">ダイス実行</button>
 <div id="result">🎲 結果がここに表示されます</div>
-
-<h2>セリフ送信</h2>
-<textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
-<button onclick="sendSay()">送信</button>
 
 <div id="chat-palette">
   <h2>チャットパレット貼り付け欄</h2>
@@ -155,5 +155,5 @@ async function sendSay() {
   loadPalette();
 </script>
 </body>
-0008
+0011
 </html>
