@@ -19,8 +19,9 @@
         return;
       }
 
-      const command = `CCB<=${skill}`;
-      const url = `https://bcdice.trpg.net/v1/game_system/Cthulhu/dice`;
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      const targetUrl = 'https://bcdice.trpg.net/v1/game_system/Cthulhu/dice';
+      const url = proxyUrl + targetUrl;
 
       try {
         const response = await fetch(url, {
