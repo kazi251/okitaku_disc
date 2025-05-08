@@ -116,7 +116,7 @@ async function rollDice() {
 
     // 成功したらDiscordへ送信
     if (result.ok) {
-      await fetch("https://sayworker.kai-chan-tsuru.workers.dev", {
+      await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -140,7 +140,7 @@ async function sendSay() {
   }
 
   try {
-    const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev", {
+    const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -164,6 +164,6 @@ async function sendSay() {
 
   loadPalette();
 </script>
-2337
 </body>
+2345
 </html>
