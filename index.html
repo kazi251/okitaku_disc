@@ -2,10 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クトゥルフ CCB ダイス</title>
+  <title>クトゥルフ用CCBダイス</title>
 </head>
 <body>
-  <h2>クトゥルフ用 ダイスロール (CCB)</h2>
+  <h2>クトゥルフ用 CCB ダイス</h2>
   <label for="ccb-input">技能値（例: 75）:</label>
   <input type="number" id="ccb-input" placeholder="例: 75" min="1" max="100">
   <button onclick="rollCCB()">判定</button>
@@ -19,22 +19,23 @@
         return;
       }
 
-      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-      const targetUrl = 'https://bcdice.trpg.net/v1/game_system/Cthulhu/dice';
-      const url = proxyUrl + targetUrl;
+      const command = `CCB<=${skill}`;
+      const url = "https://bcdice.trpg.net/v1/game_system/Cthulhu/dice";
 
       try {
         const response = await fetch(url, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ command })
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ command: command })
         });
 
         const result = await response.json();
-        document.getElementById("ccb-result").innerText = `🎲 ${result.text}`;
+        document.getElementById("ccb-result").innerText = `🎲 結果: ${result.text}`;
       } catch (error) {
-        document.getElementById("ccb-result").innerText = "エラーが発生しました";
-        console.error(error);
+        document.getElementById("ccb-result").innerText = "⚠️ エラーが発生しました";
+        console.error("Fetch error:", error);
       }
     }
   </script>
