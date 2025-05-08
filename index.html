@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クトゥルフ用CCBダイス</title>
+  <title>クトゥルフ CCB ダイス</title>
 </head>
 <body>
   <h2>クトゥルフ用 CCB ダイス</h2>
@@ -20,7 +20,7 @@
       }
 
       const command = `CCB<=${skill}`;
-      const url = "https://bcdice.trpg.net/v1/game_system/Cthulhu/dice";
+      const url = "https://bcdice.onlinesession.app/v2/game_system/Cthulhu/roll";
 
       try {
         const response = await fetch(url, {
@@ -28,17 +28,17 @@
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ command: command })
+          body: JSON.stringify({ command })
         });
 
         const result = await response.json();
-        document.getElementById("ccb-result").innerText = `🎲 結果: ${result.text}`;
+        document.getElementById("ccb-result").innerText = `🎲 結果: ${result.ok ? result.text : "エラー: " + result.reason}`;
       } catch (error) {
-        document.getElementById("ccb-result").innerText = "⚠️ エラーが発生しました";
+        document.getElementById("ccb-result").innerText = "⚠️ 通信エラーが発生しました";
         console.error("Fetch error:", error);
       }
     }
   </script>
-1104
+1116
 </body>
 </html>
