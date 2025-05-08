@@ -98,64 +98,72 @@
     suggestions.style.display = "block";
   }
 
-  async function rollDice() {
-    const command = document.getElementById("dice-command").value.trim();
-    if (!command) {
-      alert("コマンドを入力してください");
-      return;
-    }
-
-    const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
-    workerUrl.searchParams.append("command", command);
-
-    try {
-      const response = await fetch(workerUrl.toString());
-      const result = await response.json();
-      const text = result.ok ? result.text : "エラー: " + result.reason;
-      document.getElementById("result").innerText = `🎲 結果: ${text}`;
-
-      // 成功したらDiscordへ送信
-      if (result.ok) {
-        await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: text })
-        });
-      }
-    } catch (error) {
-      document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
-      console.error("Fetch error:", error);
-    }
+async function rollDice() {
+  const command = document.getElementById("dice-command").value.trim();
+  if (!command) {
+    alert("コマンドを入力してください");
+    return;
   }
 
-  async function sendSay() {
-    const content = document.getElementById("say-content").value.trim();
-    if (!content) {
-      alert("セリフを入力してください");
-      return;
-    }
+  const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+  workerUrl.searchParams.append("command", command);
 
-    try {
-      const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+  try {
+    const response = await fetch(workerUrl.toString());
+    const result = await response.json();
+    const text = result.ok ? result.text : "エラー: " + result.reason;
+    document.getElementById("result").innerText = `🎲 結果: ${text}`;
+
+    // 成功したらDiscordへ送信
+    if (result.ok) {
+      await fetch("https://sayworker.kai-chan-tsuru.workers.dev", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content })
+        body: JSON.stringify({
+          usr: "探索者 太郎",
+          content: text
+        })
       });
-
-      if (!response.ok) {
-        throw new Error("送信失敗");
-      }
-
-      document.getElementById("say-content").value = "";
-      alert("送信しました！");
-    } catch (error) {
-      alert("セリフ送信中にエラーが発生しました");
-      console.error(error);
     }
+  } catch (error) {
+    document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
+    console.error("Fetch error:", error);
   }
+}
+
+
+async function sendSay() {
+  const content = document.getElementById("say-content").value.trim();
+  if (!content) {
+    alert("セリフを入力してください");
+    return;
+  }
+
+  try {
+    const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        usr: "探索者 太郎",
+        content
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("送信失敗");
+    }
+
+    document.getElementById("say-content").value = "";
+    alert("送信しました！");
+  } catch (error) {
+    alert("セリフ送信中にエラーが発生しました");
+    console.error(error);
+  }
+}
+
 
   loadPalette();
 </script>
-
+2337
 </body>
 </html>
