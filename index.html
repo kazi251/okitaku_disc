@@ -2,74 +2,83 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>TRPG ツール</title>
+  <title>クトゥルフTRPG ツール</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    textarea, input { width: 100%; margin-bottom: 10px; padding: 8px; }
+    #suggestions div { padding: 5px; cursor: pointer; border: 1px solid #ccc; margin-top: 2px; }
+    #suggestions div:hover { background: #eef; }
+  </style>
 </head>
 <body>
-  <h2>🎤 セリフ送信</h2>
-  <input type="text" id="name-input" placeholder="名前（例：KP太郎）">
-  <input type="text" id="say-input" placeholder="セリフを入力">
+
+  <h2>セリフ送信（探索者 太郎）</h2>
+  <input type="text" id="say-text" placeholder="セリフを入力">
   <button onclick="sendSay()">送信</button>
 
-  <h2>🎲 チャットパレット（保存・検索・実行）</h2>
-  <textarea id="chat-palette" rows="10" cols="60" placeholder="ここにコマンドを貼り付けて保存してください"></textarea>
-  <br>
-  <input type="text" id="search-input" placeholder="キーワードで検索（例：目星）">
-  <button onclick="searchCommand()">検索</button>
-  <br>
-  <select id="command-list"></select>
-  <button onclick="rollSelectedCommand()">このコマンドで振る</button>
-  <div id="dice-result">🎲 ダイス結果がここに表示されます</div>
+  <h2>ダイスコマンド実行</h2>
+  <input type="text" id="dice-command" placeholder="例: CCB<=75" oninput="showSuggestions()">
+  <div id="suggestions"></div>
+  <button onclick="rollDice()">ダイス実行</button>
+  <div id="dice-result">🎲 結果がここに表示されます</div>
+
+  <h2>チャットパレット（貼り付けて保存）</h2>
+  <textarea id="chat-palette" rows="10" placeholder="チャットパレットをここに貼り付けてください"></textarea>
+  <button onclick="savePalette()">保存</button>
 
   <script>
+    const webhookUrl = "https://discord.com/api/webhooks/1350631419793248326/yl6qQPM3Ihntd9tOYw2MZSMgcx5pa8FAyVMgTNeB6Rro7kgtOxYsTzSMSSqOi8bMqiDl";
+    const diceWorkerUrl = "https://rollworker.kai-chan-tsuru.workers.dev/";
     const sayWorkerUrl = "https://sayworker.kai-chan-tsuru.workers.dev/";
-    const rollWorkerUrl = "https://rollworker.kai-chan-tsuru.workers.dev/";
 
     function sendSay() {
-      const name = document.getElementById("name-input").value;
-      const text = document.getElementById("say-input").value;
-
+      const content = document.getElementById("say-text").value;
+      if (!content) return alert("セリフを入力してください");
       fetch(sayWorkerUrl, {
         method: "POST",
-        body: JSON.stringify({ name, text }),
-      }).then(() => {
-        document.getElementById("say-input").value = "";
+        body: JSON.stringify({ content }),
       });
+      document.getElementById("say-text").value = "";
     }
 
-    function searchCommand() {
-      const query = document.getElementById("search-input").value.toLowerCase();
-      const palette = document.getElementById("chat-palette").value.split("\n");
-      const list = document.getElementById("command-list");
-      list.innerHTML = "";
-      for (const line of palette) {
-        if (line.toLowerCase().includes(query)) {
-          const option = document.createElement("option");
-          option.text = line;
-          option.value = line;
-          list.appendChild(option);
-        }
+    async function rollDice() {
+      const command = document.getElementById("dice-command").value;
+      if (!command) return alert("ダイスコマンドを入力してください");
+      const url = new URL(diceWorkerUrl);
+      url.searchParams.set("command", command);
+      url.searchParams.set("say", "true");
+
+      try {
+        const res = await fetch(url.toString());
+        const data = await res.json();
+        document.getElementById("dice-result").innerText = `🎲 結果: ${data.ok ? data.text : "エラー: " + data.reason}`;
+      } catch (e) {
+        document.getElementById("dice-result").innerText = "⚠️ 通信エラー";
       }
     }
 
-    async function rollSelectedCommand() {
-      const command = document.getElementById("command-list").value;
-      const url = new URL(rollWorkerUrl);
-      url.searchParams.append("command", command);
+    function savePalette() {
+      const raw = document.getElementById("chat-palette").value;
+      const lines = raw.split("\n").map(line => line.trim()).filter(line => line);
+      localStorage.setItem("palette", JSON.stringify(lines));
+      alert("保存しました！");
+    }
 
-      const response = await fetch(url.toString());
-      const result = await response.json();
-
-      const name = document.getElementById("name-input").value;
-      if (result.ok) {
-        const message = `${name} のロール：${command} → ${result.text}`;
-        await fetch(sayWorkerUrl, {
-          method: "POST",
-          body: JSON.stringify({ name, text: message }),
-        });
-        document.getElementById("dice-result").innerText = `🎲 ${result.text}`;
-      } else {
-        document.getElementById("dice-result").innerText = `⚠️ エラー: ${result.reason}`;
-      }
+    function showSuggestions() {
+      const input = document.getElementById("dice-command").value.toLowerCase();
+      const suggestions = document.getElementById("suggestions");
+      suggestions.innerHTML = "";
+      const palette = JSON.parse(localStorage.getItem("palette") || "[]");
+      const matches = palette.filter(line => line.toLowerCase().includes(input));
+      matches.forEach(match => {
+        const div = document.createElement("div");
+        div.textContent = match;
+        div.onclick = () => {
+          document.getElementById("dice-command").value = match;
+          suggestions.innerHTML = "";
+        };
+        suggestions.appendChild(div);
+      });
     }
   </script>
 </body>
