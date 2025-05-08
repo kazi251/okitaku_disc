@@ -1,43 +1,190 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>クトゥルフ用CCBダイス</title>
+<html>
+<head id="header">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=no">
+<title>DX3 DiceRoller</title>
+<style type="text/css">
+<!--
+div{
+  font-size : 150%;
+}
+input{
+  font-size : 200%;
+  width: 150px;
+  text-align: center;
+}
+
+.btn{
+  display: inline-block;
+  text-decoration: none;
+  color: #668ad8;
+  width: 65px;
+  height: 65px;
+  line-height: 65px;
+  border-radius: 50%;
+  border: solid 2px #668ad8;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  font-weight: bold;
+  transition: .4s;
+}
+
+.btn:hover {
+    background: #b3e1ff;
+}
+.btn-flat-border {
+  display: inline-block;
+  text-decoration: none;
+  color: #668ad8;
+  width: 285px;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 3px;
+  border: solid 2px #668ad8;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  font-weight: bold;
+  transition: .4s;
+}
+
+.btn-flat-border:hover {
+  background: #b3e1ff;
+}
+-->
+</style>
+<script><!--
+const BCDiceApiURL = "https://www.taruki.com/bcdice-api/v1/diceroll?system=DoubleCross&command="
+
+function $(id) { return document.getElementById(id); }
+
+function judge(){
+	var strDice = document.getElementById('dice').value
+	var strModify = document.getElementById('modify').value
+	var strCritical = document.getElementById('critical').value
+
+	if (strDice && strCritical) {
+		var strCommand = strDice + "DX" + strCritical
+		if (strModify) {
+			strCommand = strCommand + "+" + strModify
+		}
+		console.log(strCommand);
+		document.getElementById('sound').play();
+		requestBCDiceAPI(strCommand);
+	}
+}
+
+function judgeReroll(){
+	var intModify = 0;
+
+	document.getElementById('dice').value = 1;
+	if( localStorage.getItem('diceResult')) {
+		intModify = localStorage.getItem('diceResult');
+	}
+console.log( intModify);
+	document.getElementById('modify').value = intModify;
+
+	var strDice = document.getElementById('dice').value
+	var strModify = document.getElementById('modify').value
+	var strCritical = document.getElementById('critical').value
+
+	if (strDice && strCritical) {
+		var strCommand = strDice + "DX" + strCritical
+		if (strModify) {
+			strCommand = strCommand + "+" + strModify
+		}
+		console.log(strCommand);
+		document.getElementById('sound').play();
+		requestBCDiceAPI(strCommand);
+	}
+}
+
+function damage(){
+	var strDice = document.getElementById('dice').value
+	var strModify = document.getElementById('modify').value
+
+	if (strDice) {
+		var strCommand = strDice + "D10"
+		if (strModify) {
+			strCommand = strCommand + "+" + strModify
+		}
+		console.log(strCommand);
+		document.getElementById('sound').play();
+		requestBCDiceAPI(strCommand);
+	}
+}
+
+function emotion(){
+	document.getElementById('sound').play();
+	requestBCDiceAPI("ET");
+}
+
+function entry(){
+	var strCommand = "1D10"
+	console.log(strCommand);
+	document.getElementById('sound').play();
+	requestBCDiceAPI(strCommand);
+}
+
+function requestBCDiceAPI(strCommand){
+	var intResult;
+	const request = new XMLHttpRequest();
+	strRequest = BCDiceApiURL + encodeURIComponent(strCommand)
+	console.log(strRequest);
+	request.open('GET', strRequest);
+	request.addEventListener("load",(event)=>{
+		var json = JSON.parse(event.target.responseText);
+		console.log(json);
+		$('result').innerHTML = json.result + "<br/>";
+
+		intResult=0;
+		strResult = json.result;
+		if ( strResult.indexOf('DX') !== -1 && strResult.indexOf('ファンブル') === -1) {
+			intResult= parseInt(strResult.substr(strResult.lastIndexOf('＞')+1));
+			var intModify = parseInt(document.getElementById('modify').value)
+			var intRerollModify = 10 - ((intResult - intModify) % 10 );
+			intResult= intResult + intRerollModify;
+		}
+		console.log( intResult);
+		localStorage.setItem('diceResult', intResult)
+	});
+	request.send();
+}
+// -->
+</script>
 </head>
 <body>
-  <h2>クトゥルフ用 CCB ダイス</h2>
-  <label for="ccb-input">技能値（例: 75）:</label>
-  <input type="number" id="ccb-input" placeholder="例: 75" min="1" max="100">
-  <button onclick="rollCCB()">判定</button>
-  <div id="ccb-result">🎲 結果がここに表示されます</div>
-
-  <script>
-    async function rollCCB() {
-      const skill = document.getElementById('ccb-input').value;
-      if (!skill || skill < 1 || skill > 100) {
-        alert("技能値は1～100の間で入力してください");
-        return;
-      }
-
-      const command = `CCB<=${skill}`;
-      const url = "https://bcdice.trpg.net/v1/game_system/Cthulhu/dice";
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ command: command })
-        });
-
-        const result = await response.json();
-        document.getElementById("ccb-result").innerText = `🎲 結果: ${result.text}`;
-      } catch (error) {
-        document.getElementById("ccb-result").innerText = "⚠️ エラーが発生しました";
-        console.error("Fetch error:", error);
-      }
-    }
-  </script>
+<audio id="sound" preload="auto"><source src="http://aldente.sakura.ne.jp/public/diceRoll.mp3"></audio>
+<div id="result"></div>
+<hr>
+<table>
+	<tr>
+		<td>ダイス数</td>
+		<td><input type="number" id="dice" min="1" value="1"/></td>
+	</tr>
+	<tr>
+		<td>修正値</td>
+		<td><input type="number" id="modify" min="0" value="0"/></td>
+	</tr>
+	<tr>
+		<td>クリティカル値</td>
+		<td><input type="number" id="critical" min="2" value="10"/></td>
+	</tr>
+</table>
+<hr>
+<table>
+	<tr>
+		<td><a href="#" class="btn" onclick="judge();">判定</a></td>
+		<td><a href="#" class="btn" onclick="judgeReroll();">判定振足</a></td>
+		<td><a href="#" class="btn" onclick="damage();">ダメージ</a></td>
+		<td><a href="#" class="btn" onclick="emotion();">感情</a></td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<a href="#" class="btn-flat-border" onclick="entry();">シーン登場</a>
+	</tr>
+</table>
 </body>
 </html>
