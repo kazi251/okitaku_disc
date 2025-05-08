@@ -1,4 +1,3 @@
-<script>
   const paletteKey = "chatPalette";
   let chatPalette = [];
 
@@ -101,4 +100,3 @@ async function sendSay() {
 }
 
   loadPalette();
-</script>
