@@ -6,6 +6,7 @@
 </head>
 <body>
   <h2>クトゥルフ用 CCB ダイス</h2>
+  <input type="text" id="name-input" placeholder="キャラ名を入力（例: アルフ）">
   <label for="ccb-input">技能値（例: 75）:</label>
   <input type="number" id="ccb-input" placeholder="例: 75" min="1" max="100">
   <button onclick="rollCCB()">判定</button>
@@ -13,6 +14,10 @@
 
   <script>
     async function rollCCB() {
+      const name = document.getElementById("name-input").value || "DiceBot";
+      workerUrl.searchParams.append("command", command);
+      workerUrl.searchParams.append("name", name);
+
       const skill = document.getElementById('ccb-input').value;
       if (!skill || skill < 1 || skill > 100) {
         alert("技能値は1～100の間で入力してください");
@@ -73,6 +78,6 @@
   }
 </script>
 
-1643
+1658
 </body>
 </html>
