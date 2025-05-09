@@ -1,54 +1,52 @@
-  const paletteKey = "chatPalette";
-  let chatPalette = [];
+const paletteKey = "chatPalette";
+let chatPalette = [];
 
-  function savePalette() {
-    const raw = document.getElementById("palette-input").value;
-    chatPalette = raw.split("\n").filter(line => line.trim());
-    localStorage.setItem(paletteKey, JSON.stringify(chatPalette));
-    alert("保存しました！");
+function savePalette() {
+  const raw = document.getElementById("palette-input").value;
+  chatPalette = raw.split("\n").filter(line => line.trim());
+  localStorage.setItem(paletteKey, JSON.stringify(chatPalette));
+}
+
+function loadPalette() {
+  const saved = localStorage.getItem(paletteKey);
+  if (saved) {
+    chatPalette = JSON.parse(saved);
+    document.getElementById("palette-input").value = chatPalette.join("\n");
+  }
+}
+
+function showSuggestions() {
+  const input = document.getElementById("dice-command").value.toLowerCase();
+  const suggestions = document.getElementById("suggestions");
+  suggestions.innerHTML = "";
+
+  if (!input) {
+    suggestions.style.display = "none";
+    return;
   }
 
-  function loadPalette() {
-    const saved = localStorage.getItem(paletteKey);
-    if (saved) {
-      chatPalette = JSON.parse(saved);
-      document.getElementById("palette-input").value = chatPalette.join("\n");
-    }
+  const matches = chatPalette.filter(line => line.toLowerCase().includes(input));
+  if (matches.length === 0) {
+    suggestions.style.display = "none";
+    return;
   }
 
-  function showSuggestions() {
-    const input = document.getElementById("dice-command").value.toLowerCase();
-    const suggestions = document.getElementById("suggestions");
-    suggestions.innerHTML = "";
-
-    if (!input) {
+  matches.forEach(match => {
+    const div = document.createElement("div");
+    div.textContent = match;
+    div.onclick = () => {
+      document.getElementById("dice-command").value = match;
       suggestions.style.display = "none";
-      return;
-    }
+    };
+    suggestions.appendChild(div);
+  });
 
-    const matches = chatPalette.filter(line => line.toLowerCase().includes(input));
-    if (matches.length === 0) {
-      suggestions.style.display = "none";
-      return;
-    }
-
-    matches.forEach(match => {
-      const div = document.createElement("div");
-      div.textContent = match;
-      div.onclick = () => {
-        document.getElementById("dice-command").value = match;
-        suggestions.style.display = "none";
-      };
-      suggestions.appendChild(div);
-    });
-
-    suggestions.style.display = "block";
-  }
+  suggestions.style.display = "block";
+}
 
 async function rollDice() {
   const command = document.getElementById("dice-command").value.trim();
   if (!command) {
-    alert("コマンドを入力してください");
     return;
   }
 
@@ -58,7 +56,7 @@ async function rollDice() {
   try {
     const response = await fetch(workerUrl.toString());
     const result = await response.json();
-    let displayText = `🎲 ${command}: `; // コマンドを表示
+    let displayText = `🎲 ${command}: `;
     if (result.ok) {
       displayText += result.text;
       if (result.text.includes("致命的失敗")) {
@@ -73,8 +71,7 @@ async function rollDice() {
     } else {
       displayText += "エラー: " + result.reason;
     }
-    document.getElementById("result").innerText = displayText; // 結果のみ表示
-
+    document.getElementById("result").innerText = displayText;
   } catch (error) {
     document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
     console.error("Fetch error:", error);
@@ -84,7 +81,6 @@ async function rollDice() {
 async function sendSay() {
   const content = document.getElementById("say-content").value.trim();
   if (!content) {
-    alert("セリフを入力してください");
     return;
   }
 
@@ -98,17 +94,28 @@ async function sendSay() {
       })
     });
 
-    if (!response.ok) {
+    if (response.ok) {
+      document.getElementById("say-content").value = "";
+    } else {
       const errorText = await response.text();
       throw new Error(`送信失敗: ${response.status} ${errorText}`);
     }
-
-    document.getElementById("say-content").value = "";
-    alert("送信しました！");
   } catch (error) {
-    alert(`セリフ送信中にエラーが発生しました: ${error.message}`);
-    console.error(error);
+    console.error(`セリフ送信エラー: ${error.message}`);
   }
 }
 
-  loadPalette();
+loadPalette();
+
+async function savePalette() {
+  const paletteText = document.getElementById("chat-palette-input").value;
+  try {
+    await setDoc(doc(db, "chat_palette_app", "default"), {
+      palette: paletteText,
+      updatedAt: new Date().toISOString()
+    });
+    showToast("チャットパレットを保存しました！");
+  } catch (error) {
+    console.error("保存に失敗しました:", error);
+  }
+}
