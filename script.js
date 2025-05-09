@@ -3,6 +3,7 @@ import { showToast } from './utils.js';
 const sayButton = document.getElementById("send-button");
 const diceCommandInput = document.getElementById("dice-command");
 const rollButton = document.getElementById("roll-button");
+const chatPaletteInput = document.getElementById("chat-palette-input");
 
 sayButton.addEventListener("click", sendSay);
 diceCommandInput.addEventListener("input", showSuggestions);
@@ -10,6 +11,10 @@ rollButton.addEventListener("click", rollDice);
 
 const paletteKey = "chatPalette";
 let chatPalette = [];
+
+window.updateChatPalette = function() { // グローバルスコープで定義
+  chatPalette = chatPaletteInput.value.split('\n').filter(line => line.trim() !== '');
+};
 
 function showSuggestions() {
   const input = document.getElementById("dice-command").value.toLowerCase();
@@ -98,9 +103,3 @@ async function sendSay() {
     console.error(`セリフ送信エラー: ${error.message}`);
   }
 }
-
-function loadPalette() {
-  // ... (既存のコード - もしあれば)
-}
-
-loadPalette();

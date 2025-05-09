@@ -32,13 +32,14 @@ async function savePalette() {
 }
 
 // チャットパレットの読み込み処理
-async function loadPalette() {
+async function loadPalette(callback) { // コールバック関数を引数に追加
   try {
     const docSnap = await getDoc(doc(db, "chat_palette_app", "default"));
     if (docSnap.exists()) {
       const data = docSnap.data();
       document.getElementById("chat-palette-input").value = data.palette || "";
       showToast("チャットパレットを読み込みました！");
+      if (callback) callback(); // データ取得後にコールバック関数を実行
     }
   } catch (error) {
     console.error("読み込みに失敗しました:", error);
@@ -84,6 +85,8 @@ document.getElementById("status-load-button").addEventListener("click", loadStat
 
 // 自動読み込み
 window.addEventListener("DOMContentLoaded", () => {
-  loadPalette();
   loadStatus();
+  loadPalette(() => { // コールバック関数を渡す
+    updateChatPalette(); // script.js の関数を呼び出す
+  });
 });
