@@ -54,20 +54,32 @@ async function rollDice() {
 
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
-  workerUrl.searchParams.append("name", "探索者 太郎");
 
   try {
     const response = await fetch(workerUrl.toString());
     const result = await response.json();
-    const text = result.ok ? result.text : "エラー: " + result.reason;
-    document.getElementById("result").innerText = `🎲 結果: ${text}`;
+    let displayText = `🎲 ${command}: `; // コマンドを表示
+    if (result.ok) {
+      displayText += result.text;
+      if (result.text.includes("致命的失敗")) {
+        displayText += " 💀";
+      } else if (result.text.includes("失敗")) {
+        displayText += " 😞";
+      } else if (result.text.includes("スペシャル") || result.text.includes("成功")) {
+        displayText += " 😊";
+      } else if (result.text.includes("決定的成功")) {
+        displayText += " 🎉🎊";
+      }
+    } else {
+      displayText += "エラー: " + result.reason;
+    }
+    document.getElementById("result").innerText = displayText; // 結果のみ表示
 
   } catch (error) {
     document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
     console.error("Fetch error:", error);
   }
 }
-
 
 async function sendSay() {
   const content = document.getElementById("say-content").value.trim();
