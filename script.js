@@ -1,5 +1,8 @@
 import { showToast } from './utils.js';
 
+const diceCommandInput = document.getElementById("dice-command");
+diceCommandInput.addEventListener("input", showSuggestions);
+
 const paletteKey = "chatPalette";
 let chatPalette = [];
 
