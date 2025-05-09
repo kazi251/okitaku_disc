@@ -5,6 +5,7 @@
   <title>クトゥルフTRPGツール</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <h2>セリフ送信</h2>
@@ -19,11 +20,13 @@
 
 <div id="chat-palette">
   <h2>チャットパレット貼り付け欄</h2>
-  <textarea id="palette-input" rows="15" cols="60" placeholder="チャットパレットをここに貼り付けてください"></textarea><br>
-  <button onclick="savePalette()">保存</button>
+  <textarea id="chat-palette-input" rows="10" cols="60" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br />
+  <button id="save-button">保存</button>
+  <button id="load-button">読み込み</button>
 </div>
 
 <script src="script.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 0026
 </html>
