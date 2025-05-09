@@ -65,8 +65,8 @@ async function rollDice() {
         displayText += " 😞";
       } else if (result.text.includes("スペシャル") || result.text.includes("成功")) {
         displayText += " 😊";
-      } else if (result.text.includes("決定的成功")) {
-        displayText += " 🎉🎊";
+      } else if (result.text.includes("決定的成功/スペシャル")) {
+        displayText += " 🎉🎊✨";
       }
     } else {
       displayText += "エラー: " + result.reason;
