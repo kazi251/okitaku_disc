@@ -8,7 +8,6 @@
 
 <body>
 
-<!-- パラメータ -->
 <h2>パラメータ</h2>
 <div>
   <label>HP: <input type="number" id="hp" value="10"></label>
@@ -20,19 +19,16 @@
   </div>
 </div>
 
-<!-- セリフ送信 -->
 <h2>セリフ送信</h2>
 <textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
 <button id="send-button">送信</button>
 
-<!-- ダイスロール -->
 <h2>ダイスロール</h2>
 <input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off" style="width: 300px;">
 <div id="suggestions"></div>
 <button id="roll-button">ダイス実行</button>
 <div id="result">🎲 結果がここに表示されます</div>
 
-<!-- チャットパレット貼り付け -->
 <div id="chat-palette">
   <h2>チャットパレット貼り付け欄</h2>
   <textarea id="chat-palette-input" rows="10" cols="60" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br />
@@ -40,11 +36,9 @@
   <button id="load-button">読み込み</button>
 </div>
 
-<!-- 通知トーストエリア -->
 <div id="toast"></div>
 
 <script type="module" src="script.js"></script>
 <script type="module" src="app.js"></script>
-2141
 </body>
 </html>
