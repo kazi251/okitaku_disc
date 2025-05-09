@@ -103,3 +103,38 @@ async function sendSay() {
     console.error(`セリフ送信エラー: ${error.message}`);
   }
 }
+
+function updateDisplay() {
+  // 各値を取得
+  const hp = document.getElementById("hp-input").value;
+  const mp = document.getElementById("mp-input").value;
+  const san = document.getElementById("san-input").value;
+  const sanMax = document.getElementById("san-max-input").value;
+  const other = document.getElementById("other-input").value;
+
+  // 表示側に反映
+  document.getElementById("hp").textContent = hp;
+  document.getElementById("hp-max").textContent = hp;
+
+  document.getElementById("mp").textContent = mp;
+  document.getElementById("mp-max").textContent = mp;
+
+  document.getElementById("san").textContent = san;
+  document.getElementById("san-max").textContent = sanMax;
+
+  const indef = Math.floor(sanMax * 0.8); // 不定は最大SANの 4/5 を切り捨て
+  document.getElementById("san-indef").textContent = indef;
+
+  document.getElementById("other").textContent = other || "-";
+}
+
+// イベント設定（inputのたびに更新）
+["hp-input", "mp-input", "san-input", "san-max-input", "other-input"].forEach(id => {
+  const input = document.getElementById(id);
+  if (input) {
+    input.addEventListener("input", updateDisplay);
+  }
+});
+
+// 初期読み込み時にも反映
+window.addEventListener("DOMContentLoaded", updateDisplay);

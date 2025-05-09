@@ -8,27 +8,50 @@
 
 <body>
 
-<h2>パラメータ</h2>
-<div>
-  <label>HP: <input type="number" id="hp" value="10"></label>
-  <label>MP: <input type="number" id="mp" value="5"></label>
-  <button id="status-save-button">HP/MP保存</button>
-  <button id="status-load-button">HP/MP再読み込み</button>
-  <div class="status-display">
-    現在のHP: <span id="hp-current">-</span> / 現在のMP: <span id="mp-current">-</span>
+<!-- 探索者表示セクション -->
+<div id="explorer-container">
+  <div id="explorer-header" class="explorer-section">
+    <div class="explorer-image-container">
+      <img src="explorer.png" alt="探索者画像" class="explorer-image">
+      <div><strong>探索者 太郎</strong></div>
+    </div>
+    <div class="explorer-stats">
+      <div>HP: <span id="hp">10</span> ／ <span id="hp-max">10</span></div>
+      <div>MP: <span id="mp">5</span> ／ <span id="mp-max">5</span></div>
+      <div>SAN: <span id="san">70</span> ／ <span id="san-max">99</span> （<span id="san-indef">79</span>）</div>
+      <div>その他: <span id="other">-</span></div>
+    </div>
   </div>
 </div>
 
+<!-- パラメータセクション -->
+<h2>パラメータ</h2>
+<div>
+  <div class="parameter-section">
+    <div><label>HP:<input type="number" id="hp-input" value="10"></label></div>
+    <div><label>MP:<input type="number" id="mp-input" value="5"></label></div>
+    <div><label>SAN:<input type="number" id="san-input" value="70">／<input type="number" id="san-max-input" value="99"></label></div>
+    <div><label>その他:<input type="text" id="other-input" placeholder="任意の値"></label></div>
+  </div>
+  <div>
+    <button id="legacy-status-save">保存</button>
+    <button id="legacy-status-load">再読み込み</button>
+  </div>
+</div>
+
+<!-- セリフ送信 -->
 <h2>セリフ送信</h2>
 <textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
 <button id="send-button">送信</button>
 
+<!-- ダイスロール -->
 <h2>ダイスロール</h2>
 <input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off" style="width: 300px;">
 <div id="suggestions"></div>
 <button id="roll-button">ダイス実行</button>
 <div id="result">🎲 結果がここに表示されます</div>
 
+<!-- チャットパレット -->
 <div id="chat-palette">
   <h2>チャットパレット貼り付け欄</h2>
   <textarea id="chat-palette-input" rows="10" cols="60" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br />
@@ -36,10 +59,10 @@
   <button id="load-button">再読み込み</button>
 </div>
 
+<!-- トースト通知 -->
 <div id="toast"></div>
 
 <script type="module" src="app.js"></script>
 <script type="module" src="script.js"></script>
-2209
 </body>
 </html>

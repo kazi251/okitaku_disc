@@ -1,31 +1,36 @@
-<style>
-  body {
-    font-family: sans-serif;
-    margin: 20px;
-  }
-  #result {
-    margin-top: 10px;
-  }
-  #suggestions {
-    border: 1px solid #ccc;
-    max-height: 120px;
-    overflow-y: auto;
-    position: absolute;
-    background: white;
-    width: 300px;
-    display: none;
-  }
-  #suggestions div {
-    padding: 4px;
-    cursor: pointer;
-  }
-  #suggestions div:hover {
-    background-color: #eee;
-  }
-  #chat-palette {
-    margin-top: 40px;
-  }
-  #toast {
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+#result {
+  margin-top: 10px;
+}
+
+#suggestions {
+  border: 1px solid #ccc;
+  max-height: 120px;
+  overflow-y: auto;
+  position: absolute;
+  background: white;
+  width: 300px;
+  display: none;
+}
+
+#suggestions div {
+  padding: 4px;
+  cursor: pointer;
+}
+
+#suggestions div:hover {
+  background-color: #eee;
+}
+
+#chat-palette {
+  margin-top: 40px;
+}
+
+#toast {
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -41,4 +46,31 @@
   transition: opacity 0.5s;
 }
 
-</style>
+#explorer-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.explorer-section {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.explorer-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.explorer-stats {
+  margin-top: 10px;
+}
+
+.parameter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
