@@ -23,13 +23,13 @@
 <!-- セリフ送信 -->
 <h2>セリフ送信</h2>
 <textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
-<button onclick="sendSay()">送信</button>
+<button id="send-button">送信</button>
 
 <!-- ダイスロール -->
 <h2>ダイスロール</h2>
 <input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off" style="width: 300px;">
 <div id="suggestions"></div>
-<button onclick="rollDice()">ダイス実行</button>
+<button id="roll-button">ダイス実行</button>
 <div id="result">🎲 結果がここに表示されます</div>
 
 <!-- チャットパレット貼り付け -->
@@ -45,6 +45,6 @@
 
 <script type="module" src="script.js"></script>
 <script type="module" src="app.js"></script>
-2133
+2141
 </body>
 </html>

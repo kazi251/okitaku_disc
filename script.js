@@ -1,7 +1,12 @@
 import { showToast } from './utils.js';
 
+const sayButton = document.getElementById("send-button");
 const diceCommandInput = document.getElementById("dice-command");
+const rollButton = document.getElementById("roll-button");
+
+sayButton.addEventListener("click", sendSay);
 diceCommandInput.addEventListener("input", showSuggestions);
+rollButton.addEventListener("click", rollDice);
 
 const paletteKey = "chatPalette";
 let chatPalette = [];
