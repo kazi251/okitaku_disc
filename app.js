@@ -79,7 +79,11 @@ async function loadStatus() {
 
 // ボタンイベントの設定
 document.getElementById("save-button").addEventListener("click", savePalette);
-document.getElementById("load-button").addEventListener("click", loadPalette);
+document.getElementById("load-button").addEventListener("click", () => {
+    loadPalette(() => {
+        updateChatPalette();
+    });
+});
 document.getElementById("status-save-button").addEventListener("click", saveStatus);
 document.getElementById("status-load-button").addEventListener("click", loadStatus);
 
