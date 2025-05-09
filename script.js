@@ -1,5 +1,9 @@
 import { showToast } from './utils.js';
 
+const paletteKey = "chatPalette";
+let chatPalette = [];
+
+// チャットパレットに保存されたコマンドから、入力された文字列に合致する候補をリアルタイムで予測変換候補として表示する機能
 function showSuggestions() {
   const input = document.getElementById("dice-command").value.toLowerCase();
   const suggestions = document.getElementById("suggestions");
