@@ -8,16 +8,17 @@
 
 <body>
 
-<h2>セリフ送信</h2>
-<textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
-<button onclick="sendSay()">送信</button>
-
+<h2>パラメータ</h2>
 <div>
   <label>HP: <input type="number" id="hp" value="10"></label>
   <label>MP: <input type="number" id="mp" value="5"></label>
   <button id="status-save-button">HP/MP保存</button>
   <button id="status-load-button">HP/MP読み込み</button>
 </div>
+
+<h2>セリフ送信</h2>
+<textarea id="say-content" rows="3" cols="40" placeholder="セリフを入力..."></textarea><br>
+<button onclick="sendSay()">送信</button>
 
 <h2>ダイスロール</h2>
 <input type="text" id="dice-command" placeholder="コマンドを入力または検索" oninput="showSuggestions()" autocomplete="off" style="width: 300px;">
@@ -35,5 +36,5 @@
 <script src="script.js"></script>
 <script type="module" src="app.js"></script>
 </body>
-1539
+1545
 </html>

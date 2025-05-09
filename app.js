@@ -24,10 +24,8 @@ async function savePalette() {
       palette: paletteText,
       updatedAt: new Date().toISOString()
     });
-    alert("チャットパレットを保存しました");
   } catch (error) {
     console.error("保存に失敗しました:", error);
-    alert("保存に失敗しました");
   }
 }
 
@@ -38,13 +36,9 @@ async function loadPalette() {
     if (docSnap.exists()) {
       const data = docSnap.data();
       document.getElementById("chat-palette-input").value = data.palette || "";
-      alert("チャットパレットを読み込みました");
-    } else {
-      alert("保存されたチャットパレットが見つかりませんでした");
     }
   } catch (error) {
     console.error("読み込みに失敗しました:", error);
-    alert("読み込みに失敗しました");
   }
 }
 
@@ -54,10 +48,10 @@ async function saveStatus() {
   const mp = parseInt(document.getElementById("mp").value);
   try {
     await setDoc(doc(db, "status", "taro"), { hp, mp, updatedAt: new Date().toISOString() });
-    alert("HP/MPを保存しました");
+    document.getElementById("hp-current").textContent = hp;
+    document.getElementById("mp-current").textContent = mp;
   } catch (error) {
     console.error("HP/MP保存エラー:", error);
-    alert("HP/MP保存に失敗しました");
   }
 }
 
@@ -69,10 +63,11 @@ async function loadStatus() {
       const data = docSnap.data();
       document.getElementById("hp").value = data.hp;
       document.getElementById("mp").value = data.mp;
+      document.getElementById("hp-current").textContent = data.hp;
+      document.getElementById("mp-current").textContent = data.mp;
     }
   } catch (error) {
     console.error("HP/MP読み込みエラー:", error);
-    alert("HP/MP読み込みに失敗しました");
   }
 }
 
