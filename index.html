@@ -11,9 +11,11 @@
 
 <!-- 探索者表示セクション -->
 <div id="explorer-container">
+  <button id="change-image-button" class="change-image-button">画像変更</button>
+  <input type="file" id="image-file-input" accept="image/*" style="display: none;">
   <div id="explorer-header" class="explorer-section">
     <div class="explorer-image-container">
-      <img src="explorer.png" alt="探索者画像" class="explorer-image">
+      <img src="explorer.png" id="explorer-image" alt="探索者画像" class="explorer-image">
       <div><strong>探索者 太郎</strong></div>
     </div>
     <div class="explorer-stats">
