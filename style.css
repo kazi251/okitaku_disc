@@ -176,8 +176,12 @@ body {
     padding: 8px; /* パディングを調整 */
   }
 
+  #say-content {
+    width: 95%; /* 幅をいっぱいに */
+  }
+  
   #dice-command {
-    width: 95%; /* 幅を95%に */
+    width: 100%; /* 幅をいっぱいに */
   }
 
   #suggestions {
