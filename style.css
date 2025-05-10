@@ -6,6 +6,10 @@ body {
   color: #F8F8F2;
 }
 
+.section {
+  margin-top: 20px;
+}
+
 .explorer-image-container {
   display: flex;
   flex-direction: column; /* 名前を画像の下に配置 */
@@ -27,10 +31,6 @@ body {
 
 #result {
   margin-top: 10px;
-}
-
-h2 {
-  margin-bottom: 5px; /* 例：下マージンを5pxに設定 */
 }
 
 #say-content,
@@ -62,10 +62,6 @@ h2 {
 
 #suggestions div:hover {
   background-color: #eee;
-}
-
-#chat-palette {
-  margin-top: 40px;
 }
 
 #toast {
