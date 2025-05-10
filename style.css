@@ -244,7 +244,8 @@ h2 {
 
   #say-content,
   #dice-command,
-  #suggestions {
+  #suggestions,
+  .toggle-button {
     width: 95%; /* 幅を親要素の95%に */
   }
 
