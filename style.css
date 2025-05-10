@@ -50,23 +50,24 @@ h2 {
 }
 
 #suggestions {
-  border: 1px solid #ccc;
+  background: #444;              /* 濃いグレー背景 */
+  border: 1px solid #666;        /* 少し明るめの境界線 */
   max-height: 120px;
   overflow-y: auto;
   position: absolute;
-  background: white;
-  width: 300px;
+  z-index: 1000;
   display: none;
+  color: #F8F8F2;                /* 明るい文字色 */
 }
 
 #suggestions div {
-  padding: 4px;
+  padding: 6px 10px;
   cursor: pointer;
-  color: black;
+  color: #F8F8F2;
 }
 
 #suggestions div:hover {
-  background-color: #eee;
+  background-color: #555;        /* ホバー時の背景 */
 }
 
 #toast {
