@@ -105,16 +105,34 @@ h2 {
   margin-top: 10px;
 }
 
+.explorer-stats div {
+  display: flex; /* 行内要素を横並びにする */
+  align-items: baseline; /* ベースラインを揃える */
+  gap: 10px; /* ラベルと値の間隔 */
+}
+
+.explorer-stats .stat-label {
+  display: inline-block;
+  width: 3em; /* ラベルの幅を固定 */
+  text-align: left; /* 左寄せ */
+}
+
 .parameter-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
+}
+
+.parameter-section .stat-label {
+  width: 3em; /* ラベルの幅を固定 */
+  text-align: left; /* 左寄せ */
 }
 
 .parameter-section label {
   display: flex; /* ラベル内の要素を横並びにする */
   align-items: center; /* 縦方向中央揃え */
   gap: 5px; /* ラベル内の要素間の間隔 */
+  min-width: 100px; /* 項目名4文字分のスペースを確保（目安） */
 }
 
 .parameter-section input[type="number"] {
@@ -122,25 +140,9 @@ h2 {
 }
 
 .parameter-section input[type="text"] {
-  width: 120px; /* ラベル名入力欄の幅 */
+  width: 100px; /* ラベル名入力欄の幅 */
 }
 
-.parameter-section label {
-  display: flex; /* ラベル内の要素を横並びにする */
-  align-items: center; /* 縦方向中央揃え */
-  gap: 5px; /* ラベル内の要素間の間隔 */
-}
-
-.parameter-section input[type="number"] {
-  width: 60px; /* 半角数字4桁程度の幅 */
-}
-
-/* 修正するスタイル */
-.parameter-section input[type="text"] {
-  width: 100px; /* ラベル名入力欄の幅（目安） */
-}
-
-/* id指定でより明確にスタイルを適用 */
 #other1-name,
 #other2-name {
   width: 100px; /* 全角6文字程度が入る幅の目安 */
@@ -174,6 +176,22 @@ h2 {
   .explorer-image {
     width: 150px;
     height: 150px;
+  }
+
+  .explorer-stats div {
+  display: flex; /* 行内要素を横並びにする */
+  align-items: baseline; /* ベースラインを揃える */
+  gap: 10px; /* ラベルと値の間隔 */
+  }
+
+ .explorer-image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .explorer-stats div span:first-child {
+    display: inline-block;
+    width: 5px;
   }
 
   .explorer-stats {
