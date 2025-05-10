@@ -27,6 +27,22 @@ body {
   margin-top: 10px;
 }
 
+h2 {
+  margin-bottom: 5px; /* 例：下マージンを5pxに設定 */
+}
+
+#say-content,
+#dice-command{
+  width: 400px; /* 例：400pxに設定。必要に応じて調整してください。 */
+  max-width: 100%; /* 親要素の幅を超えないように */
+}
+
+#chat-palette-input {
+  width: 400px; /* 例：400pxに設定。必要に応じて調整してください。 */
+  max-width: 100%; /* 親要素の幅を超えないように */
+  min-height: 150px; /* 高さを確保 */
+}
+
 #suggestions {
   border: 1px solid #ccc;
   max-height: 120px;
@@ -176,18 +192,13 @@ body {
     padding: 8px; /* パディングを調整 */
   }
 
-  #say-content {
+  #say-content,
+  #dice-command,
+  #suggestions
+    {
     width: 95%; /* 幅をいっぱいに */
   }
   
-  #dice-command {
-    width: 100%; /* 幅をいっぱいに */
-  }
-
-  #suggestions {
-    width: 95%; /* 幅を95%に */
-  }
-
   #chat-palette-input {
     width: 95%; /* 幅を95%に */
     min-height: 150px; /* 高さを確保 */
