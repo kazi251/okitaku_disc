@@ -124,7 +124,7 @@ function updateDisplay() {
     document.getElementById("other2-label").textContent = other2Name || "その他";
 }
 
-["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other1-name", "other2-name"].forEach(id => {
+["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other2-input","other1-name", "other2-name"].forEach(id => {
     const input = document.getElementById(id);
     if (input) input.addEventListener("input", updateDisplay);
 });
@@ -164,13 +164,13 @@ async function saveStatus() {
     const san = document.getElementById("san-input").value;
     const sanMax = document.getElementById("san-max-input").value;
     const other = document.getElementById("other-input").value;
+    const other2 = document.getElementById("other2-input").value;
     const other1Name = document.getElementById("other1-name").value;
     const other2Name = document.getElementById("other2-name").value;
-    const other2Value = document.getElementById("other2-value").value; // Get other2 value
 
     try {
         await setDoc(doc(db, "character_status", "default"), {
-            hp, hpMax, mp, mpMax, san, sanMax, other, other1Name, other2Name,
+            hp, hpMax, mp, mpMax, san, sanMax, other, other2 , other1Name, other2Name,
             updatedAt: new Date().toISOString()
         });
 
@@ -224,9 +224,9 @@ async function loadStatus(silent = false) {
             document.getElementById("san-input").value = data.san || "";
             document.getElementById("san-max-input").value = data.sanMax || "";
             document.getElementById("other-input").value = data.other || "";
+            document.getElementById("other2-input").value = data.other || "";
             document.getElementById("other1-name").value = data.other1Name || "";
             document.getElementById("other2-name").value = data.other2Name || "";
-            document.getElementById("other2-value").value = data.other2Value || "";
 
             document.getElementById("hp").textContent = data.hp || "";
             document.getElementById("hp-max").textContent = data.hpMax || "";
@@ -236,9 +236,9 @@ async function loadStatus(silent = false) {
             document.getElementById("san-max").textContent = data.sanMax || "";
             document.getElementById("san-indef").textContent = Math.floor((data.sanMax || 0) * 0.8);
             document.getElementById("other").textContent = data.other || "-";
+            document.getElementById("other2").textContent = data.other || "-";
             document.getElementById("other1-label").textContent = data.other1Name || "その他";
             document.getElementById("other2-label").textContent = data.other2Name || "その他";
-            document.getElementById("other2-value").textContent = data.other2Value || "-";
 
             updateDisplay();
             if (!silent) showToast("ステータスを読み込みました");
