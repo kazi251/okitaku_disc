@@ -186,6 +186,25 @@ async function saveStatus() {
     console.error("保存失敗:", e);
     showToast("保存に失敗しました");
   }
+
+  // Discord通知
+  const message = 
+    `探索者 太郎のステータスを更新しました！\n` +
+    `HP: ${hp} / ${hpMax}\n` +
+    `MP: ${mp} / ${mpMax}\n` +
+    `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
+    `${other1Name || "その他1"}: ${other || "-"}\n` +
+    `${other2Name || "その他2"}: ${document.getElementById("other2-value").value || "-"}`;
+
+  try {
+    await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: "探索者 太郎", message })
+    });
+  } catch (error) {
+    console.error("Discord通知失敗:", error);
+  }
 }
 
 async function loadStatus(silent = false) {
