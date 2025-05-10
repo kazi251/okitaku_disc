@@ -137,15 +137,19 @@ async function savePalette() {
   }
 }
 
-async function loadPalette(callback) {
+async function loadPalette(callback, silent = false) {
   try {
     const docSnap = await getDoc(doc(db, "chat_palette_app", "default"));
     if (docSnap.exists()) {
       const data = docSnap.data();
       chatPaletteInput.value = data.palette || "";
-      showToast("チャットパレットを読み込みました！");
+      if (!silent) showToast("チャットパレットを読み込みました！");
       if (callback) callback();
     }
+  } catch (error) {
+    console.error("読み込みに失敗しました:", error);
+  }
+}
   } catch (error) {
     console.error("読み込みに失敗しました:", error);
   }
@@ -223,6 +227,6 @@ async function loadStatus() {
 
 window.addEventListener("DOMContentLoaded", () => {
   loadStatus();
-  loadPalette(updateChatPalette);
+  loadPalette(updateChatPalette, true); // silent モードで読み込み
   updateDisplay();
 });
