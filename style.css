@@ -6,6 +6,10 @@ body {
   color: #F8F8F2;
 }
 
+h2 {
+  margin-bottom: 5px; 
+}
+
 .section {
   margin-top: 20px;
 }
@@ -58,6 +62,7 @@ body {
 #suggestions div {
   padding: 4px;
   cursor: pointer;
+  color: black;
 }
 
 #suggestions div:hover {
