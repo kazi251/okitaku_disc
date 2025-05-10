@@ -195,11 +195,14 @@ async function saveStatus() {
     // Discord通知
     const message =
         `探索者 太郎のステータス更新\n` +
+        `\`\`\`\n` +
         `HP: ${hp} / ${hpMax}\n` +
         `MP: ${mp} / ${mpMax}\n` +
         `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
         `${other1Name || "その他1"}: ${other || "-"}\n` +
-        `${other2Name || "その他2"}: ${other2 || "-"}`;
+        `${other2Name || "その他2"}: ${other2 || "-"}` +
+        `\`\`\``;
+    
     const avatarUrl = document.getElementById("explorer-image").src;
     try {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
