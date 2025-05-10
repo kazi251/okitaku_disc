@@ -66,7 +66,7 @@ async function rollDice() {
     if (!command) return;
     const userName = "探索者 太郎";
     const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
-    workerUrl.searchParams.append("command", encodeURIComponent(command));
+    workerUrl.searchParams.append("command", command);
     workerUrl.searchParams.append("name", userName);
     const avatarUrl = document.getElementById("explorer-image").src;
     workerUrl.searchParams.append("avatar_url", avatarUrl);
