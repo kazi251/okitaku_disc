@@ -155,16 +155,21 @@ h2 {
 .toggle-content {
   display: none;
   margin-top: 10px;
+  width: 400px; /* 固定幅を指定 */
 }
+
 .toggle-button {
-  width: 100%;
+  width: 400px; /* 固定幅 */
   text-align: left;
   font-weight: bold;
-  background-color: #f0f0f0;
-  border: none;
+  font-size: 1.2em;               /* h2 に近い大きさ */
+  background-color: #444;         /* ダークテーマに合う背景色 */
+  color: #F8F8F2;                 /* 明るい文字色 */
+  border: 1px solid #666;         /* やや明るい枠線 */
   padding: 10px;
   cursor: pointer;
 }
+
 .toggle-button.open::after {
   content: '▲';
   float: right;
