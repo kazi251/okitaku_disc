@@ -177,15 +177,15 @@ body {
   }
 
   #dice-command {
-    width: 100%; /* 幅を画面いっぱいに */
+    width: 95%; /* 幅を95%に */
   }
 
   #suggestions {
-    width: 100%; /* 幅を画面いっぱいに */
+    width: 95%; /* 幅を95%に */
   }
 
   #chat-palette-input {
-    width: 100%; /* 幅を画面いっぱいに */
+    width: 95%; /* 幅を95%に */
     min-height: 150px; /* 高さを確保 */
   }
 }
