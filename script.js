@@ -24,6 +24,10 @@ const sayButton = document.getElementById("send-button");
 const diceCommandInput = document.getElementById("dice-command");
 const rollButton = document.getElementById("roll-button");
 const chatPaletteInput = document.getElementById("chat-palette-input");
+const avatarUrl = document.getElementById("explorer-image").src;
+
+const paletteKey = "chatPalette";
+let chatPalette = [];
 
 sayButton.addEventListener("click", sendSay);
 diceCommandInput.addEventListener("input", showSuggestions);
@@ -32,9 +36,6 @@ document.getElementById("save-button").addEventListener("click", savePalette);
 document.getElementById("load-button").addEventListener("click", () => loadPalette(updateChatPalette, false));
 document.getElementById("legacy-status-save").addEventListener("click", saveStatus);
 document.getElementById("legacy-status-load").addEventListener("click", () => loadStatus(false));
-
-const paletteKey = "chatPalette";
-let chatPalette = [];
 
 window.updateChatPalette = function () {
   chatPalette = chatPaletteInput.value.split('\n').filter(line => line.trim() !== '');
@@ -72,6 +73,7 @@ async function rollDice() {
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
   workerUrl.searchParams.append("name", userName);
+  workerUrl.searchParams.append("avatar_url", avatarUrl);
   try {
     const response = await fetch(workerUrl.toString());
     const result = await response.json();
@@ -100,7 +102,7 @@ async function sendSay() {
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "探索者 太郎", message: content })
+      body: JSON.stringify({ name: "探索者 太郎", message: content , avatar_url: avatarUrl})
     });
     if (response.ok) {
       document.getElementById("say-content").value = "";
@@ -204,7 +206,7 @@ async function saveStatus() {
     await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "探索者 太郎", message })
+      body: JSON.stringify({ name: "探索者 太郎", message , avatar_url: avatarUrl})
     });
   } catch (error) {
     console.error("Discord通知失敗:", error);
