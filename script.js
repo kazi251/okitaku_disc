@@ -25,7 +25,7 @@ sayButton.addEventListener("click", sendSay);
 diceCommandInput.addEventListener("input", showSuggestions);
 rollButton.addEventListener("click", rollDice);
 document.getElementById("save-button").addEventListener("click", savePalette);
-document.getElementById("load-button").addEventListener("click", () => loadPalette(updateChatPalette));
+document.getElementById("load-button").addEventListener("click", () => loadPalette(updateChatPalette, false));
 document.getElementById("legacy-status-save").addEventListener("click", saveStatus);
 document.getElementById("legacy-status-load").addEventListener("click", loadStatus);
 
@@ -146,6 +146,10 @@ async function loadPalette(callback, silent = false) {
       if (!silent) showToast("チャットパレットを読み込みました！");
       if (callback) callback();
     }
+  } catch (error) {
+    console.error("読み込みに失敗しました:", error);
+  }
+}
   } catch (error) {
     console.error("読み込みに失敗しました:", error);
   }
