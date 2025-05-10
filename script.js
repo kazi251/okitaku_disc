@@ -182,9 +182,9 @@ async function saveStatus() {
         document.getElementById("san-max").textContent = sanMax;
         document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
         document.getElementById("other").textContent = other || "-";
+        document.getElementById("other2").textContent = other2 || "-";
         document.getElementById("other1-label").textContent = other1Name || "その他";
         document.getElementById("other2-label").textContent = other2Name || "その他";
-        document.getElementById("other2-value").textContent = other2Value || "-"; // Update display
 
         showToast("ステータスを保存しました");
     } catch (e) {
@@ -199,7 +199,7 @@ async function saveStatus() {
         `MP: ${mp} / ${mpMax}\n` +
         `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
         `${other1Name || "その他1"}: ${other || "-"}\n` +
-        `${other2Name || "その他2"}: ${other2Value || "-"}`; // Use other2Value
+        `${other2Name || "その他2"}: ${other2 || "-"}`;
     const avatarUrl = document.getElementById("explorer-image").src;
     try {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
@@ -224,7 +224,7 @@ async function loadStatus(silent = false) {
             document.getElementById("san-input").value = data.san || "";
             document.getElementById("san-max-input").value = data.sanMax || "";
             document.getElementById("other-input").value = data.other || "";
-            document.getElementById("other2-input").value = data.other || "";
+            document.getElementById("other2-input").value = data.other2 || "";
             document.getElementById("other1-name").value = data.other1Name || "";
             document.getElementById("other2-name").value = data.other2Name || "";
 
@@ -236,7 +236,7 @@ async function loadStatus(silent = false) {
             document.getElementById("san-max").textContent = data.sanMax || "";
             document.getElementById("san-indef").textContent = Math.floor((data.sanMax || 0) * 0.8);
             document.getElementById("other").textContent = data.other || "-";
-            document.getElementById("other2").textContent = data.other || "-";
+            document.getElementById("other2").textContent = data.other2 || "-";
             document.getElementById("other1-label").textContent = data.other1Name || "その他";
             document.getElementById("other2-label").textContent = data.other2Name || "その他";
 
