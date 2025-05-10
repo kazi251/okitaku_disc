@@ -187,12 +187,18 @@ h2 {
     gap: 5px; /* ラベルと値の間の間隔 */
   }
 
-  .explorer-stats div span:first-child {
-    display: inline-block; /* 幅指定を有効にする */
-    width: 3em; /* ラベルの固定幅 */
-    text-align: left; /* テキストを左寄せ */
+  .explorer-stats .stat-label { 
+    display: inline-block;
+    width: 3em;
+    text-align: left;
   }
 
+  #other1-label,
+  #other2-label {
+    width: auto; /* 幅を自動調整 */
+    min-width: 4em; /* 最小幅を4文字分に設定 */
+  }
+  
   .parameter-section {
     gap: 5px; /* パラメータ要素間の縦方向の間隔 */
   }
