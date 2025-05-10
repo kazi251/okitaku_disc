@@ -150,10 +150,6 @@ async function loadPalette(callback, silent = false) {
     console.error("読み込みに失敗しました:", error);
   }
 }
-  } catch (error) {
-    console.error("読み込みに失敗しました:", error);
-  }
-}
 
 async function saveStatus() {
   const hp = document.getElementById("hp-input").value;
