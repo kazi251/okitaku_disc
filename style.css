@@ -3,6 +3,25 @@ body {
   margin: 20px;
 }
 
+.explorer-image-container {
+  display: flex;
+  flex-direction: column; /* 名前を画像の下に配置 */
+  align-items: center; /* 名前を中央揃え */
+  width: 200px;
+}
+
+.explorer-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.explorer-image-container strong {
+  margin-top: 10px; /* 画像との間隔 */
+  text-align: center;
+}
+
 #result {
   margin-top: 10px;
 }
