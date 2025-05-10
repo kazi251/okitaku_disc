@@ -1,10 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
-import {
-  getStorage, ref, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-storage.js";
-
 
 // Firebase設定
 const firebaseConfig = {
@@ -24,7 +20,6 @@ const sayButton = document.getElementById("send-button");
 const diceCommandInput = document.getElementById("dice-command");
 const rollButton = document.getElementById("roll-button");
 const chatPaletteInput = document.getElementById("chat-palette-input");
-const avatarUrl = document.getElementById("explorer-image").src;
 
 const paletteKey = "chatPalette";
 let chatPalette = [];
@@ -98,11 +93,12 @@ async function rollDice() {
 async function sendSay() {
   const content = document.getElementById("say-content").value.trim();
   if (!content) return;
+  const avatarUrl = document.getElementById("explorer-image").src;
   try {
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "探索者 太郎", message: content , avatar_url: avatarUrl})
+      body: JSON.stringify({ name: "探索者 太郎", message: content , avatar_url: avatarUrl })
     });
     if (response.ok) {
       document.getElementById("say-content").value = "";
@@ -200,8 +196,8 @@ async function saveStatus() {
     `MP: ${mp} / ${mpMax}\n` +
     `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
     `${other1Name || "その他1"}: ${other || "-"}\n` +
-    `${other2Name || "その他2"}: ${document.getElementById("other2-value").value || "-"}`;
-
+    `${other2Name || "その他2"}: ${other2-value || "-"}`;
+  const avatarUrl = document.getElementById("explorer-image").src;
   try {
     await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
