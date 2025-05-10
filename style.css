@@ -25,8 +25,8 @@ input[type="text"]{ /* テキストボックス */
 }
 
 .explorer-image {
-  width: 200px;
-  height: 200px;
+  width: 128px;
+  height: 128px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -207,8 +207,8 @@ input[type="text"]{ /* テキストボックス */
   }
 
   .explorer-image {
-    width: 150px; /* 画像の幅 */
-    height: 150px; /* 画像の高さ */
+    width: 128px; /* 画像の幅 */
+    height: 128px; /* 画像の高さ */
   }
 
   .explorer-stats {
