@@ -113,7 +113,7 @@ h2 {
 
 .explorer-stats .stat-label {
   display: inline-block;
-  width: 3em; /* ラベルの幅を固定 */
+  width: 4em; /* ラベルの幅を固定 */
   text-align: left; /* 左寄せ */
 }
 
@@ -124,7 +124,7 @@ h2 {
 }
 
 .parameter-section .stat-label {
-  width: 3em; /* ラベルの幅を固定 */
+  width: 4em; /* ラベルの幅を固定 */
   text-align: left; /* 左寄せ */
 }
 
