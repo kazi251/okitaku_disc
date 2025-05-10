@@ -21,7 +21,7 @@ input[type="text"]{ /* テキストボックス */
   display: flex;
   flex-direction: column; /* 名前を画像の下に配置 */
   align-items: center; /* 名前を中央揃え */
-  width: 200px;
+  width: 150px;
 }
 
 .explorer-image {
