@@ -16,10 +16,11 @@
       <div><strong>探索者 太郎</strong></div>
     </div>
     <div class="explorer-stats">
-      <div>HP: <span id="hp">10</span> ／ <span id="hp-max">10</span></div>
-      <div>MP: <span id="mp">5</span> ／ <span id="mp-max">5</span></div>
-      <div>SAN: <span id="san">70</span> ／ <span id="san-max">99</span> （<span id="san-indef">79</span>）</div>
-      <div>その他: <span id="other">-</span></div>
+      <div>HP: <span id="hp">-</span> ／ <span id="hp-max">-</span></div>
+      <div>MP: <span id="mp">-</span> ／ <span id="mp-max">-</span></div>
+      <div>SAN: <span id="san">-</span> ／ <span id="san-max">-</span>（<span id="san-indef">-</span>）</div>
+      <div><span id="other1-label">その他</span>: <span id="other">-</span></div>
+      <div><span id="other2-label">その他</span>: <span id="other2-value">-</span></div>
     </div>
   </div>
 </div>
@@ -28,10 +29,19 @@
 <h2>パラメータ</h2>
 <div>
   <div class="parameter-section">
-    <div><label>HP:<input type="number" id="hp-input" value="10"> ／ <input type="number" id="hp-max-input" value="10"></label></div>
-    <div><label>MP:<input type="number" id="mp-input" value="5"> ／ <input type="number" id="mp-max-input" value="5"></label></div>
-    <div><label>SAN:<input type="number" id="san-input" value="70"> ／ <input type="number" id="san-max-input" value="99"></label></div>
-    <div><label>その他:<input type="text" id="other-input" placeholder="任意の値"></label></div>
+    <div><label>HP: <input type="number" id="hp-input"> ／ <input type="number" id="hp-max-input"></label></div>
+    <div><label>MP: <input type="number" id="mp-input"> ／ <input type="number" id="mp-max-input"></label></div>
+    <div><label>SAN: <input type="number" id="san-input"> ／ <input type="number" id="san-max-input"></label></div>
+    <div>
+      <label><input type="text" id="other1-name" placeholder="ラベル名">:
+        <input type="text" id="other-input" placeholder="値">
+      </label>
+    </div>
+    <div>
+      <label><input type="text" id="other2-name" placeholder="ラベル名">:
+        <input type="text" id="other2-value" placeholder="値">
+      </label>
+    </div>
   </div>
   <div>
     <button id="legacy-status-save">保存</button>

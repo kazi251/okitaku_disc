@@ -111,9 +111,15 @@ async function sendSay() {
 function updateDisplay() {
   const sanMax = document.getElementById("san-max-input").value;
   document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
+
+  const other1Name = document.getElementById("other1-name").value;
+  const other2Name = document.getElementById("other2-name").value;
+
+  document.getElementById("other1-label").textContent = other1Name || "その他";
+  document.getElementById("other2-label").textContent = other2Name || "その他";
 }
 
-["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input"].forEach(id => {
+["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other1-name", "other2-name"].forEach(id => {
   const input = document.getElementById(id);
   if (input) input.addEventListener("input", updateDisplay);
 });
@@ -153,10 +159,12 @@ async function saveStatus() {
   const san = document.getElementById("san-input").value;
   const sanMax = document.getElementById("san-max-input").value;
   const other = document.getElementById("other-input").value;
+  const other1Name = document.getElementById("other1-name").value;
+  const other2Name = document.getElementById("other2-name").value;
 
   try {
     await setDoc(doc(db, "character_status", "default"), {
-      hp, hpMax, mp, mpMax, san, sanMax, other,
+      hp, hpMax, mp, mpMax, san, sanMax, other, other1Name, other2Name,
       updatedAt: new Date().toISOString()
     });
 
@@ -168,6 +176,8 @@ async function saveStatus() {
     document.getElementById("san-max").textContent = sanMax;
     document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
     document.getElementById("other").textContent = other || "-";
+    document.getElementById("other1-label").textContent = other1Name || "その他";
+    document.getElementById("other2-label").textContent = other2Name || "その他";
 
     showToast("ステータスを保存しました");
   } catch (e) {
@@ -188,6 +198,8 @@ async function loadStatus() {
       document.getElementById("san-input").value = data.san || "";
       document.getElementById("san-max-input").value = data.sanMax || "";
       document.getElementById("other-input").value = data.other || "";
+      document.getElementById("other1-name").value = data.other1Name || "";
+      document.getElementById("other2-name").value = data.other2Name || "";
 
       document.getElementById("hp").textContent = data.hp || "";
       document.getElementById("hp-max").textContent = data.hpMax || "";
@@ -197,6 +209,8 @@ async function loadStatus() {
       document.getElementById("san-max").textContent = data.sanMax || "";
       document.getElementById("san-indef").textContent = Math.floor((data.sanMax || 0) * 0.8);
       document.getElementById("other").textContent = data.other || "-";
+      document.getElementById("other1-label").textContent = data.other1Name || "その他";
+      document.getElementById("other2-label").textContent = data.other2Name || "その他";
 
       updateDisplay();
       showToast("ステータスを読み込みました");
