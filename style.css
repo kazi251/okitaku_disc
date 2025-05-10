@@ -95,6 +95,41 @@ body {
   gap: 10px;
 }
 
+.parameter-section label {
+  display: flex; /* ラベル内の要素を横並びにする */
+  align-items: center; /* 縦方向中央揃え */
+  gap: 5px; /* ラベル内の要素間の間隔 */
+}
+
+.parameter-section input[type="number"] {
+  width: 60px; /* 半角数字4桁程度の幅 */
+}
+
+.parameter-section input[type="text"] {
+  width: 120px; /* ラベル名入力欄の幅 */
+}
+
+.parameter-section label {
+  display: flex; /* ラベル内の要素を横並びにする */
+  align-items: center; /* 縦方向中央揃え */
+  gap: 5px; /* ラベル内の要素間の間隔 */
+}
+
+.parameter-section input[type="number"] {
+  width: 60px; /* 半角数字4桁程度の幅 */
+}
+
+/* 修正するスタイル */
+.parameter-section input[type="text"] {
+  width: 100px; /* ラベル名入力欄の幅（目安） */
+}
+
+/* id指定でより明確にスタイルを適用 */
+#other1-name,
+#other2-name {
+  width: 100px; /* 全角6文字程度が入る幅の目安 */
+}
+
 /* ... 他のPC向けのスタイル ... */
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
 @media screen and (max-width: 600px) {
