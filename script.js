@@ -150,6 +150,10 @@ async function loadPalette(callback, silent = false) {
     console.error("読み込みに失敗しました:", error);
   }
 }
+  } catch (error) {
+    console.error("読み込みに失敗しました:", error);
+  }
+}
 
 async function saveStatus() {
   const hp = document.getElementById("hp-input").value;
@@ -186,7 +190,7 @@ async function saveStatus() {
   }
 }
 
-async function loadStatus() {
+async function loadStatus(silent = false) {
   try {
     const snap = await getDoc(doc(db, "character_status", "default"));
     if (snap.exists()) {
@@ -213,7 +217,7 @@ async function loadStatus() {
       document.getElementById("other2-label").textContent = data.other2Name || "その他";
 
       updateDisplay();
-      showToast("ステータスを読み込みました");
+      if (!silent) showToast("ステータスを読み込みました");
     }
   } catch (e) {
     console.error("読み込み失敗:", e);
@@ -222,7 +226,7 @@ async function loadStatus() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  loadStatus();
-  loadPalette(updateChatPalette, true); // silent モードで読み込み
+  loadStatus(true); // silent モード
+  loadPalette(updateChatPalette, true); // silent モード
   updateDisplay();
 });
