@@ -194,7 +194,7 @@ async function saveStatus() {
 
     // Discord通知
     const message =
-        `探索者 太郎のステータス更新\n` +
+        `ステータス更新\n` +
         `\`\`\`\n` +
         `HP: ${hp} / ${hpMax}\n` +
         `MP: ${mp} / ${mpMax}\n` +
