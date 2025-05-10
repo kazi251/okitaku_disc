@@ -27,47 +27,62 @@
 </div>
 
 <!-- パラメータ -->
-<h2>パラメータ</h2>
-<div>
-  <div class="parameter-section">
-    <div><label><span class="stat-label">HP</span>: <input type="number" id="hp-input"> ／ <input type="number" id="hp-max-input"></label></div>
-    <div><label><span class="stat-label">MP</span>: <input type="number" id="mp-input"> ／ <input type="number" id="mp-max-input"></label></div>
-    <div><label><span class="stat-label">SAN</span>: <input type="number" id="san-input"> ／ <input type="number" id="san-max-input"></label></div>
-    <div>
-      <label><input type="text" id="other1-name" placeholder="ラベル名">:
-        <input type="number" id="other-input">
-      </label>
-    </div>
-    <div>
-      <label><input type="text" id="other2-name" placeholder="ラベル名">:
-        <input type="number" id="other2-value">
-      </label>
-    </div>
-  </div>
-  <div>
-    <button id="legacy-status-save">保存</button>
-    <button id="legacy-status-load">再読み込み</button>
+<div class="section">
+  <button class="toggle-button">▼ パラメータ</button>
+    <div class="toggle-content">
+      <div>
+        <div class="parameter-section">
+          <div><label><span class="stat-label">HP</span>: <input type="number" id="hp-input"> ／ <input type="number" id="hp-max-input"></label></div>
+          <div><label><span class="stat-label">MP</span>: <input type="number" id="mp-input"> ／ <input type="number" id="mp-max-input"></label></div>
+          <div><label><span class="stat-label">SAN</span>: <input type="number" id="san-input"> ／ <input type="number" id="san-max-input"></label></div>
+          <div>
+            <label><input type="text" id="other1-name" placeholder="ラベル名">:
+              <input type="number" id="other-input">
+            </label>
+          </div>
+          <div>
+            <label><input type="text" id="other2-name" placeholder="ラベル名">:
+              <input type="number" id="other2-value">
+            </label>
+          </div>
+        </div>
+        <div>
+          <button id="legacy-status-save">保存</button>
+          <button id="legacy-status-load">再読み込み</button>
+        </div>
+      </div>
   </div>
 </div>
 
 <!-- セリフ送信 -->
-<h2>セリフ送信</h2>
-<textarea id="say-content" placeholder="セリフを入力..."></textarea><br>
-<button id="send-button">送信</button>
-
+<div class="section">
+  <button class="toggle-button">▼ セリフ送信</button>
+  <div class="toggle-content">
+    <textarea id="say-content" placeholder="セリフを入力..."></textarea><br>
+    <button id="send-button">送信</button>
+  </div>
+</div>
 <!-- ダイスロール -->
-<h2>ダイスロール</h2>
-<input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off"><br>
-<div id="suggestions"></div>
-<button id="roll-button">ダイス実行</button>
-<div id="result">🎲 結果がここに表示されます</div>
+<div class="section">
+  <button class="toggle-button">▼ ダイスロール</button>
+  <div class="toggle-content">
+    <input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off"><br>
+    <div id="suggestions"></div>
+    <button id="roll-button">ダイス実行</button>
+    <div id="result">🎲 結果がここに表示されます</div>
+  </div>
+</div>
 
 <!-- チャットパレット -->
 <div id="chat-palette">
-  <h2>チャットパレット貼り付け欄</h2>
-  <textarea id="chat-palette-input" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br>
-  <button id="save-button">保存</button>
-  <button id="load-button">再読み込み</button>
+<div class="section">
+  <button class="toggle-button">▼ チャットパレット貼り付け欄</button>
+    <div class="toggle-content">
+      <textarea id="chat-palette-input" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br>
+      <button id="save-button">保存</button>
+      <button id="load-button">再読み込み</button>
+    </div>
+  </div>
 </div>
 
 <!-- トースト -->

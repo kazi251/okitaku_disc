@@ -150,6 +150,28 @@ h2 {
   width: 100px; /* 全角6文字程度が入る幅の目安 */
 }
 
+.toggle-content {
+  display: none;
+  margin-top: 10px;
+}
+.toggle-button {
+  width: 100%;
+  text-align: left;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+.toggle-button.open::after {
+  content: '▲';
+  float: right;
+}
+.toggle-button::after {
+  content: '▼';
+  float: right;
+}
+
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
 @media screen and (max-width: 600px) {
   body {

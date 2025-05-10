@@ -228,3 +228,12 @@ window.addEventListener("DOMContentLoaded", () => {
   loadPalette(updateChatPalette, true); // silent モード
   updateDisplay();
 });
+
+document.querySelectorAll(".toggle-button").forEach(button => {
+  button.addEventListener("click", () => {
+    const content = button.nextElementSibling;
+    const isOpen = content.style.display === "block";
+    content.style.display = isOpen ? "none" : "block";
+    button.classList.toggle("open", !isOpen);
+  });
+});
