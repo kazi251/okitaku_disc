@@ -64,8 +64,10 @@ function showSuggestions() {
 async function rollDice() {
   const command = diceCommandInput.value.trim();
   if (!command) return;
+  const userName = "探索者 太郎";
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
+  workerUrl.searchParams.append("name", userName);
   try {
     const response = await fetch(workerUrl.toString());
     const result = await response.json();
@@ -75,8 +77,8 @@ async function rollDice() {
       showToast("ダイスを振りました！");
       if (result.text.includes("致命的失敗")) displayText += " 💀";
       else if (result.text.includes("失敗")) displayText += " 😞";
-      else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
       else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
+      else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
     } else {
       displayText += "エラー: " + result.reason;
     }
