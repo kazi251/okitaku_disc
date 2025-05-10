@@ -191,11 +191,11 @@ h2 {
 
   .explorer-stats div span:first-child {
     display: inline-block;
-    width: 5px;
+    width: 3em;
   }
 
   .explorer-stats {
-    margin-top: 5px;
+    margin-top: 3em;
   }
 
   .parameter-section {
