@@ -27,7 +27,7 @@ rollButton.addEventListener("click", rollDice);
 document.getElementById("save-button").addEventListener("click", savePalette);
 document.getElementById("load-button").addEventListener("click", () => loadPalette(updateChatPalette, false));
 document.getElementById("legacy-status-save").addEventListener("click", saveStatus);
-document.getElementById("legacy-status-load").addEventListener("click", loadStatus);
+document.getElementById("legacy-status-load").addEventListener("click", () => loadStatus(false));
 
 const paletteKey = "chatPalette";
 let chatPalette = [];
