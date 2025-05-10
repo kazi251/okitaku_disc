@@ -109,21 +109,8 @@ async function sendSay() {
 }
 
 function updateDisplay() {
-  const hp = document.getElementById("hp-input").value;
-  const hpMax = document.getElementById("hp-max-input").value;
-  const mp = document.getElementById("mp-input").value;
-  const mpMax = document.getElementById("mp-max-input").value;
-  const san = document.getElementById("san-input").value;
   const sanMax = document.getElementById("san-max-input").value;
-  const other = document.getElementById("other-input").value;
-  document.getElementById("hp").textContent = hp;
-  document.getElementById("hp-max").textContent = hpMax;
-  document.getElementById("mp").textContent = mp;
-  document.getElementById("mp-max").textContent = mpMax;
-  document.getElementById("san").textContent = san;
-  document.getElementById("san-max").textContent = sanMax;
   document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
-  document.getElementById("other").textContent = other || "-";
 }
 
 ["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input"].forEach(id => {
@@ -159,17 +146,29 @@ async function loadPalette(callback) {
 }
 
 async function saveStatus() {
+  const hp = document.getElementById("hp-input").value;
+  const hpMax = document.getElementById("hp-max-input").value;
+  const mp = document.getElementById("mp-input").value;
+  const mpMax = document.getElementById("mp-max-input").value;
+  const san = document.getElementById("san-input").value;
+  const sanMax = document.getElementById("san-max-input").value;
+  const other = document.getElementById("other-input").value;
+
   try {
     await setDoc(doc(db, "character_status", "default"), {
-      hp: document.getElementById("hp-input").value,
-      hpMax: document.getElementById("hp-max-input").value,
-      mp: document.getElementById("mp-input").value,
-      mpMax: document.getElementById("mp-max-input").value,
-      san: document.getElementById("san-input").value,
-      sanMax: document.getElementById("san-max-input").value,
-      other: document.getElementById("other-input").value,
+      hp, hpMax, mp, mpMax, san, sanMax, other,
       updatedAt: new Date().toISOString()
     });
+
+    document.getElementById("hp").textContent = hp;
+    document.getElementById("hp-max").textContent = hpMax;
+    document.getElementById("mp").textContent = mp;
+    document.getElementById("mp-max").textContent = mpMax;
+    document.getElementById("san").textContent = san;
+    document.getElementById("san-max").textContent = sanMax;
+    document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
+    document.getElementById("other").textContent = other || "-";
+
     showToast("ステータスを保存しました");
   } catch (e) {
     console.error("保存失敗:", e);
@@ -189,6 +188,16 @@ async function loadStatus() {
       document.getElementById("san-input").value = data.san || "";
       document.getElementById("san-max-input").value = data.sanMax || "";
       document.getElementById("other-input").value = data.other || "";
+
+      document.getElementById("hp").textContent = data.hp || "";
+      document.getElementById("hp-max").textContent = data.hpMax || "";
+      document.getElementById("mp").textContent = data.mp || "";
+      document.getElementById("mp-max").textContent = data.mpMax || "";
+      document.getElementById("san").textContent = data.san || "";
+      document.getElementById("san-max").textContent = data.sanMax || "";
+      document.getElementById("san-indef").textContent = Math.floor((data.sanMax || 0) * 0.8);
+      document.getElementById("other").textContent = data.other || "-";
+
       updateDisplay();
       showToast("ステータスを読み込みました");
     }
