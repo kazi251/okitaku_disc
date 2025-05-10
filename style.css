@@ -2,6 +2,8 @@
 body {
   font-family: sans-serif;
   margin: 20px;
+  background-color: #333333;
+  color: #F8F8F2;
 }
 
 .explorer-image-container {
@@ -198,7 +200,7 @@ h2 {
     width: auto; /* 幅を自動調整 */
     min-width: 4em; /* 最小幅を4文字分に設定 */
   }
-  
+
   .parameter-section {
     gap: 5px; /* パラメータ要素間の縦方向の間隔 */
   }
