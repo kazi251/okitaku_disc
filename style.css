@@ -148,7 +148,6 @@ h2 {
   width: 100px; /* 全角6文字程度が入る幅の目安 */
 }
 
-/* ... 他のPC向けのスタイル ... */
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
 @media screen and (max-width: 600px) {
   body {
@@ -159,66 +158,61 @@ h2 {
   #explorer-container {
     flex-direction: column; /* 縦並びにする */
     align-items: center; /* 中央揃え */
-    gap: 20px;
+    gap: 20px; /* 要素間の縦方向の間隔 */
   }
 
   .explorer-section {
     flex-direction: column; /* 縦並びにする */
     align-items: center; /* 中央揃え */
-    gap: 10px;
+    gap: 10px; /* 要素間の縦方向の間隔 */
     text-align: center; /* テキストを中央揃え */
   }
 
   .explorer-image-container {
-    width: 150px; /* 画像サイズを少し小さく */
+    width: 150px; /* 画像コンテナの幅 */
   }
 
   .explorer-image {
-    width: 150px;
-    height: 150px;
-  }
-
-  .explorer-stats div {
-  display: flex; /* 行内要素を横並びにする */
-  align-items: baseline; /* ベースラインを揃える */
-  gap: 10px; /* ラベルと値の間隔 */
-  }
-
- .explorer-image {
-    width: 150px;
-    height: 150px;
-  }
-
-  .explorer-stats div span:first-child {
-    display: inline-block;
-    width: 3em;
+    width: 150px; /* 画像の幅 */
+    height: 150px; /* 画像の高さ */
   }
 
   .explorer-stats {
-    margin-top: 3em;
+    margin-top: 2em; /* 上方向の余白（em単位で調整） */
+  }
+
+  .explorer-stats div {
+    display: flex; /* ラベルと値を横並びにする */
+    align-items: baseline; /* ベースラインで揃える */
+    gap: 5px; /* ラベルと値の間の間隔 */
+  }
+
+  .explorer-stats div span:first-child {
+    display: inline-block; /* 幅指定を有効にする */
+    width: 3em; /* ラベルの固定幅 */
+    text-align: left; /* テキストを左寄せ */
   }
 
   .parameter-section {
-    gap: 5px; /* パラメータの間隔を小さく */
+    gap: 5px; /* パラメータ要素間の縦方向の間隔 */
   }
 
   input[type="number"],
   input[type="text"],
   textarea,
   button {
-    font-size: 16px; /* 入力フォームやボタンの文字サイズを大きく */
-    padding: 8px; /* パディングを調整 */
+    font-size: 16px; /* 入力フォームとボタンの文字サイズ */
+    padding: 8px; /* 入力フォームとボタンの内側の余白 */
   }
 
   #say-content,
   #dice-command,
-  #suggestions
-    {
-    width: 95%; /* 幅をいっぱいに */
+  #suggestions {
+    width: 95%; /* 幅を親要素の95%に */
   }
-  
+
   #chat-palette-input {
-    width: 95%; /* 幅を95%に */
-    min-height: 150px; /* 高さを確保 */
+    width: 95%; /* 幅を親要素の95%に */
+    min-height: 150px; /* 最小の高さ */
   }
 }
