@@ -14,6 +14,9 @@ h2 {
   margin-top: 20px;
 }
 
+input[type="text"]{ /* テキストボックス */
+  margin-bottom: 5px; 
+}
 .explorer-image-container {
   display: flex;
   flex-direction: column; /* 名前を画像の下に配置 */
