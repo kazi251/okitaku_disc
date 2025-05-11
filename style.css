@@ -18,8 +18,6 @@ input[type="text"]{ /* テキストボックス */
   margin-bottom: 5px; 
 }
 
-/* ... (既存のスタイル) */
-
 .character-select-area {
   margin-bottom: 20px;
   display: flex; /* Flexbox レイアウト */
@@ -31,12 +29,6 @@ input[type="text"]{ /* テキストボックス */
   height: 30px; /* ボタンの高さに合わせる */
   font-size: 16px; /* ボタンの文字サイズに合わせる */
   padding: 5px 10px; /* ボタンのpaddingに合わせて調整 */
-}
-
-#new-character-button {
-  height: 30px; /* select要素の高さに合わせる */
-  font-size: 16px;
-  padding: 5px 10px;
 }
 
 .explorer-image-container {
