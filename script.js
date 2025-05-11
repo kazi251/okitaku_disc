@@ -252,11 +252,11 @@ async function loadStatus(silent = false) {
     }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    loadStatus(true); // silent モード
-    loadPalette(updateChatPalette, true); // silent モード
-    updateDisplay();
-});
+// window.addEventListener("DOMContentLoaded", () => {
+//     loadStatus(true); // silent モード
+//     loadPalette(updateChatPalette, true); // silent モード
+//     updateDisplay();
+// });
 
 document.querySelectorAll(".toggle-button").forEach(button => {
     button.addEventListener("click", () => {
@@ -289,6 +289,7 @@ newCharacterButton.addEventListener("click", async () => {
       sanMax: "",
       palette: "",
       other: "",
+      other2: "",
       other1Name: "",
       other2Name: "",
       updatedAt: new Date().toISOString()
@@ -310,6 +311,7 @@ characterSelect.addEventListener("change", async () => {
 });
 
 async function loadCharacterList() {
+  console.log("playerId =", playerId);
   const snapshot = await getDocs(collection(db, "characters", playerId, "list"));
   characterSelect.innerHTML = "";
   snapshot.forEach(docSnap => {
@@ -337,7 +339,7 @@ async function loadCharacterData(charId) {
   document.getElementById("san-input").value = data.san || "";
   document.getElementById("san-max-input").value = data.sanMax || "";
   document.getElementById("other-input").value = data.other || "";
-  document.getElementById("other2-input").value = data.other || "";
+  document.getElementById("other2-input").value = data.other2 || "";
   document.getElementById("other1-name").value = data.other1Name || "";
   document.getElementById("other2-name").value = data.other2Name || "";
   document.getElementById("chat-palette-input").value = data.palette || "";
@@ -358,7 +360,7 @@ async function saveCharacterData() {
     san: document.getElementById("san-input").value,
     sanMax: document.getElementById("san-max-input").value,
     other: document.getElementById("other-input").value,
-    other: document.getElementById("other2-input").value,
+    other2: document.getElementById("other2-input").value,
     other1Name: document.getElementById("other1-name").value,
     other2Name: document.getElementById("other2-name").value,
     palette: document.getElementById("chat-palette-input").value,
@@ -367,5 +369,11 @@ async function saveCharacterData() {
   showToast("キャラクターを保存しました！");
 }
 
-window.addEventListener("DOMContentLoaded", loadCharacterList);
+window.addEventListener("DOMContentLoaded", async () => {
+  await loadCharacterList(); // キャラ一覧をロード（切替UI）
+  loadStatus(true);          // 通常のパラメータ（既存の保存）
+  loadPalette(updateChatPalette, true); // チャットパレット
+  updateDisplay();           // 表示更新
+});
+
 window.saveCharacterData = saveCharacterData;
