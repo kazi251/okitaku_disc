@@ -18,6 +18,7 @@ const db = getFirestore(app);
 const urlParams = new URLSearchParams(window.location.search);
 const playerId = urlParams.get("playerId") || "default";
 let currentCharacterId = null;
+let currentCharacterName = "探索者 太郎"
 
 function updateDisplay() {
     const sanMax = document.getElementById("san-max-input").value;
@@ -73,7 +74,7 @@ async function sendSay() {
         const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: "探索者 太郎", message: content, avatar_url: avatarUrl })
+            body: JSON.stringify({ name: currentCharacterName, message: content, avatar_url: avatarUrl })
         });
         if (response.ok) {
             document.getElementById("say-content").value = "";
@@ -90,7 +91,7 @@ async function sendSay() {
 async function rollDice() {
     const command = document.getElementById("dice-command").value.trim();
     if (!command) return;
-    const userName = "探索者 太郎";
+    const userName = currentCharacterName;
     const avatarUrl = document.getElementById("explorer-image").src;
     const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
     workerUrl.searchParams.append("command", command);
@@ -150,6 +151,12 @@ async function loadCharacterData(charId) {
 
     currentCharacterId = charId;
     const data = snap.data();
+
+    currentCharacterName = data.name || "探索者 太郎";
+    const nameDisplay = document.getElementById("character-name");
+    if (nameDisplay) {
+      nameDisplay.textContent = currentCharacterName;
+    }
 
     // 各フォームにデータを反映
     document.getElementById("hp-input").value = data.hp || "";
@@ -244,7 +251,7 @@ async function saveCharacterData() {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: "探索者 太郎", message, avatar_url: avatarUrl })
+          body: JSON.stringify({ name: currentCharacterName, message, avatar_url: avatarUrl })
         });
       } catch (error) {
         console.error("Discord通知失敗:", error);
