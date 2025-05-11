@@ -157,23 +157,36 @@ async function loadCharacterData(charId) {
 
 async function saveCharacterData() {
   if (!currentCharacterId) return;
-  const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-  await setDoc(ref, {
-    name: document.getElementById("character-select").selectedOptions[0].text,
-    hp: document.getElementById("hp-input").value,
-    hpMax: document.getElementById("hp-max-input").value,
-    mp: document.getElementById("mp-input").value,
-    mpMax: document.getElementById("mp-max-input").value,
-    san: document.getElementById("san-input").value,
-    sanMax: document.getElementById("san-max-input").value,
-    other: document.getElementById("other-input").value,
-    other2: document.getElementById("other2-input").value,
-    other1Name: document.getElementById("other1-name").value,
-    other2Name: document.getElementById("other2-name").value,
-    palette: document.getElementById("chat-palette-input").value,
-    updatedAt: new Date().toISOString()
-  });
-  showToast("キャラクターを保存しました！");
+
+  try {
+    await setDoc(
+      doc(db, "characters", playerId),
+      { createdAt: new Date().toISOString() },
+      { merge: true }
+    );
+
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    await setDoc(ref, {
+      name: document.getElementById("character-select").selectedOptions[0].text,
+      hp: document.getElementById("hp-input").value,
+      hpMax: document.getElementById("hp-max-input").value,
+      mp: document.getElementById("mp-input").value,
+      mpMax: document.getElementById("mp-max-input").value,
+      san: document.getElementById("san-input").value,
+      sanMax: document.getElementById("san-max-input").value,
+      other: document.getElementById("other-input").value,
+      other2: document.getElementById("other2-input").value,
+      other1Name: document.getElementById("other1-name").value,
+      other2Name: document.getElementById("other2-name").value,
+      palette: document.getElementById("chat-palette-input").value,
+      updatedAt: new Date().toISOString()
+    });
+
+    showToast("キャラクターを保存しました！");
+  } catch (error) {
+    console.error("キャラクター保存失敗:", error);
+    showToast("保存に失敗しました");
+  }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
