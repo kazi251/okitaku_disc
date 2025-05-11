@@ -235,6 +235,12 @@ window.addEventListener("DOMContentLoaded", () => {
     } catch (e) {
       console.error("キャラ作成失敗:", e);
     }
+    document.getElementById("legacy-status-save").addEventListener("click", saveCharacterData);
+      document.getElementById("legacy-status-load").addEventListener("click", () => {
+    if (currentCharacterId) {
+      loadCharacterData(currentCharacterId);
+    }
+  });
   });
 
   document.getElementById("character-select").addEventListener("change", async () => {
