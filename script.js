@@ -16,73 +16,36 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// プレイヤーIDと現在のキャラクターID
 const urlParams = new URLSearchParams(window.location.search);
 const playerId = urlParams.get("playerId") || "default";
 let currentCharacterId = null;
 
-const sayButton = document.getElementById("send-button");
-const diceCommandInput = document.getElementById("dice-command");
-const rollButton = document.getElementById("roll-button");
-const chatPaletteInput = document.getElementById("chat-palette-input");
-const characterSelect = document.getElementById("character-select");
-const newCharacterButton = document.getElementById("new-character-button");
-const saveCharacterButton = document.getElementById("save-character-button");
+function updateDisplay() {
+    const sanMax = document.getElementById("san-max-input").value;
+    document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
 
-let chatPalette = [];
+    const other1Name = document.getElementById("other1-name").value;
+    const other2Name = document.getElementById("other2-name").value;
 
-sayButton.addEventListener("click", sendSay);
-diceCommandInput.addEventListener("input", showSuggestions);
-rollButton.addEventListener("click", rollDice);
-saveCharacterButton.addEventListener("click", saveCharacterData);
-newCharacterButton.addEventListener("click", async () => {
-    const name = prompt("キャラクター名を入力してください");
-    if (!name) return;
-    try {
-        const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
-            name,
-            hp: "",
-            hpMax: "",
-            mp: "",
-            mpMax: "",
-            san: "",
-            sanMax: "",
-            palette: "",
-            other: "",
-            other2: "",
-            other1Name: "",
-            other2Name: "",
-            updatedAt: new Date().toISOString()
-        });
-        showToast("キャラクターを作成しました");
-        await loadCharacterList();
-        characterSelect.value = newChar.id;
-        await loadCharacterData(newChar.id);
-    } catch (e) {
-        console.error("キャラ作成失敗:", e);
-    }
-});
+    document.getElementById("other1-label").textContent = other1Name || "その他";
+    document.getElementById("other2-label").textContent = other2Name || "その他";
+}
 
-characterSelect.addEventListener("change", async () => {
-    const selected = characterSelect.value;
-    if (selected) {
-        await loadCharacterData(selected);
-    }
-});
-
-window.updateChatPalette = function () {
-    chatPalette = chatPaletteInput.value.split('\n').filter(line => line.trim() !== '');
-};
+function updateChatPalette() {
+    const chatPaletteInput = document.getElementById("chat-palette-input");
+    if (!chatPaletteInput) return;
+    window.chatPalette = chatPaletteInput.value.split('\n').filter(line => line.trim() !== '');
+}
 
 function showSuggestions() {
-    const input = diceCommandInput.value.toLowerCase();
+    const input = document.getElementById("dice-command").value.toLowerCase();
     const suggestions = document.getElementById("suggestions");
     suggestions.innerHTML = "";
-    if (!input) {
+    if (!input || !window.chatPalette) {
         suggestions.style.display = "none";
         return;
     }
-    const matches = chatPalette.filter(line => line.toLowerCase().includes(input));
+    const matches = window.chatPalette.filter(line => line.toLowerCase().includes(input));
     if (matches.length === 0) {
         suggestions.style.display = "none";
         return;
@@ -91,42 +54,12 @@ function showSuggestions() {
         const div = document.createElement("div");
         div.textContent = match;
         div.onclick = () => {
-            diceCommandInput.value = match;
+            document.getElementById("dice-command").value = match;
             suggestions.style.display = "none";
         };
         suggestions.appendChild(div);
     });
     suggestions.style.display = "block";
-}
-
-async function rollDice() {
-    const command = diceCommandInput.value.trim();
-    if (!command) return;
-    const userName = "探索者 太郎";
-    const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
-    workerUrl.searchParams.append("command", command);
-    workerUrl.searchParams.append("name", userName);
-    const avatarUrl = document.getElementById("explorer-image").src;
-    workerUrl.searchParams.append("avatar_url", avatarUrl);
-    try {
-        const response = await fetch(workerUrl.toString());
-        const result = await response.json();
-        let displayText = `🎲 ${command}: `;
-        if (result.ok) {
-            displayText += result.text;
-            showToast("ダイスを振りました！");
-            if (result.text.includes("致命的失敗")) displayText += " 💀";
-            else if (result.text.includes("失敗")) displayText += " 🥶";
-            else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
-            else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
-        } else {
-            displayText += "エラー: " + result.reason;
-        }
-        document.getElementById("result").innerText = displayText;
-    } catch (error) {
-        document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
-        console.error("Fetch error:", error);
-    }
 }
 
 async function sendSay() {
@@ -151,21 +84,35 @@ async function sendSay() {
     }
 }
 
-function updateDisplay() {
-    const sanMax = document.getElementById("san-max-input").value;
-    document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
-
-    const other1Name = document.getElementById("other1-name").value;
-    const other2Name = document.getElementById("other2-name").value;
-
-    document.getElementById("other1-label").textContent = other1Name || "その他";
-    document.getElementById("other2-label").textContent = other2Name || "その他";
+async function rollDice() {
+    const command = document.getElementById("dice-command").value.trim();
+    if (!command) return;
+    const userName = "探索者 太郎";
+    const avatarUrl = document.getElementById("explorer-image").src;
+    const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+    workerUrl.searchParams.append("command", command);
+    workerUrl.searchParams.append("name", userName);
+    workerUrl.searchParams.append("avatar_url", avatarUrl);
+    try {
+        const response = await fetch(workerUrl.toString());
+        const result = await response.json();
+        let displayText = `🎲 ${command}: `;
+        if (result.ok) {
+            displayText += result.text;
+            showToast("ダイスを振りました！");
+            if (result.text.includes("致命的失敗")) displayText += " 💀";
+            else if (result.text.includes("失敗")) displayText += " 🥶";
+            else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
+            else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
+        } else {
+            displayText += "エラー: " + result.reason;
+        }
+        document.getElementById("result").innerText = displayText;
+    } catch (error) {
+        document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
+        console.error("Fetch error:", error);
+    }
 }
-
-["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other2-input", "other1-name", "other2-name"].forEach(id => {
-    const input = document.getElementById(id);
-    if (input) input.addEventListener("input", updateDisplay);
-});
 
 document.querySelectorAll(".toggle-button").forEach(button => {
     button.addEventListener("click", () => {
@@ -178,6 +125,7 @@ document.querySelectorAll(".toggle-button").forEach(button => {
 
 async function loadCharacterList() {
   const snapshot = await getDocs(collection(db, "characters", playerId, "list"));
+  const characterSelect = document.getElementById("character-select");
   characterSelect.innerHTML = "";
   snapshot.forEach(docSnap => {
     const opt = document.createElement("option");
@@ -217,7 +165,7 @@ async function saveCharacterData() {
   if (!currentCharacterId) return;
   const ref = doc(db, "characters", playerId, "list", currentCharacterId);
   await setDoc(ref, {
-    name: characterSelect.options[characterSelect.selectedIndex].text,
+    name: document.getElementById("character-select").selectedOptions[0].text,
     hp: document.getElementById("hp-input").value,
     hpMax: document.getElementById("hp-max-input").value,
     mp: document.getElementById("mp-input").value,
@@ -234,7 +182,49 @@ async function saveCharacterData() {
   showToast("キャラクターを保存しました！");
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-  await loadCharacterList(); 
-  updateDisplay();
+window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("send-button").addEventListener("click", sendSay);
+    document.getElementById("roll-button").addEventListener("click", rollDice);
+    document.getElementById("dice-command").addEventListener("input", showSuggestions);
+    document.getElementById("save-button").addEventListener("click", saveCharacterData);
+    document.getElementById("load-button").addEventListener("click", () => loadCharacterData(currentCharacterId));
+    document.getElementById("new-character-button").addEventListener("click", async () => {
+        const name = prompt("キャラクター名を入力してください");
+        if (!name) return;
+        try {
+            const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
+                name,
+                hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
+                other: "", other2: "", other1Name: "", other2Name: "",
+                palette: "",
+                updatedAt: new Date().toISOString()
+            });
+            showToast("キャラクターを作成しました");
+            await loadCharacterList();
+            document.getElementById("character-select").value = newChar.id;
+            await loadCharacterData(newChar.id);
+        } catch (e) {
+            console.error("キャラ作成失敗:", e);
+        }
+    });
+    document.getElementById("character-select").addEventListener("change", async () => {
+        const selected = document.getElementById("character-select").value;
+        if (selected) {
+            await loadCharacterData(selected);
+        }
+    });
+    document.querySelectorAll(".toggle-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const content = button.nextElementSibling;
+            const isOpen = content.style.display === "block";
+            content.style.display = isOpen ? "none" : "block";
+            button.classList.toggle("open", !isOpen);
+        });
+    });
+    ["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other2-input", "other1-name", "other2-name"].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.addEventListener("input", updateDisplay);
+    });
+    updateDisplay();
+    loadCharacterList();
 });
