@@ -203,6 +203,19 @@ input[type="text"]{ /* テキストボックス */
     font-size: 16px; /* 文字サイズを少し大きく */
   }
 
+  .character-select-area {
+    flex-direction: column; /* 縦並びにする */
+    align-items: flex-start; /* 上詰めに変更 */
+  }
+
+  #character-select {
+    width: 95%; /* 親要素の幅いっぱいに広げる */
+    font-size: 1.2em;
+    height: auto;
+    padding: 10px;
+    margin-bottom: 10px; /* selectとbuttonの間にスペースを作る */
+  }
+
   #explorer-container {
     flex-direction: column; /* 縦並びにする */
     align-items: center; /* 中央揃え */
@@ -259,6 +272,7 @@ input[type="text"]{ /* テキストボックス */
     padding: 8px; /* 入力フォームとボタンの内側の余白 */
   }
 
+  #new-character-button,
   #say-content,
   #dice-command,
   #suggestions,
