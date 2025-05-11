@@ -92,8 +92,8 @@ input[type="text"]{ /* テキストボックス */
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
-  color: #fff;
+  background: #444; 
+  color: #F8F8F2;
   padding: 10px 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
