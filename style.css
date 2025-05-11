@@ -206,6 +206,7 @@ input[type="text"]{ /* テキストボックス */
   .character-select-area {
     flex-direction: column; /* 縦並びにする */
     align-items: flex-start; /* 上詰めに変更 */
+    gap: 5px;
   }
 
   #character-select {
@@ -213,7 +214,6 @@ input[type="text"]{ /* テキストボックス */
     font-size: 1.2em;
     height: auto;
     padding: 10px;
-    margin-bottom: 10px; /* selectとbuttonの間にスペースを作る */
   }
 
   #explorer-container {
