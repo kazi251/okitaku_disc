@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理者用ページ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>管理者用ページ</h1>
+
+  <section>
+    <h2>シナリオ作成</h2>
+    <input type="text" id="new-scenario-name" placeholder="シナリオ名">
+    <button id="create-scenario">作成</button>
+  </section>
+
+  <section>
+    <h2>KPとシナリオの紐付け</h2>
+    <select id="kp-selector"></select>
+    <select id="scenario-selector"></select>
+    <button id="assign-kp">KPに割り当て</button>
+  </section>
+
+  <section>
+    <h2>プレイヤーとシナリオの紐付け</h2>
+    <select id="player-selector"></select>
+    <select id="player-scenario-selector"></select>
+    <button id="assign-player">プレイヤーに割り当て</button>
+  </section>
+
+  <section>
+    <h2>Webhookの設定</h2>
+    <select id="webhook-scenario-selector"></select>
+    <select id="webhook-player-selector"></select>
+    <input type="url" id="webhook-url" placeholder="Webhook URL">
+    <button id="save-webhook">保存</button>
+  </section>
+
+  <div id="toast"></div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
