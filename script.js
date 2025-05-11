@@ -183,53 +183,41 @@ async function saveCharacterData() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("send-button").addEventListener("click", sendSay);
-    document.getElementById("roll-button").addEventListener("click", rollDice);
-    document.getElementById("dice-command").addEventListener("input", showSuggestions);
-    document.getElementById("save-button").addEventListener("click", saveCharacterData);
-    document.getElementById("load-button").addEventListener("click", () => loadCharacterData(currentCharacterId));
-    document.getElementById("new-character-button").addEventListener("click", async () => {
-        const name = prompt("キャラクター名を入力してください");
-        if (!name) return;
-        try {
-            const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
-                name,
-                hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
-                other: "", other2: "", other1Name: "", other2Name: "",
-                palette: "",
-                updatedAt: new Date().toISOString()
-            });
-            showToast("キャラクターを作成しました");
-            await loadCharacterList();
-            document.getElementById("character-select").value = newChar.id;
-            await loadCharacterData(newChar.id);
-        } catch (e) {
-            console.error("キャラ作成失敗:", e);
-        }
-    });
-    document.getElementById("character-select").addEventListener("change", async () => {
-        const selected = document.getElementById("character-select").value;
-        if (selected) {
-            await loadCharacterData(selected);
-        }
-    });
-    document.querySelectorAll(".toggle-button").forEach(button => {
-        button.addEventListener("click", () => {
-            const content = button.nextElementSibling;
-            const isOpen = content.style.display === "block";
-            content.style.display = isOpen ? "none" : "block";
-            button.classList.toggle("open", !isOpen);
-        });
-    });
-    ["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other2-input", "other1-name", "other2-name"].forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.addEventListener("input", updateDisplay);
-    });
-    updateDisplay();
-    loadCharacterList();
-});
+  // ボタンイベント
+  document.getElementById("send-button").addEventListener("click", sendSay);
+  document.getElementById("roll-button").addEventListener("click", rollDice);
+  document.getElementById("dice-command").addEventListener("input", showSuggestions);
+  document.getElementById("save-button").addEventListener("click", saveCharacterData);
+  document.getElementById("load-button").addEventListener("click", () => loadCharacterData(currentCharacterId));
 
-document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("new-character-button").addEventListener("click", async () => {
+    const name = prompt("キャラクター名を入力してください");
+    if (!name) return;
+    try {
+      const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
+        name,
+        hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
+        other: "", other2: "", other1Name: "", other2Name: "",
+        palette: "",
+        updatedAt: new Date().toISOString()
+      });
+      showToast("キャラクターを作成しました");
+      await loadCharacterList();
+      document.getElementById("character-select").value = newChar.id;
+      await loadCharacterData(newChar.id);
+    } catch (e) {
+      console.error("キャラ作成失敗:", e);
+    }
+  });
+
+  document.getElementById("character-select").addEventListener("change", async () => {
+    const selected = document.getElementById("character-select").value;
+    if (selected) {
+      await loadCharacterData(selected);
+    }
+  });
+
+  // アコーディオン処理
   document.querySelectorAll(".toggle-button").forEach(button => {
     button.addEventListener("click", () => {
       const content = button.nextElementSibling;
@@ -238,6 +226,16 @@ document.addEventListener("DOMContentLoaded", () => {
       button.classList.toggle("open", !isOpen);
     });
   });
+
+  // パラメータの反映
+  ["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other2-input", "other1-name", "other2-name"].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener("input", updateDisplay);
+  });
+
+  updateDisplay();
+  loadCharacterList();
 });
+
 
 
