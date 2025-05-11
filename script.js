@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebas
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
-// Firebase設定
 const firebaseConfig = {
     apiKey: "AIzaSyBvrggu4aMoRwAG2rccnWQwhDGsS60Tl8Q",
     authDomain: "okitakudisc.firebaseapp.com",
@@ -36,6 +35,10 @@ function updateChatPalette() {
     if (!chatPaletteInput) return;
     window.chatPalette = chatPaletteInput.value.split('\n').filter(line => line.trim() !== '');
 }
+
+document.getElementById("chat-palette-input").addEventListener("input", updateChatPalette);
+
+document.getElementById("dice-command").addEventListener("input", showSuggestions);
 
 function showSuggestions() {
     const input = document.getElementById("dice-command").value.toLowerCase();
@@ -114,15 +117,6 @@ async function rollDice() {
     }
 }
 
-// document.querySelectorAll(".toggle-button").forEach(button => {
-//     button.addEventListener("click", () => {
-//         const content = button.nextElementSibling;
-//         const isOpen = content.style.display === "block";
-//         content.style.display = isOpen ? "none" : "block";
-//         button.classList.toggle("open", !isOpen);
-//     });
-// });
-
 async function loadCharacterList() {
   const snapshot = await getDocs(collection(db, "characters", playerId, "list"));
   const characterSelect = document.getElementById("character-select");
@@ -186,10 +180,12 @@ window.addEventListener("DOMContentLoaded", () => {
   // ボタンイベント
   document.getElementById("send-button").addEventListener("click", sendSay);
   document.getElementById("roll-button").addEventListener("click", rollDice);
-  document.getElementById("dice-command").addEventListener("input", showSuggestions);
   document.getElementById("save-button").addEventListener("click", saveCharacterData);
-  document.getElementById("load-button").addEventListener("click", () => loadCharacterData(currentCharacterId));
-
+      document.getElementById("load-button").addEventListener("click", () => {
+        if (currentCharacterId) {
+            loadCharacterData(currentCharacterId);
+        }
+    });
   document.getElementById("new-character-button").addEventListener("click", async () => {
     const name = prompt("キャラクター名を入力してください");
     if (!name) return;
@@ -228,14 +224,15 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // パラメータの反映
-  ["hp-input", "hp-max-input", "mp-input", "mp-max-input", "san-input", "san-max-input", "other-input", "other2-input", "other1-name", "other2-name"].forEach(id => {
-    const input = document.getElementById(id);
-    if (input) input.addEventListener("input", updateDisplay);
-  });
+    [
+        "hp-input", "hp-max-input", "mp-input", "mp-max-input",
+        "san-input", "san-max-input", "other-input", "other2-input",
+        "other1-name", "other2-name"
+    ].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.addEventListener("input", updateDisplay);
+    });
 
   updateDisplay();
   loadCharacterList();
 });
-
-
-
