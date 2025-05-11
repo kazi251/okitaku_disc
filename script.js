@@ -170,6 +170,7 @@ async function loadCharacterData(charId) {
     document.getElementById("other1-name").value = data.other1Name || "";
     document.getElementById("other2-name").value = data.other2Name || "";
     document.getElementById("chat-palette-input").value = data.palette || "";
+    document.getElementById("explorer-image").src = data.imageUrl || "./seeker_vault/explorer.png";
 
     document.getElementById("hp").textContent = data.hp || "";
     document.getElementById("hp-max").textContent = data.hpMax || "";
@@ -218,6 +219,7 @@ async function saveCharacterData() {
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
       palette: document.getElementById("chat-palette-input").value,
+      imageUrl: document.getElementById("explorer-image").src,
       updatedAt: new Date().toISOString()
     });
 
