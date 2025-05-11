@@ -134,25 +134,43 @@ async function loadCharacterList() {
 }
 
 async function loadCharacterData(charId) {
+  if (!charId) {
+    console.warn("charIdが未指定です");
+    return;
+  }
+
   const ref = doc(db, "characters", playerId, "list", charId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
-  currentCharacterId = charId;
-  const data = snap.data();
-  document.getElementById("hp-input").value = data.hp || "";
-  document.getElementById("hp-max-input").value = data.hpMax || "";
-  document.getElementById("mp-input").value = data.mp || "";
-  document.getElementById("mp-max-input").value = data.mpMax || "";
-  document.getElementById("san-input").value = data.san || "";
-  document.getElementById("san-max-input").value = data.sanMax || "";
-  document.getElementById("other-input").value = data.other || "";
-  document.getElementById("other2-input").value = data.other2 || "";
-  document.getElementById("other1-name").value = data.other1Name || "";
-  document.getElementById("other2-name").value = data.other2Name || "";
-  document.getElementById("chat-palette-input").value = data.palette || "";
-  updateDisplay();
-  updateChatPalette();
-  showToast("キャラクターを読み込みました！");
+
+  try {
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+      console.warn("指定されたキャラクターが存在しません:", charId);
+      return;
+    }
+
+    currentCharacterId = charId;
+    const data = snap.data();
+
+    // 各フォームにデータを反映
+    document.getElementById("hp-input").value = data.hp || "";
+    document.getElementById("hp-max-input").value = data.hpMax || "";
+    document.getElementById("mp-input").value = data.mp || "";
+    document.getElementById("mp-max-input").value = data.mpMax || "";
+    document.getElementById("san-input").value = data.san || "";
+    document.getElementById("san-max-input").value = data.sanMax || "";
+    document.getElementById("other-input").value = data.other || "";
+    document.getElementById("other2-input").value = data.other2 || "";
+    document.getElementById("other1-name").value = data.other1Name || "";
+    document.getElementById("other2-name").value = data.other2Name || "";
+    document.getElementById("chat-palette-input").value = data.palette || "";
+
+    updateDisplay();
+    updateChatPalette();
+    showToast("キャラクターを読み込みました！");
+  } catch (error) {
+    console.error("キャラクター読み込み失敗:", error);
+    showToast("読み込みに失敗しました");
+  }
 }
 
 async function saveCharacterData() {
