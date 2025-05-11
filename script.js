@@ -114,14 +114,14 @@ async function rollDice() {
     }
 }
 
-document.querySelectorAll(".toggle-button").forEach(button => {
-    button.addEventListener("click", () => {
-        const content = button.nextElementSibling;
-        const isOpen = content.style.display === "block";
-        content.style.display = isOpen ? "none" : "block";
-        button.classList.toggle("open", !isOpen);
-    });
-});
+// document.querySelectorAll(".toggle-button").forEach(button => {
+//     button.addEventListener("click", () => {
+//         const content = button.nextElementSibling;
+//         const isOpen = content.style.display === "block";
+//         content.style.display = isOpen ? "none" : "block";
+//         button.classList.toggle("open", !isOpen);
+//     });
+// });
 
 async function loadCharacterList() {
   const snapshot = await getDocs(collection(db, "characters", playerId, "list"));
@@ -228,3 +228,16 @@ window.addEventListener("DOMContentLoaded", () => {
     updateDisplay();
     loadCharacterList();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".toggle-button").forEach(button => {
+    button.addEventListener("click", () => {
+      const content = button.nextElementSibling;
+      const isOpen = content.style.display === "block";
+      content.style.display = isOpen ? "none" : "block";
+      button.classList.toggle("open", !isOpen);
+    });
+  });
+});
+
+
