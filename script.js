@@ -20,6 +20,7 @@ const playerId = urlParams.get("playerId") || "default";
 let currentCharacterId = null;
 
 function updateDisplay() {
+    console.log("updateDisplay が呼ばれました");
     const sanMax = document.getElementById("san-max-input").value;
     document.getElementById("san-indef").textContent = Math.floor(sanMax * 0.8);
 
