@@ -281,12 +281,12 @@ newCharacterButton.addEventListener("click", async () => {
   try {
     const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
       name,
-      hp: "10",
-      hpMax: "10",
-      mp: "5",
-      mpMax: "5",
-      san: "50",
-      sanMax: "50",
+      hp: "",
+      hpMax: "",
+      mp: "",
+      mpMax: "",
+      san: "",
+      sanMax: "",
       palette: "",
       other: "",
       other1Name: "",
@@ -337,6 +337,7 @@ async function loadCharacterData(charId) {
   document.getElementById("san-input").value = data.san || "";
   document.getElementById("san-max-input").value = data.sanMax || "";
   document.getElementById("other-input").value = data.other || "";
+  document.getElementById("other2-input").value = data.other || "";
   document.getElementById("other1-name").value = data.other1Name || "";
   document.getElementById("other2-name").value = data.other2Name || "";
   document.getElementById("chat-palette-input").value = data.palette || "";
@@ -357,6 +358,7 @@ async function saveCharacterData() {
     san: document.getElementById("san-input").value,
     sanMax: document.getElementById("san-max-input").value,
     other: document.getElementById("other-input").value,
+    other: document.getElementById("other2-input").value,
     other1Name: document.getElementById("other1-name").value,
     other2Name: document.getElementById("other2-name").value,
     palette: document.getElementById("chat-palette-input").value,
