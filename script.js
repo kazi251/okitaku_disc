@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 // Firebase設定
@@ -7,7 +7,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyBvrggu4aMoRwAG2rccnWQwhDGsS60Tl8Q",
     authDomain: "okitakudisc.firebaseapp.com",
     projectId: "okitakudisc",
-    storageBucket: "okitakudisc.firebasestorage.app",
+    storageBucket: "okitakudisc.appspot.com",
     messagingSenderId: "724453796377",
     appId: "1:724453796377:web:bec78279dfc6dba0fc9888",
     measurementId: "G-LNHQBFYXFL"
@@ -266,3 +266,104 @@ document.querySelectorAll(".toggle-button").forEach(button => {
         button.classList.toggle("open", !isOpen);
     });
 });
+
+// プレイヤーID（URLクエリから取得）
+const urlParams = new URLSearchParams(window.location.search);
+const playerId = urlParams.get("playerId") || "default";
+let currentCharacterId = null;
+
+const characterSelect = document.getElementById("character-select");
+const newCharacterButton = document.getElementById("new-character-button");
+
+newCharacterButton.addEventListener("click", async () => {
+  const name = prompt("キャラクター名を入力してください");
+  if (!name) return;
+  try {
+    const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
+      name,
+      hp: "10",
+      hpMax: "10",
+      mp: "5",
+      mpMax: "5",
+      san: "50",
+      sanMax: "50",
+      palette: "",
+      other: "",
+      other1Name: "",
+      other2Name: "",
+      updatedAt: new Date().toISOString()
+    });
+    showToast("キャラクターを作成しました");
+    await loadCharacterList();
+    characterSelect.value = newChar.id;
+    await loadCharacterData(newChar.id);
+  } catch (e) {
+    console.error("キャラ作成失敗:", e);
+  }
+});
+
+characterSelect.addEventListener("change", async () => {
+  const selected = characterSelect.value;
+  if (selected) {
+    await loadCharacterData(selected);
+  }
+});
+
+async function loadCharacterList() {
+  const snapshot = await getDocs(collection(db, "characters", playerId, "list"));
+  characterSelect.innerHTML = "";
+  snapshot.forEach(docSnap => {
+    const opt = document.createElement("option");
+    opt.value = docSnap.id;
+    opt.textContent = docSnap.data().name;
+    characterSelect.appendChild(opt);
+  });
+  if (characterSelect.options.length > 0) {
+    currentCharacterId = characterSelect.options[0].value;
+    await loadCharacterData(currentCharacterId);
+  }
+}
+
+async function loadCharacterData(charId) {
+  const ref = doc(db, "characters", playerId, "list", charId);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+  currentCharacterId = charId;
+  const data = snap.data();
+  document.getElementById("hp-input").value = data.hp || "";
+  document.getElementById("hp-max-input").value = data.hpMax || "";
+  document.getElementById("mp-input").value = data.mp || "";
+  document.getElementById("mp-max-input").value = data.mpMax || "";
+  document.getElementById("san-input").value = data.san || "";
+  document.getElementById("san-max-input").value = data.sanMax || "";
+  document.getElementById("other-input").value = data.other || "";
+  document.getElementById("other1-name").value = data.other1Name || "";
+  document.getElementById("other2-name").value = data.other2Name || "";
+  document.getElementById("chat-palette-input").value = data.palette || "";
+  updateDisplay();
+  updateChatPalette();
+  showToast("キャラクターを読み込みました！");
+}
+
+async function saveCharacterData() {
+  if (!currentCharacterId) return;
+  const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+  await setDoc(ref, {
+    name: characterSelect.options[characterSelect.selectedIndex].text,
+    hp: document.getElementById("hp-input").value,
+    hpMax: document.getElementById("hp-max-input").value,
+    mp: document.getElementById("mp-input").value,
+    mpMax: document.getElementById("mp-max-input").value,
+    san: document.getElementById("san-input").value,
+    sanMax: document.getElementById("san-max-input").value,
+    other: document.getElementById("other-input").value,
+    other1Name: document.getElementById("other1-name").value,
+    other2Name: document.getElementById("other2-name").value,
+    palette: document.getElementById("chat-palette-input").value,
+    updatedAt: new Date().toISOString()
+  });
+  showToast("キャラクターを保存しました！");
+}
+
+window.addEventListener("DOMContentLoaded", loadCharacterList);
+window.saveCharacterData = saveCharacterData;
