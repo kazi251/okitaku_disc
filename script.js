@@ -212,11 +212,11 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("send-button").addEventListener("click", sendSay);
   document.getElementById("roll-button").addEventListener("click", rollDice);
   document.getElementById("save-button").addEventListener("click", saveCharacterData);
-      document.getElementById("load-button").addEventListener("click", () => {
-        if (currentCharacterId) {
-            loadCharacterData(currentCharacterId);
-        }
-    });
+  document.getElementById("load-button").addEventListener("click", () => {
+    if (currentCharacterId) {
+      loadCharacterData(currentCharacterId);
+    }
+  });
   document.getElementById("new-character-button").addEventListener("click", async () => {
     const name = prompt("キャラクター名を入力してください");
     if (!name) return;
@@ -235,18 +235,19 @@ window.addEventListener("DOMContentLoaded", () => {
     } catch (e) {
       console.error("キャラ作成失敗:", e);
     }
-    document.getElementById("legacy-status-save").addEventListener("click", saveCharacterData);
-      document.getElementById("legacy-status-load").addEventListener("click", () => {
-    if (currentCharacterId) {
-      loadCharacterData(currentCharacterId);
-    }
-  });
   });
 
   document.getElementById("character-select").addEventListener("change", async () => {
     const selected = document.getElementById("character-select").value;
     if (selected) {
       await loadCharacterData(selected);
+    }
+  });
+
+  document.getElementById("legacy-status-save").addEventListener("click", saveCharacterData);
+  document.getElementById("legacy-status-load").addEventListener("click", () => {
+    if (currentCharacterId) {
+      loadCharacterData(currentCharacterId);
     }
   });
 
@@ -261,14 +262,14 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // パラメータの反映
-    [
-        "hp-input", "hp-max-input", "mp-input", "mp-max-input",
-        "san-input", "san-max-input", "other-input", "other2-input",
-        "other1-name", "other2-name"
-    ].forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.addEventListener("input", updateDisplay);
-    });
+  [
+    "hp-input", "hp-max-input", "mp-input", "mp-max-input",
+    "san-input", "san-max-input", "other-input", "other2-input",
+    "other1-name", "other2-name"
+  ].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener("input", updateDisplay);
+  });
 
   updateDisplay();
   loadCharacterList();
