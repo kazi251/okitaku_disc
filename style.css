@@ -272,7 +272,7 @@ input[type="text"]{ /* テキストボックス */
     padding: 8px; /* 入力フォームとボタンの内側の余白 */
   }
 
-  #new-character-button,
+  /* #new-character-button, */
   #say-content,
   #dice-command,
   #suggestions,
