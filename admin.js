@@ -26,6 +26,7 @@ const scenarioMap = new Map();
 
 async function loadScenarios() {
   try {
+    console.log("loadScenarios() 開始");
     const snapshot = await getDocs(collection(db, "scenarios"));
     scenarioMap.clear();
     snapshot.forEach(docSnap => {
@@ -42,6 +43,7 @@ async function loadCharacterMatrix() {
   tbody.innerHTML = "";
 
   try {
+    console.log("oadCharacterMatrix() 開始");
     const snapshot = await getDocs(collectionGroup(db, "list"));
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
