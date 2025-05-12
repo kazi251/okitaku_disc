@@ -89,3 +89,9 @@ document.getElementById("create-scenario").addEventListener("click", async () =>
   await loadScenarios(); // シナリオリストを再読み込み
 });
 
+// 初期読み込み
+window.addEventListener("DOMContentLoaded", async () => {
+  await loadScenarios();
+  await loadCharacters();
+});
+
