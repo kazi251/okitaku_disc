@@ -5,38 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>管理者用ページ</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #666;
+      padding: 6px;
+      text-align: left;
+    }
+    th {
+      background-color: #444;
+      color: #fff;
+    }
+    td input[type="text"],
+    td input[type="url"],
+    td select {
+      width: 100%;
+    }
+    td button {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
   <h1>管理者用ページ</h1>
 
-  <!-- シナリオ作成 -->
   <section>
     <h2>シナリオ作成</h2>
     <input type="text" id="new-scenario-name" placeholder="シナリオ名" />
     <button id="create-scenario">作成</button>
   </section>
 
-  <!-- マトリクス形式：プレイヤー/キャラ/シナリオ/Webhook -->
   <section>
-    <h2>キャラクター一覧・シナリオ・Webhook管理</h2>
-    <table border="1" style="width: 100%; border-collapse: collapse;" id="character-matrix">
+    <h2>キャラクター管理マトリクス</h2>
+    <table id="character-matrix">
       <thead>
         <tr>
           <th>プレイヤーID</th>
           <th>キャラクター名</th>
-          <th>シナリオ</th>
-          <th>Webhook</th>
+          <th>現在のシナリオ</th>
+          <th>Webhook URL</th>
           <th>画像URL</th>
           <th>操作</th>
         </tr>
       </thead>
       <tbody>
-        <!-- JSで行を動的に追加 -->
+        <!-- JavaScriptにより動的に行が追加されます -->
       </tbody>
     </table>
   </section>
 
-  <!-- トースト -->
   <div id="toast"></div>
 
   <script type="module" src="admin.js"></script>
