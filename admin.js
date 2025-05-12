@@ -1,7 +1,12 @@
 // admin.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import {
-  getFirestore, collection, doc, getDocs, setDoc, getDoc,
+  getFirestore,
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  getDoc,
   collectionGroup
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from "./utils.js";
@@ -19,79 +24,93 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const scenarioListEl = document.getElementById("scenario-list");
-const characterListEl = document.getElementById("character-list");
+const scenarioMap = new Map();
 
 async function loadScenarios() {
-  scenarioListEl.innerHTML = "";
   const snapshot = await getDocs(collection(db, "scenarios"));
+  scenarioMap.clear();
   snapshot.forEach(docSnap => {
-    const option = document.createElement("option");
-    option.value = docSnap.id;
-    option.textContent = docSnap.data().name || docSnap.id;
-    scenarioListEl.appendChild(option);
+    scenarioMap.set(docSnap.id, docSnap.data().name);
   });
 }
 
-async function loadCharacters() {
-  characterListEl.innerHTML = "";
+async function loadCharacterMatrix() {
+  const tbody = document.querySelector("#character-matrix tbody");
+  tbody.innerHTML = "";
+
   const snapshot = await getDocs(collectionGroup(db, "list"));
-
-  snapshot.forEach(docSnap => {
+  snapshot.forEach(async docSnap => {
     const data = docSnap.data();
-    const li = document.createElement("li");
-    const name = data.name || "No Name";
-    const currentScenario = data.currentScenario || "未割当";
+    const playerId = docSnap.ref.path.split("/")[1];
+    const row = document.createElement("tr");
 
+    // プレイヤー名（playerId）
+    const tdPlayer = document.createElement("td");
+    tdPlayer.textContent = playerId;
+
+    // キャラ名
+    const tdChar = document.createElement("td");
+    tdChar.textContent = data.name || "No Name";
+
+    // シナリオ選択肢
+    const tdScenario = document.createElement("td");
     const select = document.createElement("select");
-    select.innerHTML = scenarioListEl.innerHTML;
-    select.value = currentScenario;
-
-    const label = document.createElement("span");
-    label.textContent = name + "：";
-
-    // 🔧 イベントハンドラもループ内で設定する
-    select.addEventListener("change", async () => {
-      try {
-        await setDoc(docSnap.ref, {
-          ...data,
-          currentScenario: select.value
-        }, { merge: true });
-        showToast(`${name} をシナリオ ${select.value} に割り当てました`);
-      } catch (e) {
-        console.error("割り当てエラー:", e);
-        showToast("割り当てに失敗しました");
-      }
+    scenarioMap.forEach((name, id) => {
+      const opt = document.createElement("option");
+      opt.value = id;
+      opt.textContent = name;
+      if (data.currentScenario === id) opt.selected = true;
+      select.appendChild(opt);
     });
 
-    li.appendChild(label);
-    li.appendChild(select);
-    characterListEl.appendChild(li);
+    // Webhook URL
+    const tdWebhook = document.createElement("td");
+    const webhookInput = document.createElement("input");
+    webhookInput.type = "url";
+    webhookInput.value = data.webhook || "";
+    webhookInput.style.width = "100%";
+
+    // 保存ボタン
+    const tdSave = document.createElement("td");
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "保存";
+    saveBtn.addEventListener("click", async () => {
+      await setDoc(docSnap.ref, {
+        ...data,
+        currentScenario: select.value,
+        webhook: webhookInput.value
+      }, { merge: true });
+
+      const scenarioName = scenarioMap.get(select.value) || select.value;
+      showToast(`${data.name} を「${scenarioName}」に保存しました`);
+    });
+    tdSave.appendChild(saveBtn);
+
+    row.appendChild(tdPlayer);
+    row.appendChild(tdChar);
+    row.appendChild(tdScenario);
+    row.appendChild(tdWebhook);
+    row.appendChild(tdSave);
+    tbody.appendChild(row);
   });
 }
 
-document.getElementById("create-scenario").addEventListener("click", async () => {
-  const nameInput = document.getElementById("new-scenario-name");
-  const scenarioName = nameInput.value.trim();
-  if (!scenarioName) {
-    showToast("シナリオ名を入力してください");
-    return;
-  }
+// シナリオ作成
+const createBtn = document.getElementById("create-scenario");
+createBtn.addEventListener("click", async () => {
+  const input = document.getElementById("new-scenario-name");
+  const name = input.value.trim();
+  if (!name) return showToast("シナリオ名を入力してください");
 
-  const newDocRef = doc(collection(db, "scenarios")); // 自動IDで追加
-  await setDoc(newDocRef, {
-    name: scenarioName,
-    createdAt: new Date().toISOString()
-  });
-
-  showToast(`シナリオ「${scenarioName}」を作成しました`);
-  nameInput.value = "";
-  await loadScenarios(); // シナリオリストを再読み込み
+  const ref = doc(collection(db, "scenarios"));
+  await setDoc(ref, { name, createdAt: new Date().toISOString() });
+  input.value = "";
+  await loadScenarios();
+  await loadCharacterMatrix();
+  showToast(`シナリオ「${name}」を追加しました`);
 });
 
-// 初期読み込み
 window.addEventListener("DOMContentLoaded", async () => {
   await loadScenarios();
-  await loadCharacters();
+  await loadCharacterMatrix();
 });
-
