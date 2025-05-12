@@ -240,7 +240,8 @@ async function saveCharacterData() {
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
       palette: document.getElementById("chat-palette-input").value,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      webhook: currentCharacterData?.webhook // 上書き時にwebhookが空判定されてしまうので読み込んだ内容で上書き
     };
 
     if (imageUrl) {
