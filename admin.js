@@ -37,6 +37,34 @@ async function loadScenarios() {
   }
 }
 
+document.getElementById("create-character").addEventListener("click", async () => {
+  const playerId = document.getElementById("new-player-id").value.trim();
+  const name = document.getElementById("new-character-name").value.trim();
+  const imageUrl = document.getElementById("new-character-image").value.trim() || "./seeker_vault/default.png";
+  const webhook = document.getElementById("new-character-webhook").value.trim();
+
+  if (!playerId || !name) {
+    showToast("プレイヤーIDとキャラクター名は必須です");
+    return;
+  }
+
+  try {
+    const ref = collection(db, "characters", playerId, "list");
+    await addDoc(ref, {
+      name,
+      imageUrl,
+      webhook,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+    showToast(`キャラクター「${name}」を ${playerId} に作成しました`);
+    await loadCharacterMatrix(); // 再読み込み
+  } catch (error) {
+    console.error("キャラ作成失敗:", error);
+    showToast("作成に失敗しました");
+  }
+});
+
 async function loadCharacterMatrix() {
   const tbody = document.querySelector("#character-matrix tbody");
   tbody.innerHTML = "";
