@@ -44,11 +44,11 @@ async function loadCharacterMatrix() {
     const playerId = docSnap.ref.path.split("/")[1];
     const row = document.createElement("tr");
 
-    // プレイヤー名（playerId）
+    // プレイヤーID
     const tdPlayer = document.createElement("td");
     tdPlayer.textContent = playerId;
 
-    // キャラ名
+    // キャラクター名
     const tdChar = document.createElement("td");
     tdChar.textContent = data.name || "No Name";
 
@@ -62,6 +62,7 @@ async function loadCharacterMatrix() {
       if (data.currentScenario === id) opt.selected = true;
       select.appendChild(opt);
     });
+    tdScenario.appendChild(select); // ✅ これが必要
 
     // Webhook URL
     const tdWebhook = document.createElement("td");
@@ -69,6 +70,7 @@ async function loadCharacterMatrix() {
     webhookInput.type = "url";
     webhookInput.value = data.webhook || "";
     webhookInput.style.width = "100%";
+    tdWebhook.appendChild(webhookInput); // ✅ これが必要
 
     // 保存ボタン
     const tdSave = document.createElement("td");
@@ -95,15 +97,19 @@ async function loadCharacterMatrix() {
   });
 }
 
-// シナリオ作成
+// シナリオ作成処理
 const createBtn = document.getElementById("create-scenario");
 createBtn.addEventListener("click", async () => {
   const input = document.getElementById("new-scenario-name");
   const name = input.value.trim();
   if (!name) return showToast("シナリオ名を入力してください");
 
-  const ref = doc(collection(db, "scenarios"));
-  await setDoc(ref, { name, createdAt: new Date().toISOString() });
+  const ref = doc(collection(db, "scenarios")); // 自動IDで追加
+  await setDoc(ref, {
+    name,
+    createdAt: new Date().toISOString()
+  });
+
   input.value = "";
   await loadScenarios();
   await loadCharacterMatrix();
