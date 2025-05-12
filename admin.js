@@ -67,7 +67,7 @@ async function loadCharacterMatrix() {
     const tdImage = document.createElement("td");
     const imageInput = document.createElement("input");
     imageInput.type = "text";
-    imageInput.value = data.imageUrl || "";
+    imageInput.value = data.imageUrl || "./seeker_vault/explorer.png";
     imageInput.placeholder = "画像URL";
     imageInput.style.width = "100%";
 
