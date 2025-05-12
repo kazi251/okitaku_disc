@@ -26,15 +26,11 @@ const scenarioMap = new Map();
 
 async function loadScenarios() {
   try {
-    console.log("loadScenarios() 開始");
     const snapshot = await getDocs(collection(db, "scenarios"));
-    console.log("シナリオデータ取得成功:", snapshot);
     scenarioMap.clear();
     snapshot.forEach(docSnap => {
       scenarioMap.set(docSnap.id, docSnap.data().name);
-      console.log("シナリオデータ処理:", docSnap.id, docSnap.data().name);
     });
-    console.log("loadScenarios() 完了", scenarioMap);
   } catch (error) {
     console.error("シナリオ読み込みエラー:", error);
     showToast("シナリオの読み込みに失敗しました");
@@ -42,31 +38,23 @@ async function loadScenarios() {
 }
 
 async function loadCharacterMatrix() {
-  console.log("loadCharacterMatrix() 開始");
   const tbody = document.querySelector("#character-matrix tbody");
   tbody.innerHTML = "";
 
   try {
-    console.log("oadCharacterMatrix() 開始");
     const snapshot = await getDocs(collectionGroup(db, "list"));
-    console.log("キャラクターデータ取得成功:", snapshot);
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       const playerId = docSnap.ref.path.split("/")[1];
-      console.log("キャラクターデータ処理:", playerId, data);
       const row = document.createElement("tr");
-      console.log("tr 要素作成:", row);
 
       const tdPlayer = document.createElement("td");
       tdPlayer.textContent = playerId;
-      console.log("tdPlayer:", playerId);
-      console.log("tdPlayer を row に追加");
+      row.appendChild(tdPlayer);
 
       const tdChar = document.createElement("td");
       tdChar.textContent = data.name || "No Name";
-      console.log("tdChar 要素作成:", tdChar, "内容:", data.name);
-      console.log("tdChar:", data.name);
-      console.log("tdChar を row に追加");
+      row.appendChild(tdChar);
 
       const tdScenario = document.createElement("td");
       const select = document.createElement("select");
@@ -77,20 +65,16 @@ async function loadCharacterMatrix() {
         if (data.currentScenario === id) opt.selected = true;
         select.appendChild(opt);
       });
-      console.log("tdScenario 要素作成:", tdScenario, "select 要素:", select);
       tdScenario.appendChild(select);
       row.appendChild(tdScenario);
-      console.log("tdScenario を row に追加");
 
       const tdWebhook = document.createElement("td");
       const webhookInput = document.createElement("input");
       webhookInput.type = "url";
       webhookInput.value = data.webhook || "";
       webhookInput.style.width = "100%";
-      console.log("tdWebhook 要素作成:", tdWebhook, "input 要素:", webhookInput.value);
       tdWebhook.appendChild(webhookInput);
       row.appendChild(tdWebhook);
-      console.log("tdWebhook を row に追加");
 
       const tdImage = document.createElement("td");
       const imageInput = document.createElement("input");
@@ -98,10 +82,8 @@ async function loadCharacterMatrix() {
       imageInput.value = data.imageUrl || "./seeker_vault/explorer.png";
       imageInput.placeholder = "画像URL";
       imageInput.style.width = "100%";
-      console.log("tdImage 要素作成:", tdImage, "input 要素:", imageInput.value);
       tdImage.appendChild(imageInput);
       row.appendChild(tdImage);
-      console.log("tdImage を row に追加");
 
       const tdSave = document.createElement("td");
       const saveBtn = document.createElement("button");
@@ -117,20 +99,10 @@ async function loadCharacterMatrix() {
         const scenarioName = scenarioMap.get(select.value) || select.value;
         showToast(`${data.name} を「${scenarioName}」に保存しました`);
       });
-      console.log("tdSave 要素作成:", tdSave, "button 要素:", saveBtn.textContent);
       tdSave.appendChild(saveBtn);
       row.appendChild(tdSave);
-      console.log("tdSave を row に追加");
 
-      row.appendChild(tdPlayer);
-      row.appendChild(tdChar);
-      row.appendChild(tdScenario);
-      row.appendChild(tdWebhook);
-      row.appendChild(tdImage);
-      row.appendChild(tdSave);
       tbody.appendChild(row);
-      console.log("row を tbody に追加");
-      console.log("行が追加されました");
     });
   } catch (error) {
     console.error("キャラクターマトリックス読み込みエラー:", error);
@@ -164,4 +136,3 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   })();
 });
-
