@@ -70,19 +70,6 @@ async function loadCharacters() {
   });
 }
 
-select.addEventListener("change", async () => {
-  try {
-    await setDoc(docRef, {
-      ...data,
-      currentScenario: select.value
-    }, { merge: true });
-    showToast(`${name} をシナリオ ${select.value} に割り当てました`);
-  } catch (e) {
-    console.error("割り当てエラー:", e);
-    showToast("割り当てに失敗しました");
-  }
-});
-
 document.getElementById("create-scenario").addEventListener("click", async () => {
   const nameInput = document.getElementById("new-scenario-name");
   const scenarioName = nameInput.value.trim();
