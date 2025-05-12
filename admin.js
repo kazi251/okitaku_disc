@@ -28,10 +28,13 @@ async function loadScenarios() {
   try {
     console.log("loadScenarios() 開始");
     const snapshot = await getDocs(collection(db, "scenarios"));
+    console.log("シナリオデータ取得成功:", snapshot);
     scenarioMap.clear();
     snapshot.forEach(docSnap => {
       scenarioMap.set(docSnap.id, docSnap.data().name);
+      console.log("シナリオデータ処理:", docSnap.id, docSnap.data().name);
     });
+    console.log("loadScenarios() 完了", scenarioMap);
   } catch (error) {
     console.error("シナリオ読み込みエラー:", error);
     showToast("シナリオの読み込みに失敗しました");
@@ -45,9 +48,11 @@ async function loadCharacterMatrix() {
   try {
     console.log("oadCharacterMatrix() 開始");
     const snapshot = await getDocs(collectionGroup(db, "list"));
+    console.log("キャラクターデータ取得成功:", snapshot);
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       const playerId = docSnap.ref.path.split("/")[1];
+      console.log("キャラクターデータ処理:", playerId, data);
       const row = document.createElement("tr");
 
       const tdPlayer = document.createElement("td");
