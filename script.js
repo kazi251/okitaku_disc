@@ -156,7 +156,7 @@ async function loadCharacterData(charId) {
 
     const data = snap.data();
     currentCharacterId = charId;
-    currentCharacterData = data; // ← Webhook など含めて全体を保存
+    currentCharacterData = data; // webhook なども含む
 
     currentCharacterName = data.name || "探索者 太郎";
     const nameDisplay = document.getElementById("character-name");
@@ -176,8 +176,18 @@ async function loadCharacterData(charId) {
     document.getElementById("other1-name").value = data.other1Name || "";
     document.getElementById("other2-name").value = data.other2Name || "";
     document.getElementById("chat-palette-input").value = data.palette || "";
-    document.getElementById("explorer-image").src = data.imageUrl || "./seeker_vault/explorer.png";
 
+    // 画像の設定（エラー時に fallback 画像を設定）
+    const imageElement = document.getElementById("explorer-image");
+    const imageUrl = data.imageUrl;
+    imageElement.src = imageUrl && imageUrl.trim() !== ""
+      ? imageUrl
+      : "./seeker_vault/default.png";
+    imageElement.onerror = () => {
+      imageElement.src = "./seeker_vault/default.png";
+    };
+
+    // 表示側の反映
     document.getElementById("hp").textContent = data.hp || "";
     document.getElementById("hp-max").textContent = data.hpMax || "";
     document.getElementById("mp").textContent = data.mp || "";
@@ -212,7 +222,12 @@ async function saveCharacterData() {
     );
 
     const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-    await setDoc(ref, {
+
+    const imageSrc = document.getElementById("explorer-image").src;
+    const isDefaultImage = imageSrc.includes("default.png");
+    const imageUrl = isDefaultImage ? undefined : imageSrc;
+
+    const characterData = {
       name: document.getElementById("character-select").selectedOptions[0].text,
       hp: document.getElementById("hp-input").value,
       hpMax: document.getElementById("hp-max-input").value,
@@ -225,13 +240,18 @@ async function saveCharacterData() {
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
       palette: document.getElementById("chat-palette-input").value,
-      imageUrl: document.getElementById("explorer-image").src,
       updatedAt: new Date().toISOString()
-    });
+    };
+
+    if (imageUrl) {
+      characterData.imageUrl = imageUrl;
+    }
+
+    await setDoc(ref, characterData);
 
     showToast("キャラクターを保存しました！");
-  
-    // Discord通知 (legacy-status-saveからの呼び出し時のみ実行)
+
+    // Discord通知（パラメータ保存ボタンからの呼び出し時のみ）
     if (isLegacySave) {
       const hp = document.getElementById("hp-input").value;
       const hpMax = document.getElementById("hp-max-input").value;
@@ -254,20 +274,25 @@ async function saveCharacterData() {
         `${other2Name || "その他2"}: ${other2 || "-"}` +
         `\`\`\``;
 
-      const avatarUrl = document.getElementById("explorer-image").src;
-      const webhook = currentCharacterData.webhook; 
+      const avatarUrl = imageSrc;
+      const webhook = currentCharacterData?.webhook;
 
       try {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: currentCharacterName, message, avatar_url: avatarUrl , webhook: webhook })
+          body: JSON.stringify({
+            name: currentCharacterName,
+            message,
+            avatar_url: avatarUrl,
+            webhook
+          })
         });
       } catch (error) {
         console.error("Discord通知失敗:", error);
       }
 
-      isLegacySave = false; // フラグをリセット
+      isLegacySave = false;
     }
 
   } catch (error) {
