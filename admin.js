@@ -57,9 +57,11 @@ async function loadCharacterMatrix() {
 
       const tdPlayer = document.createElement("td");
       tdPlayer.textContent = playerId;
+      console.log("tdPlayer:", playerId);
 
       const tdChar = document.createElement("td");
       tdChar.textContent = data.name || "No Name";
+      console.log("tdChar:", data.name);
 
       const tdScenario = document.createElement("td");
       const select = document.createElement("select");
@@ -107,6 +109,7 @@ async function loadCharacterMatrix() {
       row.appendChild(tdImage);
       row.appendChild(tdSave);
       tbody.appendChild(row);
+      console.log("行が追加されました");
     });
   } catch (error) {
     console.error("キャラクターマトリックス読み込みエラー:", error);
