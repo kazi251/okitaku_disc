@@ -1,4 +1,4 @@
-// admin.js
+// ✅ admin.js（画像URLの編集追加版）
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import {
   getFirestore,
@@ -6,7 +6,6 @@ import {
   doc,
   getDocs,
   setDoc,
-  getDoc,
   collectionGroup
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from "./utils.js";
@@ -23,7 +22,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 const scenarioMap = new Map();
 
 async function loadScenarios() {
@@ -39,20 +37,17 @@ async function loadCharacterMatrix() {
   tbody.innerHTML = "";
 
   const snapshot = await getDocs(collectionGroup(db, "list"));
-  snapshot.forEach(async docSnap => {
+  snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const playerId = docSnap.ref.path.split("/")[1];
     const row = document.createElement("tr");
 
-    // プレイヤーID
     const tdPlayer = document.createElement("td");
     tdPlayer.textContent = playerId;
 
-    // キャラクター名
     const tdChar = document.createElement("td");
     tdChar.textContent = data.name || "No Name";
 
-    // シナリオ選択肢
     const tdScenario = document.createElement("td");
     const select = document.createElement("select");
     scenarioMap.forEach((name, id) => {
@@ -62,17 +57,20 @@ async function loadCharacterMatrix() {
       if (data.currentScenario === id) opt.selected = true;
       select.appendChild(opt);
     });
-    tdScenario.appendChild(select); 
 
-    // Webhook URL
     const tdWebhook = document.createElement("td");
     const webhookInput = document.createElement("input");
     webhookInput.type = "url";
     webhookInput.value = data.webhook || "";
     webhookInput.style.width = "100%";
-    tdWebhook.appendChild(webhookInput); 
 
-    // 保存ボタン
+    const tdImage = document.createElement("td");
+    const imageInput = document.createElement("input");
+    imageInput.type = "text";
+    imageInput.value = data.imageUrl || "";
+    imageInput.placeholder = "画像URL";
+    imageInput.style.width = "100%";
+
     const tdSave = document.createElement("td");
     const saveBtn = document.createElement("button");
     saveBtn.textContent = "保存";
@@ -80,7 +78,8 @@ async function loadCharacterMatrix() {
       await setDoc(docSnap.ref, {
         ...data,
         currentScenario: select.value,
-        webhook: webhookInput.value
+        webhook: webhookInput.value,
+        imageUrl: imageInput.value
       }, { merge: true });
 
       const scenarioName = scenarioMap.get(select.value) || select.value;
@@ -92,24 +91,21 @@ async function loadCharacterMatrix() {
     row.appendChild(tdChar);
     row.appendChild(tdScenario);
     row.appendChild(tdWebhook);
+    row.appendChild(tdImage);
     row.appendChild(tdSave);
     tbody.appendChild(row);
   });
 }
 
-// シナリオ作成処理
+// シナリオ作成
 const createBtn = document.getElementById("create-scenario");
 createBtn.addEventListener("click", async () => {
   const input = document.getElementById("new-scenario-name");
   const name = input.value.trim();
   if (!name) return showToast("シナリオ名を入力してください");
 
-  const ref = doc(collection(db, "scenarios")); // 自動IDで追加
-  await setDoc(ref, {
-    name,
-    createdAt: new Date().toISOString()
-  });
-
+  const ref = doc(collection(db, "scenarios"));
+  await setDoc(ref, { name, createdAt: new Date().toISOString() });
   input.value = "";
   await loadScenarios();
   await loadCharacterMatrix();
