@@ -25,76 +25,86 @@ const db = getFirestore(app);
 const scenarioMap = new Map();
 
 async function loadScenarios() {
-  const snapshot = await getDocs(collection(db, "scenarios"));
-  scenarioMap.clear();
-  snapshot.forEach(docSnap => {
-    scenarioMap.set(docSnap.id, docSnap.data().name);
-  });
+  try {
+    const snapshot = await getDocs(collection(db, "scenarios"));
+    scenarioMap.clear();
+    snapshot.forEach(docSnap => {
+      scenarioMap.set(docSnap.id, docSnap.data().name);
+    });
+  } catch (error) {
+    console.error("シナリオ読み込みエラー:", error);
+    showToast("シナリオの読み込みに失敗しました");
+  }
 }
 
 async function loadCharacterMatrix() {
   const tbody = document.querySelector("#character-matrix tbody");
   tbody.innerHTML = "";
 
-  const snapshot = await getDocs(collectionGroup(db, "list"));
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
-    const playerId = docSnap.ref.path.split("/")[1];
-    const row = document.createElement("tr");
+  try {
+    const snapshot = await getDocs(collectionGroup(db, "list"));
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const playerId = docSnap.ref.path.split("/")[1];
+      const row = document.createElement("tr");
 
-    const tdPlayer = document.createElement("td");
-    tdPlayer.textContent = playerId;
+      const tdPlayer = document.createElement("td");
+      tdPlayer.textContent = playerId;
 
-    const tdChar = document.createElement("td");
-    tdChar.textContent = data.name || "No Name";
+      const tdChar = document.createElement("td");
+      tdChar.textContent = data.name || "No Name";
 
-    const tdScenario = document.createElement("td");
-    const select = document.createElement("select");
-    scenarioMap.forEach((name, id) => {
-      const opt = document.createElement("option");
-      opt.value = id;
-      opt.textContent = name;
-      if (data.currentScenario === id) opt.selected = true;
-      select.appendChild(opt);
+      const tdScenario = document.createElement("td");
+      const select = document.createElement("select");
+      scenarioMap.forEach((name, id) => {
+        const opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = name;
+        if (data.currentScenario === id) opt.selected = true;
+        select.appendChild(opt);
+      });
+
+      const tdWebhook = document.createElement("td");
+      const webhookInput = document.createElement("input");
+      webhookInput.type = "url";
+      webhookInput.value = data.webhook || "";
+      webhookInput.style.width = "100%";
+
+      const tdImage = document.createElement("td");
+      const imageInput = document.createElement("input");
+      imageInput.type = "text";
+      imageInput.value = data.imageUrl || "./seeker_vault/explorer.png";
+      imageInput.placeholder = "画像URL";
+      imageInput.style.width = "100%";
+
+      const tdSave = document.createElement("td");
+      const saveBtn = document.createElement("button");
+      saveBtn.textContent = "保存";
+      saveBtn.addEventListener("click", async () => {
+        await setDoc(docSnap.ref, {
+          ...data,
+          currentScenario: select.value,
+          webhook: webhookInput.value,
+          imageUrl: imageInput.value
+        }, { merge: true });
+
+        const scenarioName = scenarioMap.get(select.value) || select.value;
+        showToast(`${data.name} を「${scenarioName}」に保存しました`);
+      });
+      tdSave.appendChild(saveBtn);
+
+      row.appendChild(tdPlayer);
+      row.appendChild(tdChar);
+      row.appendChild(tdScenario);
+      row.appendChild(tdWebhook);
+      row.appendChild(tdImage);
+      row.appendChild(tdSave);
+      tbody.appendChild(row);
     });
-
-    const tdWebhook = document.createElement("td");
-    const webhookInput = document.createElement("input");
-    webhookInput.type = "url";
-    webhookInput.value = data.webhook || "";
-    webhookInput.style.width = "100%";
-
-    const tdImage = document.createElement("td");
-    const imageInput = document.createElement("input");
-    imageInput.type = "text";
-    imageInput.value = data.imageUrl || "./seeker_vault/explorer.png";
-    imageInput.placeholder = "画像URL";
-    imageInput.style.width = "100%";
-
-    const tdSave = document.createElement("td");
-    const saveBtn = document.createElement("button");
-    saveBtn.textContent = "保存";
-    saveBtn.addEventListener("click", async () => {
-      await setDoc(docSnap.ref, {
-        ...data,
-        currentScenario: select.value,
-        webhook: webhookInput.value,
-        imageUrl: imageInput.value
-      }, { merge: true });
-
-      const scenarioName = scenarioMap.get(select.value) || select.value;
-      showToast(`${data.name} を「${scenarioName}」に保存しました`);
-    });
-    tdSave.appendChild(saveBtn);
-
-    row.appendChild(tdPlayer);
-    row.appendChild(tdChar);
-    row.appendChild(tdScenario);
-    row.appendChild(tdWebhook);
-    row.appendChild(tdImage);
-    row.appendChild(tdSave);
-    tbody.appendChild(row);
-  });
+  } catch (error) {
+    console.error("キャラクターマトリックス読み込みエラー:", error);
+    showToast("キャラクター情報の読み込みに失敗しました");
+  }
 }
 
 // シナリオ作成
