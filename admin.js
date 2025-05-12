@@ -62,7 +62,7 @@ async function loadCharacterMatrix() {
       if (data.currentScenario === id) opt.selected = true;
       select.appendChild(opt);
     });
-    tdScenario.appendChild(select); // ✅ これが必要
+    tdScenario.appendChild(select); 
 
     // Webhook URL
     const tdWebhook = document.createElement("td");
@@ -70,7 +70,7 @@ async function loadCharacterMatrix() {
     webhookInput.type = "url";
     webhookInput.value = data.webhook || "";
     webhookInput.style.width = "100%";
-    tdWebhook.appendChild(webhookInput); // ✅ これが必要
+    tdWebhook.appendChild(webhookInput); 
 
     // 保存ボタン
     const tdSave = document.createElement("td");
