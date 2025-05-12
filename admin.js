@@ -97,7 +97,7 @@ async function loadCharacterMatrix() {
         }, { merge: true });
 
         const scenarioName = scenarioMap.get(select.value) || select.value;
-        showToast(`${data.name} を「${scenarioName}」に保存しました`);
+        showToast(`${data.name} を更新しました`);
       });
       tdSave.appendChild(saveBtn);
       row.appendChild(tdSave);
