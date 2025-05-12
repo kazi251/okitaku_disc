@@ -21,7 +21,6 @@ const db = getFirestore(app);
 
 const scenarioListEl = document.getElementById("scenario-list");
 const characterListEl = document.getElementById("character-list");
-const docRef = doc(db, docSnap.ref.path);
 
 async function loadScenarios() {
   scenarioListEl.innerHTML = "";
@@ -50,12 +49,19 @@ async function loadCharacters() {
     const label = document.createElement("span");
     label.textContent = name + "：";
 
+    const docRef = doc(db, docSnap.ref.path); // 🔍 ここでdocRefを取得
+
     select.addEventListener("change", async () => {
-      await setDoc(docSnap.ref, {
-        ...data,
-        currentScenario: select.value
-      }, { merge: true });
-      showToast(`${name} をシナリオ ${select.value} に割り当てました`);
+      try {
+        await setDoc(docRef, {
+          ...data,
+          currentScenario: select.value
+        }, { merge: true });
+        showToast(`${name} をシナリオ ${select.value} に割り当てました`);
+      } catch (e) {
+        console.error("割り当てエラー:", e);
+        showToast("割り当てに失敗しました");
+      }
     });
 
     li.appendChild(label);
