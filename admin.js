@@ -67,3 +67,23 @@ window.addEventListener("DOMContentLoaded", async () => {
   await loadScenarios();
   await loadCharacters();
 });
+
+document.getElementById("create-scenario").addEventListener("click", async () => {
+  const nameInput = document.getElementById("new-scenario-name");
+  const scenarioName = nameInput.value.trim();
+  if (!scenarioName) {
+    showToast("シナリオ名を入力してください");
+    return;
+  }
+
+  const newDocRef = doc(collection(db, "scenarios")); // 自動IDで追加
+  await setDoc(newDocRef, {
+    name: scenarioName,
+    createdAt: new Date().toISOString()
+  });
+
+  showToast(`シナリオ「${scenarioName}」を作成しました`);
+  nameInput.value = "";
+  await loadScenarios(); // シナリオリストを再読み込み
+});
+
