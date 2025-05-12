@@ -276,7 +276,6 @@ async function saveCharacterData() {
         `\`\`\``;
 
       const avatarUrl = imageSrc;
-      console.log(currentCharacterData);
       const webhook = currentCharacterData?.webhook;
 
       try {
