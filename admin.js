@@ -21,6 +21,7 @@ const db = getFirestore(app);
 
 const scenarioListEl = document.getElementById("scenario-list");
 const characterListEl = document.getElementById("character-list");
+const docRef = doc(db, docSnap.ref.path);
 
 async function loadScenarios() {
   scenarioListEl.innerHTML = "";
@@ -63,9 +64,17 @@ async function loadCharacters() {
   });
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-  await loadScenarios();
-  await loadCharacters();
+select.addEventListener("change", async () => {
+  try {
+    await setDoc(docRef, {
+      ...data,
+      currentScenario: select.value
+    }, { merge: true });
+    showToast(`${name} をシナリオ ${select.value} に割り当てました`);
+  } catch (e) {
+    console.error("割り当てエラー:", e);
+    showToast("割り当てに失敗しました");
+  }
 });
 
 document.getElementById("create-scenario").addEventListener("click", async () => {
