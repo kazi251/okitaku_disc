@@ -112,7 +112,15 @@ createBtn.addEventListener("click", async () => {
   showToast(`シナリオ「${name}」を追加しました`);
 });
 
-window.addEventListener("DOMContentLoaded", async () => {
-  await loadScenarios();
-  await loadCharacterMatrix();
+window.addEventListener("DOMContentLoaded", () => {
+  (async () => {
+    try {
+      await loadScenarios();
+      await loadCharacterMatrix();
+    } catch (error) {
+      console.error("初期化エラー:", error);
+      showToast("初期化中にエラーが発生しました");
+    }
+  })();
 });
+
