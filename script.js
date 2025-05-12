@@ -313,25 +313,25 @@ window.addEventListener("DOMContentLoaded", () => {
       loadCharacterData(currentCharacterId);
     }
   });
-  document.getElementById("new-character-button").addEventListener("click", async () => {
-    const name = prompt("キャラクター名を入力してください");
-    if (!name) return;
-    try {
-      const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
-        name,
-        hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
-        other: "", other2: "", other1Name: "", other2Name: "",
-        palette: "",
-        updatedAt: new Date().toISOString()
-      });
-      showToast("キャラクターを作成しました");
-      await loadCharacterList();
-      document.getElementById("character-select").value = newChar.id;
-      await loadCharacterData(newChar.id);
-    } catch (e) {
-      console.error("キャラ作成失敗:", e);
-    }
-  });
+  // document.getElementById("new-character-button").addEventListener("click", async () => {
+  //   const name = prompt("キャラクター名を入力してください");
+  //   if (!name) return;
+  //   try {
+  //     const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
+  //       name,
+  //       hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
+  //       other: "", other2: "", other1Name: "", other2Name: "",
+  //       palette: "",
+  //       updatedAt: new Date().toISOString()
+  //     });
+  //     showToast("キャラクターを作成しました");
+  //     await loadCharacterList();
+  //     document.getElementById("character-select").value = newChar.id;
+  //     await loadCharacterData(newChar.id);
+  //   } catch (e) {
+  //     console.error("キャラ作成失敗:", e);
+  //   }
+  // });
 
   document.getElementById("character-select").addEventListener("change", async () => {
     const selected = document.getElementById("character-select").value;
