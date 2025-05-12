@@ -1,7 +1,8 @@
 // admin.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import {
-  getFirestore, collection, doc, getDocs, setDoc, getDoc
+  getFirestore, collection, doc, getDocs, setDoc, getDoc,
+  collectionGroup
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from "./utils.js";
 
