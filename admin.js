@@ -6,7 +6,8 @@ import {
   doc,
   getDocs,
   setDoc,
-  collectionGroup
+  collectionGroup,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from "./utils.js";
 
