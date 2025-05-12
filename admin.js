@@ -36,6 +36,7 @@ async function loadScenarios() {
 async function loadCharacters() {
   characterListEl.innerHTML = "";
   const snapshot = await getDocs(collectionGroup(db, "list"));
+
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const li = document.createElement("li");
@@ -43,17 +44,16 @@ async function loadCharacters() {
     const currentScenario = data.currentScenario || "未割当";
 
     const select = document.createElement("select");
-    select.innerHTML = scenarioListEl.innerHTML; // コピー
+    select.innerHTML = scenarioListEl.innerHTML;
     select.value = currentScenario;
 
     const label = document.createElement("span");
     label.textContent = name + "：";
 
-    const docRef = doc(db, docSnap.ref.path); // 🔍 ここでdocRefを取得
-
+    // 🔧 イベントハンドラもループ内で設定する
     select.addEventListener("change", async () => {
       try {
-        await setDoc(docRef, {
+        await setDoc(docSnap.ref, {
           ...data,
           currentScenario: select.value
         }, { merge: true });
