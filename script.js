@@ -164,6 +164,28 @@ async function loadCharacterData(charId) {
       nameDisplay.textContent = currentCharacterName;
     }
 
+    // 進行中のシナリオ名を取得
+    const scenarioNameEl = document.getElementById("current-scenario-name");
+    const scenarioId = data.currentScenario;
+
+    if (scenarioNameEl) {
+      if (scenarioId) {
+        try {
+          const scenarioSnap = await getDoc(doc(db, "scenarios", scenarioId));
+          if (scenarioSnap.exists()) {
+            scenarioNameEl.textContent = scenarioSnap.data().name || "(名称未設定)";
+          } else {
+            scenarioNameEl.textContent = "(シナリオ未登録)";
+          }
+        } catch (e) {
+          console.warn("シナリオ名の取得に失敗:", e);
+          scenarioNameEl.textContent = "(取得失敗)";
+        }
+      } else {
+        scenarioNameEl.textContent = "(未割当)";
+      }
+    }
+
     // 各フォームにデータを反映
     document.getElementById("hp-input").value = data.hp || "";
     document.getElementById("hp-max-input").value = data.hpMax || "";
@@ -409,7 +431,7 @@ window.addEventListener("DOMContentLoaded", () => {
     isLegacySave = true;
     saveCharacterData();
     });
-    
+
   document.getElementById("legacy-status-load").addEventListener("click", async () => {
     if (currentCharacterId) {
       const ref = doc(db, "characters", playerId, "list", currentCharacterId);
