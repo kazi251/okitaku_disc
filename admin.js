@@ -157,14 +157,30 @@ async function initAdminPage() {
   try {
     await loadScenarios();
     await loadCharacterMatrix();
+    await loadPlayerList(); 
   } catch (error) {
     console.error("初期化エラー:", error);
     showToast("初期化に失敗しました");
   }
   await loadKpTable();
   setupEventListeners();
+  loadPlayerList(); 
 }
 
+async function loadPlayerList() {
+  const select = document.getElementById("new-player-id");
+  if (!select) return;
+
+  select.innerHTML = ""; // 初期化
+  const snapshot = await getDocs(collection(db, "players"));
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const option = document.createElement("option");
+    option.value = doc.id;
+    option.textContent = `${data.name}（${doc.id.slice(0, 8)}…）`;
+    select.appendChild(option);
+  });
+}
 
 // ✅ イベント登録
 function setupEventListeners() {
@@ -196,12 +212,14 @@ function setupEventListeners() {
       // 表示とコピー
       resultDiv.innerHTML = `
         <p><strong>プレイヤー「${name}」を登録しました！</strong></p>
-        <p>playerId: <code>${playerId}</code></p>
         <p>ログイン用URL: <code>index.html?playerId=${playerId}</code></p>
         <button onclick="navigator.clipboard.writeText('index.html?playerId=${playerId}')">コピー</button>
       `;
       nameInput.value = "";
       showToast("プレイヤーを登録しました");
+
+      await loadCharacterMatrix();
+      await loadPlayerList(); 
 
       await loadCharacterMatrix(); // 必要であれば
     } catch (error) {
