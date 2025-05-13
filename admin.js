@@ -65,7 +65,6 @@ async function loadCharacterMatrix() {
     select.appendChild(defaultOption);
 
     scenarioMap.forEach((name, id) => {
-    scenarioMap.forEach((name, id) => {
       const opt = document.createElement("option");
       opt.value = id;
       opt.textContent = name;
@@ -118,7 +117,6 @@ async function loadCharacterMatrix() {
     tbody.appendChild(row);
   });
 }
-
 
 // ✅ 初期化関数
 async function initAdminPage() {
