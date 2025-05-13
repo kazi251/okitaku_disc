@@ -58,6 +58,13 @@ async function loadCharacterMatrix() {
     // シナリオ選択
     const tdScenario = document.createElement("td");
     const select = document.createElement("select");
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "（未設定）";
+    select.appendChild(defaultOption);
+
+    scenarioMap.forEach((name, id) => {
     scenarioMap.forEach((name, id) => {
       const opt = document.createElement("option");
       opt.value = id;
@@ -65,6 +72,11 @@ async function loadCharacterMatrix() {
       if (data.currentScenario === id) opt.selected = true;
       select.appendChild(opt);
     });
+
+    if (!data.currentScenario) {
+      select.value = "";
+    }
+
     tdScenario.appendChild(select);
     row.appendChild(tdScenario);
 
@@ -94,7 +106,7 @@ async function loadCharacterMatrix() {
     saveBtn.addEventListener("click", async () => {
       await setDoc(docSnap.ref, {
         ...data,
-        currentScenario: select.value,
+        currentScenario: select.value || null, 
         webhook: webhookInput.value,
         imageUrl: imageInput.value
       }, { merge: true });
