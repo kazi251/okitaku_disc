@@ -75,7 +75,12 @@
 
 <section>
   <h2>キャラクター新規作成</h2>
-  <label>プレイヤーID: <input type="text" id="new-player-id"></label><br>
+  <label>プレイヤー: 
+    <select id="new-player-id">
+      <option value="">選択してください</option>
+      <!-- loadPlayerList() により選択肢が自動追加される -->
+    </select>
+  </label><br>
   <label>キャラクター名: <input type="text" id="new-character-name"></label><br>
   <label>画像URL: <input type="text" id="new-character-image" placeholder="./seeker_vault/default.png"></label><br>
   <label>Webhook URL: <input type="url" id="new-character-webhook"></label><br>
