@@ -35,6 +35,32 @@ async function loadScenarios() {
   });
 }
 
+async function loadKpTable() {
+  const tbody = document.querySelector("#kp-matrix tbody");
+  tbody.innerHTML = "";
+
+  const snapshot = await getDocs(collection(db, "kpUsers"));
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const kpId = docSnap.id;
+
+    const row = document.createElement("tr");
+
+    // KP名
+    const tdName = document.createElement("td");
+    tdName.textContent = data.name || "No Name";
+    row.appendChild(tdName);
+
+    // 担当シナリオ名（scenarios）
+    const tdScenario = document.createElement("td");
+    const scenarioId = data.scenarios;
+    tdScenario.textContent = scenarioMap.get(scenarioId) || "（未設定）";
+    row.appendChild(tdScenario);
+
+    tbody.appendChild(row);
+  });
+}
+
 async function loadCharacterMatrix() {
   const tbody = document.querySelector("#character-matrix tbody");
   tbody.innerHTML = "";
@@ -127,7 +153,7 @@ async function initAdminPage() {
     console.error("初期化エラー:", error);
     showToast("初期化に失敗しました");
   }
-
+  await loadKpTable();
   setupEventListeners();
 }
 
