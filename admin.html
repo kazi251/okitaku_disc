@@ -31,14 +31,23 @@
   </style>
 </head>
 <body>
-  <h1>管理者用ページ</h1>
+<h1>管理者用ページ</h1>
 
-  <section>
-    <h2>シナリオ作成</h2>
-    <input type="text" id="new-scenario-name" placeholder="シナリオ名" />
-    <button id="create-scenario">作成</button>
-  </section>
-  
+<section>
+  <h2>シナリオ作成</h2>
+  <input type="text" id="new-scenario-name" placeholder="シナリオ名" />
+  <button id="create-scenario">作成</button>
+</section>
+
+<section>
+  <h2>KP管理</h2>
+  <div style="margin-bottom: 1em;">
+    <input type="text" id="kpName" placeholder="KP名を入力" style="padding: 4px; width: 200px;">
+    <button id="registerKP">KPを登録</button>
+  </div>
+  <div id="kpResult"></div>
+</section>
+
 <section>
   <h2>キャラクター新規作成</h2>
   <label>プレイヤーID: <input type="text" id="new-player-id"></label><br>
@@ -48,24 +57,24 @@
   <button id="create-character">作成</button>
 </section>
 
-  <section>
-    <h2>キャラクター管理マトリクス</h2>
-    <table id="character-matrix">
-      <thead>
-        <tr>
-          <th>プレイヤーID</th>
-          <th>キャラクター名</th>
-          <th>現在のシナリオ</th>
-          <th>Webhook URL</th>
-          <th>画像URL</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- JavaScriptにより動的に行が追加されます -->
-      </tbody>
-    </table>
-  </section>
+<section>
+  <h2>キャラクター管理マトリクス</h2>
+  <table id="character-matrix">
+    <thead>
+      <tr>
+        <th>プレイヤーID</th>
+        <th>キャラクター名</th>
+        <th>現在のシナリオ</th>
+        <th>Webhook URL</th>
+        <th>画像URL</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- JavaScriptにより動的に行が追加されます -->
+    </tbody>
+  </table>
+</section>
 
   <div id="toast"></div>
 

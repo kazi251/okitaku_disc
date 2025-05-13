@@ -54,6 +54,10 @@ input[type="text"]{ /* テキストボックス */
   margin-top: 10px;
 }
 
+#current-scenario-name {
+  word-break: break-word;
+}
+
 #say-content,
 #dice-command{
   width: 400px; /* 例：400pxに設定。必要に応じて調整してください。 */
