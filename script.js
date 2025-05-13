@@ -240,10 +240,16 @@ async function saveCharacterData() {
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
       palette: document.getElementById("chat-palette-input").value,
-      updatedAt: new Date().toISOString(),
-      webhook: currentCharacterData?.webhook, // 上書き時にwebhookが空判定されてしまうので読み込んだ内容で上書き
-      currentScenario: currentCharacterData?.currentScenario // 上書き時にシナリオが空判定されてしまうので読み込んだ内容で上書き
+      updatedAt: new Date().toISOString()
     };
+    
+    if (currentCharacterData?.webhook) {
+      characterData.webhook = currentCharacterData.webhook;
+    }
+
+    if (currentCharacterData?.currentScenario) {
+      characterData.currentScenario = currentCharacterData.currentScenario;
+    }
 
     if (imageUrl) {
       characterData.imageUrl = imageUrl;
