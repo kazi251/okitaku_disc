@@ -239,7 +239,6 @@ async function saveCharacterData() {
       other2: document.getElementById("other2-input").value,
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
-      palette: document.getElementById("chat-palette-input").value,
       updatedAt: new Date().toISOString()
     };
 
@@ -255,7 +254,7 @@ async function saveCharacterData() {
       characterData.imageUrl = imageUrl;
     }
 
-    await setDoc(ref, characterData);
+    await setDoc(ref, characterData, { merge: true });
 
     showToast("キャラクターを保存しました！");
 
@@ -309,11 +308,24 @@ async function saveCharacterData() {
   }
 }
 
+function savePaletteOnly() {
+  if (!currentCharacterId) return;
+  const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+  setDoc(ref, {
+    palette: document.getElementById("chat-palette-input").value,
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
+  showToast("チャットパレットを保存しました！");
+}
+
+
 window.addEventListener("DOMContentLoaded", () => {
   // ボタンイベント
   document.getElementById("send-button").addEventListener("click", sendSay);
   document.getElementById("roll-button").addEventListener("click", rollDice);
-  document.getElementById("save-button").addEventListener("click", saveCharacterData);
+  document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
+  document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
+
   document.getElementById("load-button").addEventListener("click", () => {
     if (currentCharacterId) {
       loadCharacterData(currentCharacterId);
@@ -333,8 +345,8 @@ window.addEventListener("DOMContentLoaded", () => {
       hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
       other: "", other2: "", other1Name: "", other2Name: "",
       palette: "",
-      webhook: defaultWebhook, // 🔽 追加
-      imageUrl: "./seeker_vault/default.png", // 安全な初期画像
+      webhook: defaultWebhook, 
+      imageUrl: "./seeker_vault/default.png", 
       updatedAt: new Date().toISOString()
     });
 
