@@ -171,6 +171,43 @@ function setupEventListeners() {
   const createCharBtn = document.getElementById("create-character");
   const createScenBtn = document.getElementById("create-scenario");
   const registerKPBtn = document.getElementById("registerKP");
+  const createPlayerBtn = document.getElementById("createPlayerBtn");
+
+    // プレイヤー作成
+  createPlayerBtn?.addEventListener("click", async () => {
+    const nameInput = document.getElementById("newPlayerName");
+    const outputSpan = document.getElementById("generatedPlayerId");
+    const name = nameInput.value.trim();
+    if (!name) {
+      showToast("プレイヤー名を入力してください");
+      return;
+    }
+
+    const playerId = crypto.randomUUID();
+    try {
+      const ref = doc(db, "players", playerId);
+      await setDoc(ref, {
+        name: name,
+        createdAt: new Date().toISOString()
+      });
+      outputSpan.textContent = playerId;
+      showToast(`プレイヤー「${name}」を作成しました`);
+    } catch (error) {
+      console.error("プレイヤー作成失敗:", error);
+      showToast("プレイヤー作成に失敗しました");
+    }
+  });
+
+  // コピー機能
+  const copyBtn = document.getElementById("copyPlayerIdBtn");
+  copyBtn?.addEventListener("click", () => {
+    const text = document.getElementById("generatedPlayerId").textContent;
+    if (text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("playerId をコピーしました");
+      });
+    }
+  });
 
   // キャラ作成
   createCharBtn?.addEventListener("click", async () => {

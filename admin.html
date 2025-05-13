@@ -34,18 +34,29 @@
 <h1>管理者用ページ</h1>
 
 <section>
-  <h2>シナリオ作成</h2>
-  <input type="text" id="new-scenario-name" placeholder="シナリオ名" />
-  <button id="create-scenario">作成</button>
+<h2>プレイヤー新規作成</h2>
+<label for="newPlayerName">プレイヤー名:</label>
+<input type="text" id="newPlayerName" placeholder="例：プレイヤー太郎" />
+<button id="createPlayerBtn">プレイヤー作成</button>
+
+<p>playerId: <span id="generatedPlayerId"></span>
+  <button id="copyPlayerIdBtn">コピー</button>
+</p>
 </section>
 
 <section>
-  <h2>KP管理</h2>
+  <h2>KP新規作成</h2>
   <div style="margin-bottom: 1em;">
     <input type="text" id="kpName" placeholder="KP名を入力" style="padding: 4px; width: 200px;">
     <button id="registerKP">KPを登録</button>
   </div>
   <div id="kpResult"></div>
+</section>
+
+<section>
+  <h2>シナリオ作成</h2>
+  <input type="text" id="new-scenario-name" placeholder="シナリオ名" />
+  <button id="create-scenario">作成</button>
 </section>
 
 <section>
