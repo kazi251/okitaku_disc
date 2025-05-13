@@ -180,11 +180,18 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // KP登録ボタン
-  document.getElementById("registerKP").addEventListener("click", async () => {
-    const nameInput = document.getElementById("kpName");
-    const resultDiv = document.getElementById("kpResult");
-    const name = nameInput.value.trim();
+window.addEventListener("DOMContentLoaded", () => {
+  const nameInput = document.getElementById("kpName");
+  const resultDiv = document.getElementById("kpResult");
+  const registerBtn = document.getElementById("registerKP");
 
+  if (!nameInput || !resultDiv || !registerBtn) {
+    console.warn("KP登録フォームの要素が見つかりませんでした");
+    return;
+  }
+
+  registerBtn.addEventListener("click", async () => {
+    const name = nameInput.value.trim();
     if (!name) {
       showToast("KP名を入力してください");
       return;
@@ -192,7 +199,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     try {
       const kpId = crypto.randomUUID();
-      const ref = doc(db, "users", kpId);
+      const ref = doc(db, "kpUsers", kpId); // ← コレクション名を "kpUsers" に変更
       await setDoc(ref, {
         name: name,
         createdAt: new Date().toISOString()
