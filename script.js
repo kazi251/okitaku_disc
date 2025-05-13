@@ -242,7 +242,7 @@ async function saveCharacterData() {
       palette: document.getElementById("chat-palette-input").value,
       updatedAt: new Date().toISOString()
     };
-    
+
     if (currentCharacterData?.webhook) {
       characterData.webhook = currentCharacterData.webhook;
     }
@@ -320,24 +320,33 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
   document.getElementById("new-character-button").addEventListener("click", async () => {
-    const name = prompt("キャラクター名を入力してください");
-    if (!name) return;
-    try {
-      const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
-        name,
-        hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
-        other: "", other2: "", other1Name: "", other2Name: "",
-        palette: "",
-        updatedAt: new Date().toISOString()
-      });
-      showToast("キャラクターを作成しました");
-      await loadCharacterList();
-      document.getElementById("character-select").value = newChar.id;
-      await loadCharacterData(newChar.id);
-    } catch (e) {
-      console.error("キャラ作成失敗:", e);
-    }
-  });
+  const name = prompt("キャラクター名を入力してください");
+  if (!name) return;
+
+  try {
+    // 🔽 デフォルトWebhookを取得
+    const webhookSnap = await getDoc(doc(db, "defaults", "webhook"));
+    const defaultWebhook = webhookSnap.exists() ? webhookSnap.data().url : "";
+
+    const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
+      name,
+      hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
+      other: "", other2: "", other1Name: "", other2Name: "",
+      palette: "",
+      webhook: defaultWebhook, // 🔽 追加
+      imageUrl: "./seeker_vault/default.png", // 安全な初期画像
+      updatedAt: new Date().toISOString()
+    });
+
+    showToast("キャラクターを作成しました");
+    await loadCharacterList();
+    document.getElementById("character-select").value = newChar.id;
+    await loadCharacterData(newChar.id);
+  } catch (e) {
+    console.error("キャラ作成失敗:", e);
+    showToast("キャラ作成に失敗しました");
+  }
+});
 
   document.getElementById("character-select").addEventListener("change", async () => {
     const selected = document.getElementById("character-select").value;
