@@ -318,6 +318,37 @@ function savePaletteOnly() {
   showToast("チャットパレットを保存しました！");
 }
 
+function loadCharacterStatusOnly(data) {
+  document.getElementById("hp-input").value = data.hp || "";
+  document.getElementById("hp-max-input").value = data.hpMax || "";
+  document.getElementById("mp-input").value = data.mp || "";
+  document.getElementById("mp-max-input").value = data.mpMax || "";
+  document.getElementById("san-input").value = data.san || "";
+  document.getElementById("san-max-input").value = data.sanMax || "";
+  document.getElementById("other-input").value = data.other || "";
+  document.getElementById("other2-input").value = data.other2 || "";
+  document.getElementById("other1-name").value = data.other1Name || "";
+  document.getElementById("other2-name").value = data.other2Name || "";
+
+  document.getElementById("hp").textContent = data.hp || "";
+  document.getElementById("hp-max").textContent = data.hpMax || "";
+  document.getElementById("mp").textContent = data.mp || "";
+  document.getElementById("mp-max").textContent = data.mpMax || "";
+  document.getElementById("san").textContent = data.san || "";
+  document.getElementById("san-max").textContent = data.sanMax || "";
+  document.getElementById("san-indef").textContent = Math.floor((data.sanMax || 0) * 0.8);
+  document.getElementById("other").textContent = data.other || "-";
+  document.getElementById("other2").textContent = data.other2 || "-";
+  document.getElementById("other1-label").textContent = data.other1Name || "その他";
+  document.getElementById("other2-label").textContent = data.other2Name || "その他";
+
+  updateDisplay();
+}
+
+function loadCharacterPaletteOnly(data) {
+  document.getElementById("chat-palette-input").value = data.palette || "";
+  updateChatPalette();
+}
 
 window.addEventListener("DOMContentLoaded", () => {
   // ボタンイベント
@@ -326,11 +357,18 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
 
-  document.getElementById("load-button").addEventListener("click", () => {
+  document.getElementById("load-button").addEventListener("click", async () => {
     if (currentCharacterId) {
-      loadCharacterData(currentCharacterId);
+      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        loadCharacterPaletteOnly(data);
+        showToast("チャットパレットを再読み込みしました！");
+      }
     }
   });
+
   document.getElementById("new-character-button").addEventListener("click", async () => {
   const name = prompt("キャラクター名を入力してください");
   if (!name) return;
@@ -367,13 +405,20 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.getElementById("legacy-status-save").addEventListener("click", () => {
-  isLegacySave = true;
-  saveCharacterData();
-  });
-  document.getElementById("legacy-status-load").addEventListener("click", () => {
+    document.getElementById("legacy-status-save").addEventListener("click", () => {
+    isLegacySave = true;
+    saveCharacterData();
+    });
+    
+  document.getElementById("legacy-status-load").addEventListener("click", async () => {
     if (currentCharacterId) {
-      loadCharacterData(currentCharacterId);
+      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        loadCharacterStatusOnly(data);
+        showToast("ステータスを再読み込みしました！");
+      }
     }
   });
 
