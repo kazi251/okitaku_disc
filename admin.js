@@ -51,7 +51,15 @@ async function loadKpTable() {
     tdName.textContent = data.name || "No Name";
     row.appendChild(tdName);
 
-    // 担当シナリオ名（scenarios）
+    // KP専用URL
+    const tdUrl = document.createElement("td");
+    const url = `kp.html?kpId=${kpId}`;
+    const code = document.createElement("code");
+    code.textContent = url;
+    tdUrl.appendChild(code);
+    row.appendChild(tdUrl);
+
+    // 担当シナリオ名
     const tdScenario = document.createElement("td");
     const scenarioId = data.scenarios;
     tdScenario.textContent = scenarioMap.get(scenarioId) || "（未設定）";
