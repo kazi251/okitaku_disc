@@ -173,40 +173,88 @@ function setupEventListeners() {
   const registerKPBtn = document.getElementById("registerKP");
   const createPlayerBtn = document.getElementById("createPlayerBtn");
 
-    // プレイヤー作成
+  // プレイヤー作成
   createPlayerBtn?.addEventListener("click", async () => {
     const nameInput = document.getElementById("newPlayerName");
-    const outputSpan = document.getElementById("generatedPlayerId");
+    const resultDiv = document.getElementById("playerResult");
     const name = nameInput.value.trim();
+
     if (!name) {
       showToast("プレイヤー名を入力してください");
       return;
     }
 
     const playerId = crypto.randomUUID();
+
     try {
       const ref = doc(db, "players", playerId);
       await setDoc(ref, {
         name: name,
         createdAt: new Date().toISOString()
       });
-      outputSpan.textContent = playerId;
-      showToast(`プレイヤー「${name}」を作成しました`);
+
+      // 表示とコピー
+      resultDiv.innerHTML = `
+        <p><strong>プレイヤー「${name}」を登録しました！</strong></p>
+        <p>playerId: <code>${playerId}</code></p>
+        <p>ログイン用URL: <code>index.html?playerId=${playerId}</code></p>
+        <button onclick="navigator.clipboard.writeText('index.html?playerId=${playerId}')">コピー</button>
+      `;
+      nameInput.value = "";
+      showToast("プレイヤーを登録しました");
+
+      await loadCharacterMatrix(); // 必要であれば
     } catch (error) {
       console.error("プレイヤー作成失敗:", error);
       showToast("プレイヤー作成に失敗しました");
     }
   });
 
-  // コピー機能
-  const copyBtn = document.getElementById("copyPlayerIdBtn");
-  copyBtn?.addEventListener("click", () => {
-    const text = document.getElementById("generatedPlayerId").textContent;
-    if (text) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast("playerId をコピーしました");
-      });
+    // KP登録
+  registerKPBtn?.addEventListener("click", async () => {
+    const nameInput = document.getElementById("kpName");
+    const resultDiv = document.getElementById("kpResult");
+    const name = nameInput.value.trim();
+    if (!name) {
+      showToast("KP名を入力してください");
+      return;
     }
+
+    try {
+      const kpId = crypto.randomUUID();
+      const ref = doc(db, "kpUsers", kpId);
+      await setDoc(ref, {
+        name: name,
+        createdAt: new Date().toISOString()
+      });
+
+      resultDiv.innerHTML = `
+        <p><strong>KP「${name}」を登録しました</strong></p>
+        <p>KP専用URL: <code>kp.html?kpId=${kpId}</code></p>
+        <button onclick="navigator.clipboard.writeText('kp.html?kpId=${kpId}')">コピー</button>
+      `;
+      nameInput.value = "";
+      showToast("KPを登録しました");
+
+      await loadCharacterMatrix();
+    } catch (error) {
+      console.error("KP登録エラー:", error);
+      showToast("KP登録に失敗しました");
+    }
+  });
+
+  // シナリオ作成
+  createScenBtn?.addEventListener("click", async () => {
+    const input = document.getElementById("new-scenario-name");
+    const name = input.value.trim();
+    if (!name) return showToast("シナリオ名を入力してください");
+
+    const ref = doc(collection(db, "scenarios"));
+    await setDoc(ref, { name, createdAt: new Date().toISOString() });
+    input.value = "";
+    await loadScenarios();
+    await loadCharacterMatrix();
+    showToast(`シナリオ「${name}」を追加しました`);
   });
 
   // キャラ作成
@@ -238,52 +286,6 @@ function setupEventListeners() {
     }
   });
 
-  // シナリオ作成
-  createScenBtn?.addEventListener("click", async () => {
-    const input = document.getElementById("new-scenario-name");
-    const name = input.value.trim();
-    if (!name) return showToast("シナリオ名を入力してください");
-
-    const ref = doc(collection(db, "scenarios"));
-    await setDoc(ref, { name, createdAt: new Date().toISOString() });
-    input.value = "";
-    await loadScenarios();
-    await loadCharacterMatrix();
-    showToast(`シナリオ「${name}」を追加しました`);
-  });
-
-  // KP登録
-  registerKPBtn?.addEventListener("click", async () => {
-    const nameInput = document.getElementById("kpName");
-    const resultDiv = document.getElementById("kpResult");
-    const name = nameInput.value.trim();
-    if (!name) {
-      showToast("KP名を入力してください");
-      return;
-    }
-
-    try {
-      const kpId = crypto.randomUUID();
-      const ref = doc(db, "kpUsers", kpId);
-      await setDoc(ref, {
-        name: name,
-        createdAt: new Date().toISOString()
-      });
-
-      resultDiv.innerHTML = `
-        <p><strong>KP「${name}」を登録しました！</strong></p>
-        <p>KP専用URL: <code>kp.html?kpId=${kpId}</code></p>
-        <button onclick="navigator.clipboard.writeText('kp.html?kpId=${kpId}')">コピー</button>
-      `;
-      nameInput.value = "";
-      showToast("KPを登録しました");
-
-      await loadCharacterMatrix();
-    } catch (error) {
-      console.error("KP登録エラー:", error);
-      showToast("KP登録に失敗しました");
-    }
-  });
 }
 
 
