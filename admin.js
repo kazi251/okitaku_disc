@@ -121,66 +121,6 @@ async function loadCharacterMatrix() {
 
 // 初期化処理
 window.addEventListener("DOMContentLoaded", () => {
-  (async () => {
-    try {
-      await loadScenarios();
-      await loadCharacterMatrix();
-    } catch (error) {
-      console.error("初期化エラー:", error);
-      showToast("初期化中にエラーが発生しました");
-    }
-  })();
-
-  // キャラクター作成ボタン
-  document.getElementById("create-character").addEventListener("click", async () => {
-    const playerId = document.getElementById("new-player-id").value.trim();
-    const name = document.getElementById("new-character-name").value.trim();
-    const imageUrl = document.getElementById("new-character-image").value.trim() || "./seeker_vault/default.png";
-    const webhook = document.getElementById("new-character-webhook").value.trim();
-
-    if (!playerId || !name) {
-      showToast("プレイヤーIDとキャラクター名は必須です");
-      return;
-    }
-
-    try {
-      const ref = collection(db, "characters", playerId, "list");
-      await addDoc(ref, {
-        name,
-        imageUrl,
-        webhook,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
-      showToast(`キャラクター「${name}」を ${playerId} に作成しました`);
-      await loadCharacterMatrix();
-    } catch (error) {
-      console.error("キャラ作成エラー:", error);
-      showToast("作成に失敗しました");
-    }
-  });
-
-  // シナリオ作成ボタン
-  document.getElementById("create-scenario").addEventListener("click", async () => {
-    const input = document.getElementById("new-scenario-name");
-    const name = input.value.trim();
-    if (!name) return showToast("シナリオ名を入力してください");
-
-    try {
-      const ref = doc(collection(db, "scenarios"));
-      await setDoc(ref, { name, createdAt: new Date().toISOString() });
-      input.value = "";
-      await loadScenarios();
-      await loadCharacterMatrix();
-      showToast(`シナリオ「${name}」を追加しました`);
-    } catch (error) {
-      console.error("シナリオ作成エラー:", error);
-      showToast("シナリオ作成に失敗しました");
-    }
-  });
-
-  // KP登録ボタン
-window.addEventListener("DOMContentLoaded", () => {
   const nameInput = document.getElementById("kpName");
   const resultDiv = document.getElementById("kpResult");
   const registerBtn = document.getElementById("registerKP");
@@ -219,3 +159,4 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
