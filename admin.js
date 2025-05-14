@@ -179,7 +179,7 @@ async function loadCharacterMatrix() {
       td.textContent = "（不正なデータ形式）";
       row.appendChild(td);
       tbody.appendChild(row);
-
+    }
   }
 }
 
