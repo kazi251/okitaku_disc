@@ -69,12 +69,17 @@ async function loadKpTable() {
   });
 }
 
+async function fetchPlayerName(playerId) {
+  const playerDoc = await getDocs(doc(db, "players", playerId));
+  return playerDoc.exists() ? playerDoc.data().name : "(名前未設定)";
+}
+
 async function loadCharacterMatrix() {
   const tbody = document.querySelector("#character-matrix tbody");
   tbody.innerHTML = "";
 
   const snapshot = await getDocs(collectionGroup(db, "list"));
-  snapshot.forEach(docSnap => {
+  for (const docSnap of snapshot.docs) {
     const data = docSnap.data();
     const playerId = docSnap.ref.path.split("/")[1];
     const row = document.createElement("tr");
@@ -83,6 +88,12 @@ async function loadCharacterMatrix() {
     const tdPlayer = document.createElement("td");
     tdPlayer.textContent = playerId;
     row.appendChild(tdPlayer);
+
+    // プレイヤー名
+    const playerName = await fetchPlayerName(playerId);
+    const tdName = document.createElement("td");
+    tdName.textContent = playerName;
+    row.appendChild(tdName);
 
     // キャラクター名
     const tdChar = document.createElement("td");
@@ -149,7 +160,7 @@ async function loadCharacterMatrix() {
     row.appendChild(tdSave);
 
     tbody.appendChild(row);
-  });
+  }
 }
 
 // ✅ 初期化関数
@@ -165,6 +176,7 @@ async function initAdminPage() {
   await loadKpTable();
   setupEventListeners();
   loadPlayerList(); 
+  fetchPlayerName(); 
 }
 
 async function loadPlayerList() {
@@ -303,7 +315,6 @@ function setupEventListeners() {
       showToast("作成に失敗しました");
     }
   });
-
 }
 
 
