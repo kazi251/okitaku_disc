@@ -86,6 +86,7 @@ async function loadCharacterMatrix() {
   for (const docSnap of snapshot.docs) {
     const data = docSnap.data();
     const playerId = docSnap.ref.path.split("/")[1];
+    console.log("playerId in loadCharacterMatrix:", playerId); // ★ 追加
     const row = document.createElement("tr");
 
     // プレイヤーID
