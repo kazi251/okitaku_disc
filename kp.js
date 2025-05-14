@@ -11,13 +11,14 @@ import {
 
 // Firebase初期化（あなたの設定に置き換えてください）
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
+  apiKey: "AIzaSyBvrggu4aMoRwAG2rccnWQwhDGsS60Tl8Q",
+  authDomain: "okitakudisc.firebaseapp.com",
+  projectId: "okitakudisc",
+  storageBucket: "okitakudisc.appspot.com",
+  messagingSenderId: "724453796377",
+  appId: "1:724453796377:web:bec78279dfc6dba0fc9888",
+  measurementId: "G-LNHQBFYXFL"
+}
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
