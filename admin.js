@@ -71,6 +71,7 @@ async function loadKpTable() {
 }
 
 async function fetchPlayerName(playerId) {
+  console.log("fetchPlayerName called with playerId:", playerId); // ★ 追加
   const playerDocRef = doc(db, "players", playerId);
   const playerDocSnap = await getDoc(playerDocRef);
   return playerDocSnap.exists() ? playerDocSnap.data().name || "(名前未設定)" : "(名前未設定)";
@@ -196,7 +197,6 @@ async function initAdminPage() {
   await loadKpTable();
   setupEventListeners();
   loadPlayerList(); 
-  fetchPlayerName(); 
 }
 
 async function loadPlayerList() {
