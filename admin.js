@@ -71,7 +71,6 @@ async function loadKpTable() {
 }
 
 async function fetchPlayerName(playerId) {
-  console.log("fetchPlayerName called with playerId:", playerId); // ★ 追加
   const playerDocRef = doc(db, "players", playerId);
   const playerDocSnap = await getDoc(playerDocRef);
   return playerDocSnap.exists() ? playerDocSnap.data().name || "(名前未設定)" : "(名前未設定)";
@@ -89,7 +88,6 @@ async function loadCharacterMatrix() {
     // players/{playerId}/list/{characterId} の形式なら要素数は4
     if (pathParts.length >= 2 && pathParts[0] === "characters" && pathParts[2] === "list") {
       const playerId = pathParts[1];
-      console.log("playerId in loadCharacterMatrix:", playerId);
       const row = document.createElement("tr");
 
     // プレイヤーID
