@@ -5,6 +5,7 @@ import {
   collection,
   collectionGroup,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   addDoc
@@ -70,9 +71,11 @@ async function loadKpTable() {
 }
 
 async function fetchPlayerName(playerId) {
-  const playerDoc = await getDocs(doc(db, "players", playerId));
-  return playerDoc.exists() ? playerDoc.data().name : "(名前未設定)";
+  const playerDocRef = doc(db, "players", playerId);
+  const playerDocSnap = await getDoc(playerDocRef);
+  return playerDocSnap.exists() ? playerDocSnap.data().name || "(名前未設定)" : "(名前未設定)";
 }
+
 
 async function loadCharacterMatrix() {
   const tbody = document.querySelector("#character-matrix tbody");
