@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KP用画面</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    header, main { padding: 1rem; }
+    .tab-buttons { display: flex; }
+    .tab-buttons button {
+      flex: 1;
+      padding: 1rem;
+      cursor: pointer;
+      background: #f0f0f0;
+      border: none;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-buttons button.active {
+      border-bottom: 2px solid #007bff;
+      font-weight: bold;
+    }
+    .tab-content { display: none; padding: 1rem; }
+    .tab-content.active { display: block; }
+    .webhook-settings {
+      background: #f9f9f9;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      margin-top: 1rem;
+    }
+    .webhook-settings input {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .webhook-settings label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>KP用画面</h1>
+    <label for="scenario-select">シナリオ選択:</label>
+    <select id="scenario-select">
+      <option value="scenario1">シナリオ1</option>
+      <option value="scenario2">シナリオ2</option>
+    </select>
+    <button id="toggle-webhook">🔧 Webhook設定を開く</button>
+
+    <div id="webhook-settings" class="webhook-settings" style="display: none">
+      <label>PL1 発言 Webhook:</label>
+      <input type="text" id="webhook-pl1">
+      <label>PL2 発言 Webhook:</label>
+      <input type="text" id="webhook-pl2">
+      <label>PL3 発言 Webhook:</label>
+      <input type="text" id="webhook-pl3">
+      <label>NPC/KPC 発言・ダイス Webhook:</label>
+      <input type="text" id="webhook-npc">
+      <label>ステータス送信 Webhook:</label>
+      <input type="text" id="webhook-status">
+      <button id="save-webhooks">📩 保存</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="tab-buttons">
+      <button class="tab-button active" data-tab="tab1">探索者一覧</button>
+      <button class="tab-button" data-tab="tab2">NPC・エネミー</button>
+      <button class="tab-button" data-tab="tab3">戦闘</button>
+    </div>
+
+    <div id="tab1" class="tab-content active">
+      <h2>探索者一覧</h2>
+      <!-- コンテンツ未実装 -->
+    </div>
+    <div id="tab2" class="tab-content">
+      <h2>NPC・エネミー</h2>
+      <!-- コンテンツ未実装 -->
+    </div>
+    <div id="tab3" class="tab-content">
+      <h2>戦闘</h2>
+      <!-- コンテンツ未実装 -->
+    </div>
+  </main>
+
+  <script type="module" src="kp.js"></script>
+</body>
+</html>
