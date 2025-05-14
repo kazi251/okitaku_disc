@@ -71,7 +71,6 @@ async function loadKpTable() {
 }
 
 async function fetchPlayerName(playerId) {
-  console.log("fetchPlayerName called with playerId:", playerId); // ★ 追加
   const playerDocRef = doc(db, "players", playerId);
   const playerDocSnap = await getDoc(playerDocRef);
   return playerDocSnap.exists() ? playerDocSnap.data().name || "(名前未設定)" : "(名前未設定)";
@@ -85,9 +84,12 @@ async function loadCharacterMatrix() {
   const snapshot = await getDocs(collectionGroup(db, "list"));
   for (const docSnap of snapshot.docs) {
     const data = docSnap.data();
-    const playerId = docSnap.ref.path.split("/")[1];
-    console.log("playerId in loadCharacterMatrix:", playerId); // ★ 追加
-    const row = document.createElement("tr");
+    const pathParts = docSnap.ref.path.split("/");
+    // players/{playerId}/list/{characterId} の形式なら要素数は4
+    if (pathParts.length >= 2 && pathParts[0] === "characters" && pathParts[2] === "list") {
+      const playerId = pathParts[1];
+      console.log("playerId in loadCharacterMatrix:", playerId);
+      const row = document.createElement("tr");
 
     // プレイヤーID
     const tdPlayer = document.createElement("td");
@@ -95,7 +97,10 @@ async function loadCharacterMatrix() {
     row.appendChild(tdPlayer);
 
     // プレイヤー名
-    const playerName = await fetchPlayerName(playerId);
+    let playerName = "(未設定)";
+    if (playerId) {
+      playerName = await fetchPlayerName(playerId);
+    }
     const tdName = document.createElement("td");
     tdName.textContent = playerName;
     row.appendChild(tdName);
@@ -162,9 +167,19 @@ async function loadCharacterMatrix() {
       showToast(`${data.name} を更新しました`);
     });
     tdSave.appendChild(saveBtn);
+
     row.appendChild(tdSave);
 
-    tbody.appendChild(row);
+      tbody.appendChild(row);
+    } else {
+      // 意図しないパスのドキュメントはスキップ
+      const row = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 7; // テーブルの列数に合わせて調整
+      td.textContent = "（不正なデータ形式）";
+      row.appendChild(td);
+      tbody.appendChild(row);
+
   }
 }
 
