@@ -16,7 +16,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const urlParams = new URLSearchParams(window.location.search);
-const playerId = urlParams.get("playerId") || "default";
+const playerId = urlParams.get("playerId");
+
+// UUID v4 形式をチェック
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+if (!uuidRegex.test(playerId)) {
+  alert("無効なPlayerIDです。URLを確認してください。");
+  throw new Error("Invalid PlayerID");
+}
+
 let currentCharacterId = null;
 let currentCharacterName = "探索者 太郎"
 let currentCharacterData = {};
