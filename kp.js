@@ -1,175 +1,101 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  getDocs,
-  updateDoc
-} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+// kp.js - Firestore fetch版（Cloudflare Worker経由）
 
-// Firebase初期化（あなたの設定に置き換えてください）
-const firebaseConfig = {
-  apiKey: "AIzaSyBvrggu4aMoRwAG2rccnWQwhDGsS60Tl8Q",
-  authDomain: "okitakudisc.firebaseapp.com",
-  projectId: "okitakudisc",
-  storageBucket: "okitakudisc.appspot.com",
-  messagingSenderId: "724453796377",
-  appId: "1:724453796377:web:bec78279dfc6dba0fc9888",
-  measurementId: "G-LNHQBFYXFL"
+const urlParams = new URLSearchParams(window.location.search);
+const kpId = urlParams.get("kpId");
+
+const API_BASE = "https://firestore-api.kai-chan-tsuru.workers.dev/firestore";
+
+async function fetchScenarios() {
+  const res = await fetch(`${API_BASE}/scenarios?kpId=${kpId}`);
+  const data = await res.json();
+  return data.scenarios || [];
 }
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-// 要素の取得
-const scenarioIdInput = document.getElementById("scenario-id");
-const loadScenarioButton = document.getElementById("load-scenario");
-const scenarioNameSection = document.getElementById("scenario-name-section");
-const currentScenarioName = document.getElementById("current-scenario-name");
-const webhookSection = document.getElementById("webhook-section");
-const webhookList = document.getElementById("webhook-list");
-const saveWebhooksButton = document.getElementById("save-webhooks");
-const characterSection = document.getElementById("character-section");
-const characterList = document.getElementById("character-list");
-const kpcSection = document.getElementById("kpc-section");
-const kpcList = document.getElementById("kpc-list");
-const addCharacterSection = document.getElementById("add-character-section");
-const newCharacterName = document.getElementById("new-character-name");
-const addCharacterButton = document.getElementById("add-character");
-const toast = document.getElementById("toast");
+async function createScenario(title) {
+  const res = await fetch(`${API_BASE}/scenarios`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kpId, title })
+  });
+  return res.json();
+}
 
-let currentScenarioId = "";
+async function fetchPlayers(scenarioId) {
+  const res = await fetch(`${API_BASE}/players?scenarioId=${scenarioId}`);
+  const data = await res.json();
+  return data.players || [];
+}
 
-// シナリオ読込
-loadScenarioButton.addEventListener("click", async () => {
-  const scenarioId = scenarioIdInput.value.trim();
-  if (!scenarioId) return alert("シナリオIDを入力してください");
+async function updatePlayerWebhook(scenarioId, playerId, webhookUrl) {
+  await fetch(`${API_BASE}/players/${playerId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ scenarioId, webhookUrl })
+  });
+}
 
-  const scenarioRef = doc(db, "scenarios", scenarioId);
-  const scenarioSnap = await getDoc(scenarioRef);
+// DOM 操作とイベントバインド
+const scenarioSelect = document.getElementById("scenarioSelect");
+const createScenarioBtn = document.getElementById("createScenarioBtn");
+const newScenarioTitleInput = document.getElementById("newScenarioTitle");
+const playerListDiv = document.getElementById("playerList");
 
-  if (!scenarioSnap.exists()) {
-    alert("そのシナリオは存在しません");
-    return;
+createScenarioBtn.addEventListener("click", async () => {
+  const title = newScenarioTitleInput.value.trim();
+  if (!title) return;
+  const result = await createScenario(title);
+  await loadScenarios();
+  newScenarioTitleInput.value = "";
+});
+
+scenarioSelect.addEventListener("change", async () => {
+  const scenarioId = scenarioSelect.value;
+  if (scenarioId) {
+    const players = await fetchPlayers(scenarioId);
+    renderPlayers(players, scenarioId);
+  } else {
+    playerListDiv.innerHTML = "";
   }
-
-  currentScenarioId = scenarioId;
-  currentScenarioName.textContent = scenarioSnap.data().name || "名称未設定";
-
-  scenarioNameSection.style.display = "block";
-  webhookSection.style.display = "block";
-  characterSection.style.display = "block";
-  kpcSection.style.display = "block";
-  addCharacterSection.style.display = "block";
-
-  await loadWebhooks();
-  await loadCharacters();
 });
 
-// Webhook情報の取得と表示
-async function loadWebhooks() {
-  webhookList.innerHTML = "";
-
-  const webhookRef = doc(db, "scenarios", currentScenarioId);
-  const webhookSnap = await getDoc(webhookRef);
-  const data = webhookSnap.data();
-
-  const keys = [
-    "status",
-    "kpc",
-    "pl1",
-    "pl2",
-    "pl3",
-    "pl4",
-    "pl5",
-    "pl6"
-  ];
-
-  keys.forEach(key => {
-    const value = data?.webhooks?.[key] || "";
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = `
-      <label>${key}：</label>
-      <input type="text" data-key="${key}" value="${value}" style="width:80%">
-    `;
-    webhookList.appendChild(wrapper);
-  });
-}
-
-// Webhook保存
-saveWebhooksButton.addEventListener("click", async () => {
-  const inputs = webhookList.querySelectorAll("input[data-key]");
-  const webhooks = {};
-
-  inputs.forEach(input => {
-    const key = input.dataset.key;
-    const value = input.value.trim();
-    if (value) webhooks[key] = value;
-  });
-
-  const ref = doc(db, "scenarios", currentScenarioId);
-  await updateDoc(ref, { webhooks });
-
-  showToast("Webhookを保存しました");
-});
-
-// キャラ一覧取得
-async function loadCharacters() {
-  characterList.innerHTML = "";
-  kpcList.innerHTML = "";
-
-  const querySnapshot = await getDocs(
-    collection(db, "scenarios", currentScenarioId, "characters")
-  );
-
-  querySnapshot.forEach(docSnap => {
-    const data = docSnap.data();
+function renderPlayers(players, scenarioId) {
+  playerListDiv.innerHTML = "";
+  players.forEach((player) => {
     const div = document.createElement("div");
-    div.className = "character-box";
-    div.innerHTML = `
-      <strong>${data.name}</strong><br>
-      HP: ${data.hp} / MP: ${data.mp}<br>
-      種別: ${data.type}
-    `;
+    div.className = "player-item";
 
-    if (data.type === "pl") {
-      characterList.appendChild(div);
-    } else {
-      kpcList.appendChild(div);
-    }
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = player.name || "(no name)";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = player.webhookUrl || "";
+    input.placeholder = "Webhook URL";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "保存";
+    saveBtn.addEventListener("click", async () => {
+      await updatePlayerWebhook(scenarioId, player.id, input.value.trim());
+      alert("保存しました");
+    });
+
+    div.appendChild(nameSpan);
+    div.appendChild(input);
+    div.appendChild(saveBtn);
+
+    playerListDiv.appendChild(div);
   });
 }
 
-// キャラ追加
-addCharacterButton.addEventListener("click", async () => {
-  const name = newCharacterName.value.trim();
-  if (!name) return;
-
-  const id = crypto.randomUUID();
-  const ref = doc(db, "scenarios", currentScenarioId, "characters", id);
-
-  await setDoc(ref, {
-    name,
-    hp: 10,
-    mp: 10,
-    type: "pl"
+async function loadScenarios() {
+  const scenarios = await fetchScenarios();
+  scenarioSelect.innerHTML = "<option value=''>シナリオを選択</option>";
+  scenarios.forEach((scn) => {
+    const opt = document.createElement("option");
+    opt.value = scn.id;
+    opt.textContent = scn.title;
+    scenarioSelect.appendChild(opt);
   });
-
-  newCharacterName.value = "";
-  await loadCharacters();
-  showToast("キャラを追加しました");
-});
-
-// トースト表示
-function showToast(message) {
-  toast.textContent = message;
-  toast.style.display = "block";
-  toast.style.opacity = "1";
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    setTimeout(() => {
-      toast.style.display = "none";
-    }, 500);
-  }, 1500);
 }
+
+document.addEventListener("DOMContentLoaded", loadScenarios);
