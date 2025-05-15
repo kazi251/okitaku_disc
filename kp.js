@@ -1,101 +1,81 @@
-// kp.js - Firestore fetch版（Cloudflare Worker経由）
+// kp.js（Cloudflare Worker経由のfetch対応版）
 
-const urlParams = new URLSearchParams(window.location.search);
-const kpId = urlParams.get("kpId");
+const BASE_API = 'https://firestore-api.kai-chan-tsuru.workers.dev/firestore';
 
-const API_BASE = "https://firestore-api.kai-chan-tsuru.workers.dev/firestore";
-
-async function fetchScenarios() {
-  const res = await fetch(`${API_BASE}/scenarios?kpId=${kpId}`);
+// Firestore のドキュメント取得
+async function getDocument(path) {
+  const res = await fetch(`${BASE_API}/${path}`);
   const data = await res.json();
-  return data.scenarios || [];
+  if (data.error) throw new Error(data.error.message);
+  return data.fields || {};
 }
 
-async function createScenario(title) {
-  const res = await fetch(`${API_BASE}/scenarios`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ kpId, title })
+// Firestore のドキュメント作成/更新
+async function setDocument(path, fields) {
+  const res = await fetch(`${BASE_API}/${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fields })
   });
-  return res.json();
-}
-
-async function fetchPlayers(scenarioId) {
-  const res = await fetch(`${API_BASE}/players?scenarioId=${scenarioId}`);
   const data = await res.json();
-  return data.players || [];
+  if (data.error) throw new Error(data.error.message);
+  return data.fields || {};
 }
 
-async function updatePlayerWebhook(scenarioId, playerId, webhookUrl) {
-  await fetch(`${API_BASE}/players/${playerId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ scenarioId, webhookUrl })
-  });
+// シナリオ作成（新規）
+async function createScenario(kpId, title) {
+  const scenarioId = crypto.randomUUID();
+  const path = `kpUsers/${kpId}/scenarios/${scenarioId}`;
+  const fields = {
+    title: { stringValue: title }
+  };
+  await setDocument(path, fields);
+  return { scenarioId, title };
 }
 
-// DOM 操作とイベントバインド
-const scenarioSelect = document.getElementById("scenarioSelect");
-const createScenarioBtn = document.getElementById("createScenarioBtn");
-const newScenarioTitleInput = document.getElementById("newScenarioTitle");
-const playerListDiv = document.getElementById("playerList");
+// シナリオ一覧取得
+async function loadScenarios(kpId) {
+  // Collectionリスト取得は未対応のため、シナリオIDは事前に保存しておく必要あり
+  const listPath = `kpUsers/${kpId}`;
+  const data = await getDocument(listPath);
+  const scenarioIds = data.scenarioIds?.arrayValue?.values?.map(v => v.stringValue) || [];
 
-createScenarioBtn.addEventListener("click", async () => {
-  const title = newScenarioTitleInput.value.trim();
-  if (!title) return;
-  const result = await createScenario(title);
-  await loadScenarios();
-  newScenarioTitleInput.value = "";
-});
-
-scenarioSelect.addEventListener("change", async () => {
-  const scenarioId = scenarioSelect.value;
-  if (scenarioId) {
-    const players = await fetchPlayers(scenarioId);
-    renderPlayers(players, scenarioId);
-  } else {
-    playerListDiv.innerHTML = "";
+  const results = [];
+  for (const id of scenarioIds) {
+    try {
+      const scenario = await getDocument(`kpUsers/${kpId}/scenarios/${id}`);
+      results.push({ id, title: scenario.title?.stringValue || '(タイトルなし)' });
+    } catch (e) {
+      console.warn(`Failed to load scenario ${id}:`, e);
+    }
   }
-});
+  return results;
+}
 
-function renderPlayers(players, scenarioId) {
-  playerListDiv.innerHTML = "";
-  players.forEach((player) => {
-    const div = document.createElement("div");
-    div.className = "player-item";
-
-    const nameSpan = document.createElement("span");
-    nameSpan.textContent = player.name || "(no name)";
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = player.webhookUrl || "";
-    input.placeholder = "Webhook URL";
-
-    const saveBtn = document.createElement("button");
-    saveBtn.textContent = "保存";
-    saveBtn.addEventListener("click", async () => {
-      await updatePlayerWebhook(scenarioId, player.id, input.value.trim());
-      alert("保存しました");
-    });
-
-    div.appendChild(nameSpan);
-    div.appendChild(input);
-    div.appendChild(saveBtn);
-
-    playerListDiv.appendChild(div);
+// シナリオIDをリストに追加
+async function addScenarioIdToList(kpId, scenarioId) {
+  const path = `kpUsers/${kpId}`;
+  const existing = await getDocument(path);
+  const currentIds = existing.scenarioIds?.arrayValue?.values?.map(v => v.stringValue) || [];
+  if (!currentIds.includes(scenarioId)) {
+    currentIds.push(scenarioId);
+  }
+  await setDocument(path, {
+    ...existing,
+    scenarioIds: {
+      arrayValue: {
+        values: currentIds.map(id => ({ stringValue: id }))
+      }
+    }
   });
 }
 
-async function loadScenarios() {
-  const scenarios = await fetchScenarios();
-  scenarioSelect.innerHTML = "<option value=''>シナリオを選択</option>";
-  scenarios.forEach((scn) => {
-    const opt = document.createElement("option");
-    opt.value = scn.id;
-    opt.textContent = scn.title;
-    scenarioSelect.appendChild(opt);
-  });
+// プレイヤーのWebhook登録
+async function updatePlayerWebhook(playerId, scenarioId, webhookUrl) {
+  const path = `players/${playerId}`;
+  const fields = {
+    scenarioId: { stringValue: scenarioId },
+    webhookUrl: { stringValue: webhookUrl }
+  };
+  await setDocument(path, fields);
 }
-
-document.addEventListener("DOMContentLoaded", loadScenarios);
