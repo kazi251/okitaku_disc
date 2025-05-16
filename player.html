@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>置き卓補助ツール</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+
+<!-- キャラ選択エリア -->
+<div class="character-select-area">
+  <label for="character-select">キャラクター選択：</label>
+  <select id="character-select"></select>
+  <button id="new-character-button">＋新規作成</button>
+</div>
+
+<!-- 探索者表示セクション -->
+<div id="explorer-container">
+  <div id="explorer-header" class="explorer-section">
+    <div class="explorer-image-container">
+      <img src="./seeker_vault/default.png"
+     id="explorer-image"
+     alt="探索者画像"
+     class="explorer-image"
+     onerror="this.onerror=null; this.src='./seeker_vault/onerror.png';">
+      <div><strong id="character-name">探索者 太郎</strong></div>
+    </div>
+    <div class="explorer-stats">
+      <div><span class="stat-label">HP</span>:<span id="hp">-</span>／<span id="hp-max">-</span></div>
+      <div><span class="stat-label">MP</span>:<span id="mp">-</span>／<span id="mp-max">-</span></div>
+      <div><span class="stat-label">SAN</span>:<span id="san">-</span>／<span id="san-max">-</span>（<span id="san-indef">-</span>）</div>
+      <div><span id="other1-label">その他</span>:<span id="other">-</span></div>
+      <div><span id="other2-label">その他</span>:<span id="other2">-</span></div>
+    </div>
+  </div>
+</div>
+<div><small>探索中: <span id="current-scenario-name">-</span></small></div>
+
+<!-- セリフ送信 -->
+<div class="section">
+  <h2>セリフ送信</h2>
+  <textarea id="say-content" placeholder="セリフを入力..."></textarea><br>
+  <button id="send-button">送信</button>
+</div>
+
+<!-- ダイスロール -->
+<div class="section">
+  <h2>ダイスロール</h2>
+  <input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off"><br>
+  <div id="suggestions"></div>
+  <button id="roll-button">ダイス実行</button>
+  <div id="result">🎲 結果がここに表示されます</div>
+</div>
+
+<!-- パラメータ -->
+<div class="section">
+  <button class="toggle-button">パラメータ編集</button>
+    <div class="toggle-content">
+      <div>
+        <div class="parameter-section">
+          <div><label><span class="stat-label">HP</span>: <input type="number" id="hp-input"> ／ <input type="number" id="hp-max-input"></label></div>
+          <div><label><span class="stat-label">MP</span>: <input type="number" id="mp-input"> ／ <input type="number" id="mp-max-input"></label></div>
+          <div><label><span class="stat-label">SAN</span>: <input type="number" id="san-input"> ／ <input type="number" id="san-max-input"></label></div>
+          <div><label><input type="text" id="other1-name" placeholder="ラベル名">: <input type="number" id="other-input"></label></div>
+          <div><label><input type="text" id="other2-name" placeholder="ラベル名">: <input type="number" id="other2-input"></label></div>
+        </div>
+        <div>
+          <button id="status-save-button">保存</button>
+          <button id="legacy-status-load">再読み込み</button>
+          <button id="legacy-status-save">保存＆送信</button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<!-- チャットパレット -->
+<div class="section">
+  <button class="toggle-button">チャットパレット貼り付け欄</button>
+    <div class="toggle-content">
+      <textarea id="chat-palette-input" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br>
+      <button id="palette-save-button">保存</button>
+      <button id="load-button">再読み込み</button>
+    </div>
+</div>
+
+<!-- トースト -->
+<div id="toast"></div>
+
+<script type="module" src="player.js"></script>
+</body>
+</html>
