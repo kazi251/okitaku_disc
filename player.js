@@ -244,13 +244,6 @@ let isLegacySave = false;
 async function saveCharacterData() {
   if (!currentCharacterId) return;
 
-  try {
-    await setDoc(
-      doc(db, "characters", playerId),
-      { createdAt: new Date().toISOString() },
-      { merge: true }
-    );
-
     const ref = doc(db, "characters", playerId, "list", currentCharacterId);
 
     const imageSrc = document.getElementById("explorer-image").src;
