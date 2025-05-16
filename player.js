@@ -284,7 +284,7 @@ async function saveCharacterData() {
     if (imageUrl) {
       characterData.imageUrl = imageUrl;
     }
-
+    console.log(characterData);
     await setDoc(ref, characterData, { merge: true });
 
     showToast("キャラクターを保存しました！");
