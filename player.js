@@ -269,6 +269,7 @@ async function saveCharacterData() {
       other2: document.getElementById("other2-input").value,
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
+      playerId: playerId, 
       updatedAt: new Date().toISOString()
     };
 
@@ -343,6 +344,7 @@ function savePaletteOnly() {
   const ref = doc(db, "characters", playerId, "list", currentCharacterId);
   setDoc(ref, {
     palette: document.getElementById("chat-palette-input").value,
+    playerId: playerId,
     updatedAt: new Date().toISOString()
   }, { merge: true });
   showToast("チャットパレットを保存しました！");
@@ -415,6 +417,8 @@ window.addEventListener("DOMContentLoaded", () => {
       palette: "",
       webhook: defaultWebhook, 
       imageUrl: "./seeker_vault/default.png", 
+      playerId: playerId, 
+      accessKpIds: [],
       updatedAt: new Date().toISOString()
     });
 
