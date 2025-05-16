@@ -244,6 +244,7 @@ let isLegacySave = false;
 async function saveCharacterData() {
   if (!currentCharacterId) return;
 
+  try {
     const ref = doc(db, "characters", playerId, "list", currentCharacterId);
 
     const imageSrc = document.getElementById("explorer-image").src;
