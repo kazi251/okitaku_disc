@@ -356,12 +356,28 @@ async function uploadImage() {
 
     if (response.ok) {
       const result = await response.json();
-      uploadStatus.textContent = 'アップロード成功しました。画像URL: ' + result.imageUrl;
+      const imageUrl = result.imageUrl;
+
+      uploadStatus.textContent = 'アップロード成功しました。画像を保存中...';
+
+      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+      await setDoc(ref, {
+        imageUrl,
+        updatedAt: new Date().toISOString(),
+      }, { merge: true });
+
+      const imageElement = document.getElementById("explorer-image");
+      imageElement.src = imageUrl;
+
+      showToast("画像を保存しました！");
+      uploadStatus.textContent = '画像が保存されました。';
+
     } else {
       uploadStatus.textContent = 'アップロード失敗: ' + response.statusText;
     }
   } catch (error) {
     uploadStatus.textContent = 'エラーが発生しました: ' + error.message;
+    console.error(error);
   }
 }
 
