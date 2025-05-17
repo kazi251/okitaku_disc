@@ -332,6 +332,41 @@ async function saveCharacterData() {
   }
 }
 
+async function uploadImage() {
+  const fileInput = document.getElementById('imageUpload');
+  const file = fileInput.files[0];
+  const uploadStatus = document.getElementById('image-upload-Status');
+
+  if (!file) {
+    uploadStatus.textContent = 'ファイルが選択されていません。';
+    return;
+  }
+
+  uploadStatus.textContent = 'アップロード中...';
+
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    // Cloudflare Worker の URL (あなたの Worker のエンドポイントに合わせて変更してください)
+    const workerUrl = 'YOUR_CLOUDFLARE_WORKER_URL';
+
+    const response = await fetch(workerUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      uploadStatus.textContent = 'アップロード成功しました。画像URL: ' + result.imageUrl;
+    } else {
+      uploadStatus.textContent = 'アップロード失敗: ' + response.statusText;
+    }
+  } catch (error) {
+    uploadStatus.textContent = 'エラーが発生しました: ' + error.message;
+  }
+}
+
 function savePaletteOnly() {
   if (!currentCharacterId) return;
   const ref = doc(db, "characters", playerId, "list", currentCharacterId);
@@ -381,6 +416,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("roll-button").addEventListener("click", rollDice);
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
+  document.getElementById("image-save-button").addEventListener("click", uploadImage());
 
   document.getElementById("load-button").addEventListener("click", async () => {
     if (currentCharacterId) {

@@ -77,11 +77,21 @@
 
 <!-- チャットパレット -->
 <div class="section">
-  <button class="toggle-button">チャットパレット貼り付け欄</button>
+  <button class="toggle-button">チャットパレット貼り付け</button>
     <div class="toggle-content">
       <textarea id="chat-palette-input" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br>
       <button id="palette-save-button">保存</button>
       <button id="load-button">再読み込み</button>
+    </div>
+</div>
+
+<!-- キャラクター変更 -->
+<div class="section">
+  <button class="toggle-button">キャラクター編集</button>
+    <div class="toggle-content">
+      <input type="file" id="image-Upload" accept="image/*">
+      <button id="image-save-button">アップロード</button>
+      <div id="image-upload-Status"></div>
     </div>
 </div>
 
