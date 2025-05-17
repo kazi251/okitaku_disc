@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc ,updateDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 const firebaseConfig = {
@@ -391,6 +391,17 @@ function savePaletteOnly() {
   showToast("チャットパレットを保存しました！");
 }
 
+function saveNameOnly() {
+  if (!currentCharacterId) return;
+  const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+  setDoc(ref, {
+    name: document.getElementById("name-input").value,
+    playerId: playerId,
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
+  showToast("名前を保存しました！");
+}
+
 function loadCharacterStatusOnly(data) {
   document.getElementById("hp-input").value = data.hp || "";
   document.getElementById("hp-max-input").value = data.hpMax || "";
@@ -429,6 +440,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("roll-button").addEventListener("click", rollDice);
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
+  document.getElementById("name-save-button")?.addEventListener("click", saveNameOnly);
   
   document.getElementById("load-button").addEventListener("click", async () => {
     if (currentCharacterId) {
