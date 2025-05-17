@@ -452,14 +452,14 @@ async function updateScenarioId() {
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
       currentScenario: scenarioId,
-      playerId: playerId, // 🔹 セキュリティルールのために追加
+      playerId: playerId, 
       updatedAt: new Date().toISOString()
     }, { merge: true });
 
-    showToast("シナリオIDを更新しました ✅");
+    showToast("シナリオIDを更新しました ");
   } catch (e) {
     console.error("シナリオ紐づけ失敗", e);
-    showToast("シナリオの紐づけに失敗しました");
+    showToast("シナリオの紐づけに失敗しました。");
   }
 }
 
@@ -473,11 +473,11 @@ async function clearScenarioId() {
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
       currentScenario: deleteField(),
-      playerId: playerId, // 🔹 こちらにも必要
+      playerId: playerId, 
       updatedAt: new Date().toISOString()
     }, { merge: true });
 
-    showToast("シナリオIDを解除しました ✅");
+    showToast("シナリオIDを解除しました。");
   } catch (e) {
     console.error("シナリオ解除失敗", e);
     showToast("解除に失敗しました");
