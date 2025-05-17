@@ -335,14 +335,13 @@ async function saveCharacterData() {
 async function uploadImage() {
   const fileInput = document.getElementById('image-upload');
   const file = fileInput.files[0];
-  const uploadStatus = document.getElementById('image-upload-Status');
 
   if (!file) {
-    uploadStatus.textContent = 'ファイルが選択されていません。';
+    showToast('ファイルが選択されていません。');
     return;
   }
 
-  uploadStatus.textContent = 'アップロード中...';
+  showToast('画像アップロード中...');
 
   try {
     const formData = new FormData();
@@ -358,7 +357,7 @@ async function uploadImage() {
       const result = await response.json();
       const imageUrl = result.imageUrl;
 
-      uploadStatus.textContent = 'アップロード成功しました。画像を保存中...';
+      showToast('アップロード成功！画像を保存中...');
 
       const ref = doc(db, "characters", playerId, "list", currentCharacterId);
       await setDoc(ref, {
@@ -367,16 +366,15 @@ async function uploadImage() {
       }, { merge: true });
 
       const imageElement = document.getElementById("explorer-image");
-      imageElement.src = imageUrl;
+      imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
 
-      showToast("画像を保存しました！");
-      uploadStatus.textContent = '画像が保存されました。';
+      showToast("画像が保存されました ✅");
 
     } else {
-      uploadStatus.textContent = 'アップロード失敗: ' + response.statusText;
+      showToast('アップロード失敗: ' + response.statusText);
     }
   } catch (error) {
-    uploadStatus.textContent = 'エラーが発生しました: ' + error.message;
+    showToast('エラーが発生しました: ' + error.message);
     console.error(error);
   }
 }
