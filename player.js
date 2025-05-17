@@ -333,7 +333,7 @@ async function saveCharacterData() {
 }
 
 async function uploadImage() {
-  const fileInput = document.getElementById('image-Upload');
+  const fileInput = document.getElementById('image-upload');
   const file = fileInput.files[0];
   const uploadStatus = document.getElementById('image-upload-Status');
 
