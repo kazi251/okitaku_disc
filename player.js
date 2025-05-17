@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc ,deleteField } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 const firebaseConfig = {
@@ -333,53 +333,6 @@ async function saveCharacterData() {
   }
 }
 
-async function uploadImage() {
-  const fileInput = document.getElementById('image-upload');
-  const file = fileInput.files[0];
-
-  if (!file) {
-    showToast('ファイルが選択されていません。');
-    return;
-  }
-
-  showToast('画像アップロード中...');
-
-  try {
-    const formData = new FormData();
-    formData.append('image', file);
-    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
-
-    const response = await fetch(workerUrl, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (response.ok) {
-      const result = await response.json();
-      const imageUrl = result.imageUrl;
-
-      showToast('アップロード成功！画像を保存中...');
-
-      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-      await setDoc(ref, {
-        imageUrl,
-        updatedAt: new Date().toISOString(),
-      }, { merge: true });
-
-      const imageElement = document.getElementById("explorer-image");
-      imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
-
-      showToast("画像が保存されました ✅");
-
-    } else {
-      showToast('アップロード失敗: ' + response.statusText);
-    }
-  } catch (error) {
-    showToast('エラーが発生しました: ' + error.message);
-    console.error(error);
-  }
-}
-
 function savePaletteOnly() {
   if (!currentCharacterId) return;
   const ref = doc(db, "characters", playerId, "list", currentCharacterId);
@@ -434,6 +387,103 @@ function loadCharacterPaletteOnly(data) {
   updateChatPalette();
 }
 
+async function uploadImage() {
+  const fileInput = document.getElementById('image-upload');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    showToast('ファイルが選択されていません。');
+    return;
+  }
+
+  showToast('画像アップロード中...');
+
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+
+    const response = await fetch(workerUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      const imageUrl = result.imageUrl;
+
+      showToast('アップロード成功！画像を保存中...');
+
+      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+      await setDoc(ref, {
+        imageUrl,
+        updatedAt: new Date().toISOString(),
+      }, { merge: true });
+
+      const imageElement = document.getElementById("explorer-image");
+      imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
+
+      showToast("画像が保存されました ✅");
+
+    } else {
+      showToast('アップロード失敗: ' + response.statusText);
+    }
+  } catch (error) {
+    showToast('エラーが発生しました: ' + error.message);
+    console.error(error);
+  }
+}
+
+async function updateScenarioId() {
+  const scenarioId = document.getElementById("scenario-id-input").value.trim();
+  if (!scenarioId || !currentCharacterId) {
+    showToast("シナリオIDまたはキャラクターが未選択です");
+    return;
+  }
+
+  try {
+    const scenarioRef = doc(db, "scenarios", scenarioId);
+    const scenarioSnap = await getDoc(scenarioRef);
+    if (!scenarioSnap.exists()) {
+      showToast("そのシナリオIDは存在しません");
+      return;
+    }
+
+    const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+    await setDoc(charRef, {
+      currentScenario: scenarioId,
+      playerId: playerId, // 🔹 セキュリティルールのために追加
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+
+    showToast("シナリオIDを更新しました ✅");
+  } catch (e) {
+    console.error("シナリオ紐づけ失敗", e);
+    showToast("シナリオの紐づけに失敗しました");
+  }
+}
+
+async function clearScenarioId() {
+  if (!currentCharacterId) {
+    showToast("キャラクターが未選択です");
+    return;
+  }
+
+  try {
+    const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+    await setDoc(charRef, {
+      currentScenario: deleteField(),
+      playerId: playerId, // 🔹 こちらにも必要
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+
+    showToast("シナリオIDを解除しました ✅");
+  } catch (e) {
+    console.error("シナリオ解除失敗", e);
+    showToast("解除に失敗しました");
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   // ボタンイベント
   document.getElementById("send-button").addEventListener("click", sendSay);
@@ -441,6 +491,9 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
   document.getElementById("name-save-button")?.addEventListener("click", saveNameOnly);
+  document.getElementById("scenario-update-button").addEventListener("click", updateScenarioId);
+  document.getElementById("scenario-clear-button").addEventListener("click", clearScenarioId);
+
   
   document.getElementById("load-button").addEventListener("click", async () => {
     if (currentCharacterId) {
