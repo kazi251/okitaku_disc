@@ -414,8 +414,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("roll-button").addEventListener("click", rollDice);
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
-  document.getElementById("image-save-button").addEventListener("click", uploadImage);
-
+  
   document.getElementById("load-button").addEventListener("click", async () => {
     if (currentCharacterId) {
       const ref = doc(db, "characters", playerId, "list", currentCharacterId);
@@ -483,6 +482,8 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // 探索者画像の変更
+  document.getElementById("image-save-button").addEventListener("click", uploadImage);
   // ファイル選択時の処理
   const imageUploadInput = document.getElementById("image-upload");
   imageUploadInput?.addEventListener("change", (event) => {
