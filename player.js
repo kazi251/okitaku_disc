@@ -349,7 +349,7 @@ async function uploadImage() {
     formData.append('image', file);
 
     // Cloudflare Worker の URL (あなたの Worker のエンドポイントに合わせて変更してください)
-    const workerUrl = 'YOUR_CLOUDFLARE_WORKER_URL';
+    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
 
     const response = await fetch(workerUrl, {
       method: 'POST',
