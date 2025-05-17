@@ -231,8 +231,15 @@ async function loadCharacterData(charId) {
     document.getElementById("other1-label").textContent = data.other1Name || "その他";
     document.getElementById("other2-label").textContent = data.other2Name || "その他";
 
+    // シナリオID入力欄にも反映
+    const scenarioInput = document.getElementById("scenario-id-input");
+    if (scenarioInput) {
+      scenarioInput.value = data.currentScenario || "";
+    }
+    
     updateDisplay();
     updateChatPalette();
+
     showToast("キャラクターを読み込みました！");
   } catch (error) {
     console.error("キャラクター読み込み失敗:", error);
@@ -590,6 +597,30 @@ window.addEventListener("DOMContentLoaded", () => {
     const fileName = event.target.files[0]?.name;
     console.log("選択されたファイル:", fileName);
   });
+
+  // キャラクター編集の再読み込み
+  document.getElementById("edit-load-button").addEventListener("click", async () => {
+  if (!currentCharacterId) {
+    showToast("キャラクターが選択されていません");
+    return;
+  }
+
+  try {
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const data = snap.data();
+      loadCharacterData(currentCharacterId); // ← UI更新
+      showToast("再読み込みしました ✅");
+    } else {
+      showToast("キャラクターが見つかりません");
+    }
+  } catch (e) {
+    console.error("キャラクター再読み込み失敗", e);
+    showToast("再読み込みに失敗しました");
+  }
+});
+
 
   // アコーディオン処理
   document.querySelectorAll(".toggle-button").forEach(button => {
