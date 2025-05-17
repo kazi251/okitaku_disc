@@ -182,20 +182,30 @@ async function loadCharacterMatrix() {
   }
 }
 
-// ✅ 初期化関数
 async function initAdminPage() {
   try {
     await loadScenarios();
-    await loadCharacterMatrix();
-    await loadPlayerList(); 
-  } catch (error) {
-    console.error("初期化エラー:", error);
-    showToast("初期化に失敗しました");
+  } catch (e) {
+    console.error("loadScenariosで失敗:", e);
   }
+
+  try {
+    await loadCharacterMatrix();
+  } catch (e) {
+    console.error("loadCharacterMatrixで失敗:", e);
+  }
+
+  try {
+    await loadPlayerList();
+  } catch (e) {
+    console.error("loadPlayerListで失敗:", e);
+  }
+
   await loadKpTable();
   setupEventListeners();
   loadPlayerList(); 
 }
+
 
 async function loadPlayerList() {
   const select = document.getElementById("new-player-id");
