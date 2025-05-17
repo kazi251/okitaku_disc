@@ -12,6 +12,34 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from "./utils.js";
 
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
+
+document.getElementById("googleLoginBtn").addEventListener("click", async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("ログイン成功:", user.uid, user.email);
+
+    // 管理者チェック用の Firestore ドキュメント存在確認
+    const adminDocRef = doc(db, "admins", user.uid);
+    const adminDoc = await getDoc(adminDocRef);
+
+    if (adminDoc.exists()) {
+      console.log("管理者として認証されました");
+      // 管理画面の初期化など
+      await initAdminPage();
+    } else {
+      alert("あなたは管理者ではありません");
+    }
+  } catch (error) {
+    console.error("ログイン失敗:", error);
+    alert("ログインに失敗しました");
+  }
+});
+
 const firebaseConfig = {
   apiKey: "AIzaSyBvrggu4aMoRwAG2rccnWQwhDGsS60Tl8Q",
   authDomain: "okitakudisc.firebaseapp.com",
