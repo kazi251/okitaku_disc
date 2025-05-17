@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc ,updateDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 const firebaseConfig = {
@@ -17,6 +17,7 @@ const db = getFirestore(app);
 
 const urlParams = new URLSearchParams(window.location.search);
 const playerId = urlParams.get("playerId");
+const characterId = "CHARACTER_ID_HERE";
 
 // UUID v4 形式をチェック
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -493,6 +494,26 @@ window.addEventListener("DOMContentLoaded", () => {
         loadCharacterStatusOnly(data);
         showToast("ステータスを再読み込みしました！");
       }
+    }
+  });
+
+  // 探索者の名前の変更
+  document.getElementById("update-name-button").addEventListener("click", async () => {
+    const newName = document.getElementById("name-input").value.trim();
+
+    if (!newName) {
+      alert("名前を入力してください");
+      return;
+    }
+
+    const charRef = doc(db, "characters", playerId, "list", characterId);
+
+    try {
+      await updateDoc(charRef, { name: newName });
+      alert("名前を更新しました！");
+    } catch (error) {
+      console.error("名前更新失敗:", error);
+      alert("名前の更新に失敗しました");
     }
   });
 
