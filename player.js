@@ -347,8 +347,6 @@ async function uploadImage() {
   try {
     const formData = new FormData();
     formData.append('image', file);
-
-    // Cloudflare Worker の URL (あなたの Worker のエンドポイントに合わせて変更してください)
     const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
 
     const response = await fetch(workerUrl, {
@@ -416,7 +414,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("roll-button").addEventListener("click", rollDice);
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
-  document.getElementById("image-save-button").addEventListener("click", uploadImage());
+  document.getElementById("image-save-button").addEventListener("click", uploadImage);
 
   document.getElementById("load-button").addEventListener("click", async () => {
     if (currentCharacterId) {
@@ -483,6 +481,13 @@ window.addEventListener("DOMContentLoaded", () => {
         showToast("ステータスを再読み込みしました！");
       }
     }
+  });
+
+  // ファイル選択時の処理
+  const imageUploadInput = document.getElementById("image-upload");
+  imageUploadInput?.addEventListener("change", (event) => {
+    const fileName = event.target.files[0]?.name;
+    console.log("選択されたファイル:", fileName);
   });
 
   // アコーディオン処理
