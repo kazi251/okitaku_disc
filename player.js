@@ -590,6 +590,9 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // 探索者画像の変更
+  const imageUploadInput = document.getElementById("image-upload");
+  const imageFileName = document.getElementById("image-file-name");
+
   imageUploadInput?.addEventListener("change", (event) => {
     const fileName = event.target.files[0]?.name;
     console.log("選択されたファイル:", fileName);
@@ -620,8 +623,7 @@ window.addEventListener("DOMContentLoaded", () => {
     console.error("キャラクター再読み込み失敗", e);
     showToast("再読み込みに失敗しました");
   }
-});
-
+  });
 
   // アコーディオン処理
   document.querySelectorAll(".toggle-button").forEach(button => {
