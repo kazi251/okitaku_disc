@@ -119,30 +119,37 @@ async function rollDice() {
   workerUrl.searchParams.append("avatar_url", avatarUrl);
   workerUrl.searchParams.append("webhook", webhook);
   try {
-      const response = await fetch(workerUrl.toString());
-      const result = await response.json();
-      let displayText = `🎲 ${command}: `;
-      if (result.ok) {
-          displayText += result.text;
-          showToast("ダイスを振りました！");
-          // --- xN形式の整形 ---
-          if (command.startsWith("x") && result.text.includes("#1")) {
-            resultText = result.text.replace(/\s*#(\d+)/g, "<br><br>#$1");
-            displayText = `🎲 ${command}:<br>` + resultText;
-          } else {
-            displayText += resultText;
-          }
-          if (result.text.includes("致命的失敗")) displayText += " 💀";
-          else if (result.text.includes("失敗")) displayText += " 🥶";
-          else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
-          else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
+    const response = await fetch(workerUrl.toString());
+    const result = await response.json();
+    let displayText = `🎲 ${command}: `;
+
+    if (result.ok) {
+      let resultText = result.text;
+
+      // --- 🆕 xN形式の整形 ---
+      if (command.startsWith("x") && result.text.includes("#1")) {
+        resultText = result.text.replace(/\s*#(\d+)/g, "<br><br>#$1");
+        displayText = `🎲 ${command}:<br>` + resultText;
       } else {
-          displayText += "エラー: " + result.reason;
+        displayText += resultText;
       }
-      document.getElementById("result").innerText = displayText;
+
+      // 絵文字付与（既存通り）
+      if (result.text.includes("致命的失敗")) displayText += " 💀";
+      else if (result.text.includes("失敗")) displayText += " 🥶";
+      else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
+      else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
+
+      showToast("ダイスを振りました！");
+    } else {
+      displayText += "エラー: " + result.reason;
+    }
+
+    // innerText → innerHTML に変更して改行反映
+    document.getElementById("result").innerHTML = displayText;
   } catch (error) {
-      document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
-      console.error("Fetch error:", error);
+    document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
+    console.error("Fetch error:", error);
   }
 }
 
