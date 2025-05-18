@@ -39,7 +39,7 @@ const provider = new GoogleAuthProvider();
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log("ログイン済み:", user.displayName);
+    console.log(auth.currentUser?.uid); 
     initAdminPage(); // ログイン済みなら初期化
   } else {
     // ログインしていない場合はログインを促す
