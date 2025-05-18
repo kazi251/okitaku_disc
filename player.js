@@ -609,7 +609,6 @@ window.addEventListener("DOMContentLoaded", () => {
     const ref = doc(db, "characters", playerId, "list", currentCharacterId);
     const snap = await getDoc(ref);
     if (snap.exists()) {
-      const data = snap.data();
       loadCharacterData(currentCharacterId); // ← UI更新
       showToast("再読み込みしました ✅");
     } else {
