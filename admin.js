@@ -254,7 +254,7 @@ async function initAdminPage() {
     console.error("loadCharacterMatrixで失敗:", e);
   }
 
-  // await loadKpTable();
+  await loadKpTable();
   setupEventListeners();
 }
 
