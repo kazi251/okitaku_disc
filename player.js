@@ -473,8 +473,8 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
   document.getElementById("name-save-button")?.addEventListener("click", saveNameOnly);
-  document.getElementById("scenario-update-button").addEventListener("click", updateScenarioId);
-  document.getElementById("scenario-clear-button").addEventListener("click", clearScenarioId);
+  document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
+  document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
 
   
   document.getElementById("load-button").addEventListener("click", async () => {
@@ -593,14 +593,6 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // アコーディオン処理
-  // document.querySelectorAll(".toggle-button").forEach(button => {
-  //   button.addEventListener("click", () => {
-  //     const content = button.nextElementSibling;
-  //     const isOpen = content.style.display === "block";
-  //     content.style.display = isOpen ? "none" : "block";
-  //     button.classList.toggle("open", !isOpen);
-  //   });
-  // });
   document.querySelectorAll(".toggle-button").forEach(button => {
   button.addEventListener("click", () => {
     const parent = button.closest(".section");
