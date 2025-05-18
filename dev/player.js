@@ -125,6 +125,13 @@ async function rollDice() {
       if (result.ok) {
           displayText += result.text;
           showToast("ダイスを振りました！");
+          // --- xN形式の整形 ---
+          if (command.startsWith("x") && result.text.includes("#1")) {
+            resultText = result.text.replace(/\s*#(\d+)/g, "<br><br>#$1");
+            displayText = `🎲 ${command}:<br>` + resultText;
+          } else {
+            displayText += resultText;
+          }
           if (result.text.includes("致命的失敗")) displayText += " 💀";
           else if (result.text.includes("失敗")) displayText += " 🥶";
           else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
