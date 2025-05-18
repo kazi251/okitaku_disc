@@ -236,26 +236,26 @@ async function loadPlayerList() {
 async function initAdminPage() {
   console.log(auth.currentUser?.uid); 
   console.log("🔁 initAdminPage 実行");
-  // try {
-  //   await loadScenarios();
-  // } catch (e) {
-  //   console.error("loadScenariosで失敗:", e);
-  // }
+  try {
+    await loadScenarios();
+  } catch (e) {
+    console.error("loadScenariosで失敗:", e);
+  }
 
-  // try {
-  //   await loadPlayerList();
-  // } catch (e) {
-  //   console.error("loadPlayerListで失敗:", e);
-  // }
+  try {
+    await loadPlayerList();
+  } catch (e) {
+    console.error("loadPlayerListで失敗:", e);
+  }
 
-  // try {
-  //   await loadCharacterMatrix();
-  // } catch (e) {
-  //   console.error("loadCharacterMatrixで失敗:", e);
-  // }
+  try {
+    await loadCharacterMatrix();
+  } catch (e) {
+    console.error("loadCharacterMatrixで失敗:", e);
+  }
 
-  // await loadKpTable();
-  // setupEventListeners();
+  await loadKpTable();
+  setupEventListeners();
 }
 
 // ✅ イベント登録
