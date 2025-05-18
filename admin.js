@@ -39,7 +39,6 @@ const provider = new GoogleAuthProvider();
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log(auth.currentUser?.uid); 
     initAdminPage(); // ログイン済みなら初期化
   } else {
     // ログインしていない場合はログインを促す
@@ -227,7 +226,7 @@ async function loadPlayerList() {
 }
 
 async function initAdminPage() {
-  console.log(firebase.auth().currentUser?.uid);
+  console.log(auth.currentUser?.uid); 
   try {
     await loadScenarios();
   } catch (e) {
