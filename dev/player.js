@@ -127,25 +127,29 @@ async function rollDice() {
     if (result.ok) {
       let resultText = result.text ?? "";
 
-      // 🆕 xN形式の整形：#1の前に改行を入れる（見やすさ重視）
+      // xN形式の整形：#1の前に改行を入れる
       if (command.startsWith("x") && resultText.includes("#1")) {
-        resultText = resultText.replace(/\n?#1/, "#1");
+        resultText = resultText.replace(/\n?#1/, "\n\n#1");
       }
 
-      // 絵文字付与は結果末尾に
-      if (resultText.includes("致命的失敗")) resultText += " 💀";
-      else if (resultText.includes("失敗")) resultText += " 🥶";
-      else if (resultText.includes("決定的成功/スペシャル")) resultText += " 🎉🎊✨";
-      else if (resultText.includes("スペシャル") || resultText.includes("成功")) resultText += " 😊";
+      // 🎯 結果を1行ずつ処理して絵文字を付ける
+      const lines = resultText.split("\n").map(line => {
+        if (line.includes("致命的失敗")) return line + " 💀";
+        else if (line.includes("失敗")) return line + " 🥶";
+        else if (line.includes("決定的成功/スペシャル")) return line + " 🎉🎊✨";
+        else if (line.includes("スペシャル") || line.includes("成功")) return line + " 😊";
+        else return line;
+      });
+
+      const decoratedText = lines.join("\n");
 
       showToast("ダイスを振りました！");
-      displayText += "\n" + resultText;
+      displayText += "\n" + decoratedText;
 
     } else {
       displayText += "\nエラー: " + result.reason;
     }
 
-    // \nをHTMLで改行表示
     document.getElementById("result").innerHTML = displayText.replace(/\n/g, "<br>");
   } catch (error) {
     document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
