@@ -17,7 +17,6 @@ const db = getFirestore(app);
 
 const urlParams = new URLSearchParams(window.location.search);
 const playerId = urlParams.get("playerId");
-const characterId = "CHARACTER_ID_HERE";
 
 // UUID v4 形式をチェック
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -600,12 +599,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // // 画像ファイル選択イベント
-  // const imageUploadInput = document.getElementById("image-upload");
-  // imageUploadInput?.addEventListener("change", handleImageFileChange);
-  // // 画像アップロードボタン
-  // document.getElementById("image-save-button")?.addEventListener("click", uploadImage);
-  // ファイル選択ボタン → 隠し input をクリック
+  // 画像ファイル選択イベント
   document.getElementById("image-select-button")?.addEventListener("click", () => {
     document.getElementById("image-upload").click();
   });
