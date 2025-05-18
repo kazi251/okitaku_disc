@@ -121,10 +121,16 @@ async function rollDice() {
   try {
     const response = await fetch(workerUrl.toString());
     const result = await response.json();
+    console.log("Dice API result:", result); // ← デバッグ用ログ
 
     let displayText = `🎲 ${command}:`;
     if (result.ok) {
       let resultText = result.text ?? "";
+
+      // xN形式の整形：#1の前に改行を消す
+      if (command.startsWith("x") && resultText.includes("#1")) {
+        resultText = resultText.replace(/\n?#1/, "#1");
+      }
 
       // 🎯 結果を1行ずつ処理して絵文字を付ける
       const lines = resultText.split("\n").map(line => {
@@ -144,7 +150,7 @@ async function rollDice() {
       displayText += "\nエラー: " + result.reason;
     }
 
-    document.getElementById("result").innerHTML = displayText.replace(/\n/g, "<br>");
+    document.getElementById("result").innerHTML = displayText.replace(/\n/g, "");
   } catch (error) {
     document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
     console.error("Fetch error:", error);
