@@ -103,39 +103,40 @@ function replaceVariables(text) {
 }
 
 async function rollDice() {
-    const command = document.getElementById("dice-command").value.trim();
-    if (!command) return;
+  
+  const command = replaceVariables(
+  document.getElementById("dice-command").value.trim()
+  );
+  if (!command) return;
 
-    command = replaceVariables(command);
-
-    const userName = currentCharacterName;
-    const avatarUrl = document.getElementById("explorer-image").src;
-    const webhook = currentCharacterData?.webhook;
-    
-    const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
-    workerUrl.searchParams.append("command", command);
-    workerUrl.searchParams.append("name", userName);
-    workerUrl.searchParams.append("avatar_url", avatarUrl);
-    workerUrl.searchParams.append("webhook", webhook);
-    try {
-        const response = await fetch(workerUrl.toString());
-        const result = await response.json();
-        let displayText = `🎲 ${command}: `;
-        if (result.ok) {
-            displayText += result.text;
-            showToast("ダイスを振りました！");
-            if (result.text.includes("致命的失敗")) displayText += " 💀";
-            else if (result.text.includes("失敗")) displayText += " 🥶";
-            else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
-            else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
-        } else {
-            displayText += "エラー: " + result.reason;
-        }
-        document.getElementById("result").innerText = displayText;
-    } catch (error) {
-        document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
-        console.error("Fetch error:", error);
-    }
+  const userName = currentCharacterName;
+  const avatarUrl = document.getElementById("explorer-image").src;
+  const webhook = currentCharacterData?.webhook;
+  
+  const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+  workerUrl.searchParams.append("command", command);
+  workerUrl.searchParams.append("name", userName);
+  workerUrl.searchParams.append("avatar_url", avatarUrl);
+  workerUrl.searchParams.append("webhook", webhook);
+  try {
+      const response = await fetch(workerUrl.toString());
+      const result = await response.json();
+      let displayText = `🎲 ${command}: `;
+      if (result.ok) {
+          displayText += result.text;
+          showToast("ダイスを振りました！");
+          if (result.text.includes("致命的失敗")) displayText += " 💀";
+          else if (result.text.includes("失敗")) displayText += " 🥶";
+          else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
+          else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
+      } else {
+          displayText += "エラー: " + result.reason;
+      }
+      document.getElementById("result").innerText = displayText;
+  } catch (error) {
+      document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
+      console.error("Fetch error:", error);
+  }
 }
 
 async function loadCharacterList() {
