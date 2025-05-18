@@ -54,7 +54,14 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-
+async function testAdminRead() {
+  try {
+    const snapshot = await getDocs(collectionGroup(db, "list"));
+    console.log("✅ 読み取り成功:", snapshot.docs.length);
+  } catch (e) {
+    console.error("❌ 読み取り失敗:", e);
+  }
+}
 // ✅ 各種ロード関数
 async function loadScenarios() {
   const snapshot = await getDocs(collection(db, "scenarios"));
@@ -227,6 +234,7 @@ async function loadPlayerList() {
 
 async function initAdminPage() {
   console.log(auth.currentUser?.uid); 
+  testAdminRead(); 
   try {
     await loadScenarios();
   } catch (e) {
