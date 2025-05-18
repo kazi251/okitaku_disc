@@ -37,22 +37,31 @@ const scenarioMap = new Map();
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    initAdminPage(); // ログイン済みなら初期化
-  } else {
-    // ログインしていない場合はログインを促す
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log("ログイン成功:", result.user.displayName);
-        initAdminPage(); // 成功後に初期化
-      })
-      .catch((error) => {
-        console.error("ログインエラー:", error);
+/**
+ * 認証状態を監視して、ログイン後に callback を呼び出す
+ * @param {Function} callback - ログイン後に呼び出される関数（例: initAdminPage）
+ */
+function handleAuthState(callback) {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      console.log("✅ ログイン済み:", user.uid);
+      try {
+        await callback(); // 認証済みユーザーでコールバック実行
+      } catch (e) {
+        console.error("コールバック実行時のエラー:", e);
+      }
+    } else {
+      console.log("⛔ 未ログイン。ログインを試行中...");
+      try {
+        await signInWithPopup(auth, provider);
+        // ログイン後は onAuthStateChanged が再び呼ばれて callback が呼ばれる
+      } catch (e) {
+        console.error("ログインエラー:", e);
         alert("ログインに失敗しました。");
-      });
-  }
-});
+      }
+    }
+  });
+}
 
 async function testAdminRead() {
   try {
@@ -234,7 +243,7 @@ async function loadPlayerList() {
 
 async function initAdminPage() {
   console.log(auth.currentUser?.uid); 
-  testAdminRead(); 
+  console.log("🔁 initAdminPage 実行");
   try {
     await loadScenarios();
   } catch (e) {
@@ -383,4 +392,6 @@ function setupEventListeners() {
 
 
 // ✅ 初期化トリガー
-window.addEventListener("DOMContentLoaded", initAdminPage);
+window.addEventListener("DOMContentLoaded", () => {
+  handleAuthState(initAdminPage);
+});
