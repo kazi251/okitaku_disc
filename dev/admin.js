@@ -234,6 +234,7 @@ async function loadPlayerList() {
 }
 
 async function initAdminPage() {
+  console.log("UID確認", user.uid);
   console.log(auth.currentUser?.uid); 
   console.log("🔁 initAdminPage 実行");
   try {
