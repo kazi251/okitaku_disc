@@ -63,23 +63,6 @@ function handleAuthState(callback) {
   });
 }
 
-async function testAdminRead() {
-  try {
-    const snapshot = await getDocs(collectionGroup(db, "list"));
-    console.log("✅ 読み取り成功:", snapshot.docs.length);
-  } catch (e) {
-    console.error("❌ 読み取り失敗:", e);
-  }
-}
-// ✅ 各種ロード関数
-async function loadScenarios() {
-  const snapshot = await getDocs(collection(db, "scenarios"));
-  scenarioMap.clear();
-  snapshot.forEach(docSnap => {
-    scenarioMap.set(docSnap.id, docSnap.data().name);
-  });
-}
-
 async function loadKpTable() {
   const tbody = document.querySelector("#kp-matrix tbody");
   tbody.innerHTML = "";
@@ -251,20 +234,19 @@ async function initAdminPage() {
   }
 
   try {
-    await loadCharacterMatrix();
-  } catch (e) {
-    console.error("loadCharacterMatrixで失敗:", e);
-  }
-
-  try {
     await loadPlayerList();
   } catch (e) {
     console.error("loadPlayerListで失敗:", e);
   }
 
+  try {
+    await loadCharacterMatrix();
+  } catch (e) {
+    console.error("loadCharacterMatrixで失敗:", e);
+  }
+
   await loadKpTable();
   setupEventListeners();
-  // loadPlayerList(); 
 }
 
 // ✅ イベント登録
