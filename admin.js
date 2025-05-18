@@ -247,7 +247,7 @@ async function initAdminPage() {
 
   await loadKpTable();
   setupEventListeners();
-  loadPlayerList(); 
+  // loadPlayerList(); 
 }
 
 // ✅ イベント登録
