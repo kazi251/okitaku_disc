@@ -88,9 +88,26 @@ async function sendSay() {
     }
 }
 
+// SAN値チェック用変数処理
+function replaceVariables(text) {
+  if (!currentCharacterData) return text;
+
+  const variables = {
+    SAN: currentCharacterData.san,
+    // ここに必要があれば今後変数化したい値を入れる
+  };
+
+  return text.replace(/\{([^}]+)\}/g, (_, key) => {
+    return variables[key] !== undefined ? variables[key] : `{${key}}`;
+  });
+}
+
 async function rollDice() {
     const command = document.getElementById("dice-command").value.trim();
     if (!command) return;
+
+    command = replaceVariables(command);
+
     const userName = currentCharacterName;
     const avatarUrl = document.getElementById("explorer-image").src;
     const webhook = currentCharacterData?.webhook;
