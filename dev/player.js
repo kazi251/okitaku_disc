@@ -129,7 +129,7 @@ async function rollDice() {
 
       // 🆕 xN形式の整形：#1の前に改行を入れる（見やすさ重視）
       if (command.startsWith("x") && resultText.includes("#1")) {
-        resultText = resultText.replace(/\n?#1/, "\n\n#1");
+        resultText = resultText.replace(/\n?#1/, "\n#1");
       }
 
       // 絵文字付与は結果末尾に
