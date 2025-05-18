@@ -394,53 +394,54 @@ function loadCharacterPaletteOnly(data) {
   updateChatPalette();
 }
 
-async function uploadImage() {
-  const fileInput = document.getElementById('image-upload');
-  const file = fileInput.files[0];
+// async function uploadImage() {
+//   const fileInput = document.getElementById('image-upload');
+//   const file = fileInput.files[0];
 
-  if (!file) {
-    showToast('ファイルが選択されていません。');
-    return;
-  }
+//   if (!file) {
+//     showToast('ファイルが選択されていません。');
+//     return;
+//   }
 
-  showToast('画像アップロード中...');
+//   showToast('画像アップロード中...');
 
-  try {
-    const formData = new FormData();
-    formData.append('image', file);
-    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+//   try {
+//     const formData = new FormData();
+//     formData.append('image', file);
+//     const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
 
-    const response = await fetch(workerUrl, {
-      method: 'POST',
-      body: formData,
-    });
+//     const response = await fetch(workerUrl, {
+//       method: 'POST',
+//       body: formData,
+//     });
 
-    if (response.ok) {
-      const result = await response.json();
-      const imageUrl = result.imageUrl;
+//     if (response.ok) {
+//       const result = await response.json();
+//       const imageUrl = result.imageUrl;
 
-      showToast('アップロード成功！画像を保存中...');
+//       showToast('アップロード成功！画像を保存中...');
 
-      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-      await setDoc(ref, {
-        imageUrl,
-        updatedAt: new Date().toISOString(),
-      }, { merge: true });
+//       const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+//       await setDoc(ref, {
+//         imageUrl,
+//         updatedAt: new Date().toISOString(),
+//       }, { merge: true });
 
-      const imageElement = document.getElementById("explorer-image");
-      imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
+//       const imageElement = document.getElementById("explorer-image");
+//       imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
 
-      showToast("画像が保存されました ✅");
+//       showToast("画像が保存されました ✅");
 
-    } else {
-      showToast('アップロード失敗: ' + response.statusText);
-    }
-  } catch (error) {
-    showToast('エラーが発生しました: ' + error.message);
-    console.error(error);
-  }
-}
+//     } else {
+//       showToast('アップロード失敗: ' + response.statusText);
+//     }
+//   } catch (error) {
+//     showToast('エラーが発生しました: ' + error.message);
+//     console.error(error);
+//   }
+// }
 
+// シナリオIDの登録
 async function updateScenarioId() {
   const scenarioId = document.getElementById("scenario-id-input").value.trim();
   if (!scenarioId || !currentCharacterId) {
@@ -470,6 +471,7 @@ async function updateScenarioId() {
   }
 }
 
+// シナリオIDの削除
 async function clearScenarioId() {
   if (!currentCharacterId) {
     showToast("キャラクターが未選択です");
@@ -578,10 +580,10 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const charRef = doc(db, "characters", playerId, "list", characterId);
+    const charRef = doc(db, "characters", playerId, "list", characterId, );
 
     try {
-      await updateDoc(charRef, { name: newName });
+      await updateDoc(charRef, { name: newName , playerId: playerId}); //エラー修正したところ
       alert("名前を更新しました！");
     } catch (error) {
       console.error("名前更新失敗:", error);
