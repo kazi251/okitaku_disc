@@ -46,6 +46,7 @@ function handleAuthState(callback) {
     if (user) {
       console.log("✅ ログイン済み:", user.uid);
       try {
+        await callback(user);
         await callback(); // 認証済みユーザーでコールバック実行
       } catch (e) {
         console.error("コールバック実行時のエラー:", e);
@@ -234,7 +235,7 @@ async function loadPlayerList() {
 }
 
 async function initAdminPage() {
-  console.log("UID確認", user.uid);
+  console.log("管理者ページ初期化: ", user.uid);
   console.log(auth.currentUser?.uid); 
   console.log("🔁 initAdminPage 実行");
   try {
