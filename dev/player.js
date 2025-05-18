@@ -121,16 +121,10 @@ async function rollDice() {
   try {
     const response = await fetch(workerUrl.toString());
     const result = await response.json();
-    console.log("Dice API result:", result); // ← デバッグ用ログ
 
     let displayText = `🎲 ${command}:`;
     if (result.ok) {
       let resultText = result.text ?? "";
-
-      // xN形式の整形：#1の前に改行を入れる
-      if (command.startsWith("x") && resultText.includes("#1")) {
-        resultText = resultText.replace(/\n?#1/, "\n\n#1");
-      }
 
       // 🎯 結果を1行ずつ処理して絵文字を付ける
       const lines = resultText.split("\n").map(line => {
