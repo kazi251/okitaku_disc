@@ -211,6 +211,21 @@ async function loadCharacterMatrix() {
   }
 }
 
+async function loadPlayerList() {
+  const select = document.getElementById("new-player-id");
+  if (!select) return;
+
+  select.innerHTML = ""; // 初期化
+  const snapshot = await getDocs(collection(db, "players"));
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const option = document.createElement("option");
+    option.value = doc.id;
+    option.textContent = `${data.name}（${doc.id.slice(0, 8)}…）`;
+    select.appendChild(option);
+  });
+}
+
 async function initAdminPage() {
   try {
     await loadScenarios();
@@ -233,22 +248,6 @@ async function initAdminPage() {
   await loadKpTable();
   setupEventListeners();
   loadPlayerList(); 
-}
-
-
-async function loadPlayerList() {
-  const select = document.getElementById("new-player-id");
-  if (!select) return;
-
-  select.innerHTML = ""; // 初期化
-  const snapshot = await getDocs(collection(db, "players"));
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const option = document.createElement("option");
-    option.value = doc.id;
-    option.textContent = `${data.name}（${doc.id.slice(0, 8)}…）`;
-    select.appendChild(option);
-  });
 }
 
 // ✅ イベント登録
