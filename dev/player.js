@@ -103,50 +103,50 @@ function replaceVariables(text) {
 }
 
 async function rollDice() {
-  
   const command = replaceVariables(
-  document.getElementById("dice-command").value.trim()
+    document.getElementById("dice-command").value.trim()
   );
   if (!command) return;
 
   const userName = currentCharacterName;
   const avatarUrl = document.getElementById("explorer-image").src;
   const webhook = currentCharacterData?.webhook;
-  
+
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
   workerUrl.searchParams.append("name", userName);
   workerUrl.searchParams.append("avatar_url", avatarUrl);
   workerUrl.searchParams.append("webhook", webhook);
+
   try {
     const response = await fetch(workerUrl.toString());
     const result = await response.json();
-    let displayText = `🎲 ${command}: `;
+    console.log("Dice API result:", result); // ← デバッグ用ログ
 
+    let displayText = `🎲 ${command}:`;
     if (result.ok) {
-      let resultText = result.text;
+      let resultText = result.text ?? "";
 
-      // --- 🆕 xN形式の整形 ---
-      if (command.startsWith("x") && result.text.includes("#1")) {
-        resultText = result.text.replace(/\s*#(\d+)/g, "<br><br>#$1");
-        displayText = `🎲 ${command}:<br>` + resultText;
-      } else {
-        displayText += resultText;
+      // 🆕 xN形式の整形：#1の前に改行を入れる（見やすさ重視）
+      if (command.startsWith("x") && resultText.includes("#1")) {
+        resultText = resultText.replace(/\n?#1/, "\n\n#1");
       }
 
-      // 絵文字付与（既存通り）
-      if (result.text.includes("致命的失敗")) displayText += " 💀";
-      else if (result.text.includes("失敗")) displayText += " 🥶";
-      else if (result.text.includes("決定的成功/スペシャル")) displayText += " 🎉🎊✨";
-      else if (result.text.includes("スペシャル") || result.text.includes("成功")) displayText += " 😊";
+      // 絵文字付与は結果末尾に
+      if (resultText.includes("致命的失敗")) resultText += " 💀";
+      else if (resultText.includes("失敗")) resultText += " 🥶";
+      else if (resultText.includes("決定的成功/スペシャル")) resultText += " 🎉🎊✨";
+      else if (resultText.includes("スペシャル") || resultText.includes("成功")) resultText += " 😊";
 
       showToast("ダイスを振りました！");
+      displayText += "\n" + resultText;
+
     } else {
-      displayText += "エラー: " + result.reason;
+      displayText += "\nエラー: " + result.reason;
     }
 
-    // innerText → innerHTML に変更して改行反映
-    document.getElementById("result").innerHTML = displayText;
+    // \nをHTMLで改行表示
+    document.getElementById("result").innerHTML = displayText.replace(/\n/g, "<br>");
   } catch (error) {
     document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
     console.error("Fetch error:", error);
