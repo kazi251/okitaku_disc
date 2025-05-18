@@ -227,6 +227,7 @@ async function loadPlayerList() {
 }
 
 async function initAdminPage() {
+  console.log(firebase.auth().currentUser?.uid);
   try {
     await loadScenarios();
   } catch (e) {
