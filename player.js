@@ -590,12 +590,14 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // 探索者画像の変更
-  document.getElementById("image-save-button").addEventListener("click", uploadImage);
-  // ファイル選択時の処理
-  const imageUploadInput = document.getElementById("image-upload");
   imageUploadInput?.addEventListener("change", (event) => {
     const fileName = event.target.files[0]?.name;
     console.log("選択されたファイル:", fileName);
+  });
+
+  imageUploadInput?.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    imageFileName.textContent = file ? file.name : "ファイルが選択されていません";
   });
 
   // キャラクター編集の再読み込み
