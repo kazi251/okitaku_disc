@@ -593,14 +593,27 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // アコーディオン処理
+  // document.querySelectorAll(".toggle-button").forEach(button => {
+  //   button.addEventListener("click", () => {
+  //     const content = button.nextElementSibling;
+  //     const isOpen = content.style.display === "block";
+  //     content.style.display = isOpen ? "none" : "block";
+  //     button.classList.toggle("open", !isOpen);
+  //   });
+  // });
   document.querySelectorAll(".toggle-button").forEach(button => {
-    button.addEventListener("click", () => {
-      const content = button.nextElementSibling;
-      const isOpen = content.style.display === "block";
-      content.style.display = isOpen ? "none" : "block";
-      button.classList.toggle("open", !isOpen);
-    });
+  button.addEventListener("click", () => {
+    const parent = button.closest(".section");
+    const content = parent?.querySelector(".toggle-content");
+
+    if (!content) return;
+
+    const isOpen = content.style.display === "block";
+    content.style.display = isOpen ? "none" : "block";
+    button.classList.toggle("open", !isOpen);
   });
+});
+
 
   // パラメータの反映
   [
