@@ -150,7 +150,7 @@ async function rollDice() {
       displayText += "\nエラー: " + result.reason;
     }
 
-    document.getElementById("result").innerHTML = displayText.replace(/\n/g, "");
+    document.getElementById("result").innerHTML = displayText.replace(/\n/g, "<br>");
   } catch (error) {
     document.getElementById("result").innerText = "⚠️ 通信エラーが発生しました";
     console.error("Fetch error:", error);
