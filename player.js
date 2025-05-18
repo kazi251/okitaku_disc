@@ -2,16 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebas
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
-// const firebaseConfig = {
-//     apiKey: "AIzaSyBvrggu4aMoRwAG2rccnWQwhDGsS60Tl8Q",
-//     authDomain: "okitakudisc.firebaseapp.com",
-//     projectId: "okitakudisc",
-//     storageBucket: "okitakudisc.appspot.com",
-//     messagingSenderId: "724453796377",
-//     appId: "1:724453796377:web:bec78279dfc6dba0fc9888",
-//     measurementId: "G-LNHQBFYXFL"
-// };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
