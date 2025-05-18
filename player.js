@@ -568,7 +568,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const imageUploadInput = document.getElementById("image-upload");
   imageUploadInput?.addEventListener("change", handleImageFileChange);
   // 画像アップロードボタン
-  document.getElementById("image-save-button")?.addEventListener("click", image-upload);
+  document.getElementById("image-save-button")?.addEventListener("click", uploadImage);
 
   // キャラクター編集の再読み込み
   document.getElementById("edit-load-button")?.addEventListener("click", async () => {
