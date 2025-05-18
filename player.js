@@ -600,10 +600,24 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 画像ファイル選択イベント
-  const imageUploadInput = document.getElementById("image-upload");
-  imageUploadInput?.addEventListener("change", handleImageFileChange);
-  // 画像アップロードボタン
+  // // 画像ファイル選択イベント
+  // const imageUploadInput = document.getElementById("image-upload");
+  // imageUploadInput?.addEventListener("change", handleImageFileChange);
+  // // 画像アップロードボタン
+  // document.getElementById("image-save-button")?.addEventListener("click", uploadImage);
+  // ファイル選択ボタン → 隠し input をクリック
+  document.getElementById("image-select-button")?.addEventListener("click", () => {
+    document.getElementById("image-upload").click();
+  });
+
+  // 選択されたファイル名を表示（ファイルが選択されていない場合のフォールバックも含む）
+  document.getElementById("image-upload")?.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    const nameField = document.getElementById("image-file-name");
+    nameField.textContent = file ? file.name : "ファイルが選択されていません";
+  });
+
+  // 画像アップロード処理
   document.getElementById("image-save-button")?.addEventListener("click", uploadImage);
 
   // キャラクター編集の再読み込み
