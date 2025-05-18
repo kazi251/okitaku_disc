@@ -127,12 +127,13 @@ async function rollDice() {
     if (result.ok) {
       let resultText = result.text ?? "";
 
-      // xN形式の整形：#1の前に改行を消す
-      if (command.startsWith("x") && resultText.includes("#1")) {
-        resultText = resultText.replace(/\n?#1/, "#1");
-      }
+      // // xN形式の整形：#1の前に改行を消す
+      // if (command.startsWith("x") && resultText.includes("#1")) {
+      //   resultText = resultText.replace(/\n?#1/, "#1");
+      // }
+      resultText = resultText.replace(/\n{2,}(#\d+)/g, '\n$1');
 
-      // 🎯 結果を1行ずつ処理して絵文字を付ける
+      // 結果を1行ずつ処理して絵文字を付ける
       const lines = resultText.split("\n").map(line => {
         if (line.includes("致命的失敗")) return line + " 💀";
         else if (line.includes("失敗")) return line + " 🥶";
