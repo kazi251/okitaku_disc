@@ -352,14 +352,25 @@ function savePaletteOnly() {
 }
 
 function saveNameOnly() {
-  if (!currentCharacterId) return;
+  if (!currentCharacterId) {
+    showToast("キャラクターが選択されていません");
+    return;
+  }
+
+  const newName = document.getElementById("name-input").value.trim();
+  if (!newName) {
+    showToast("名前を入力してください");
+    return;
+  }
+
   const ref = doc(db, "characters", playerId, "list", currentCharacterId);
   setDoc(ref, {
-    name: document.getElementById("name-input").value,
+    name: newName,
     playerId: playerId,
     updatedAt: new Date().toISOString()
   }, { merge: true });
-  showToast("名前を保存しました！");
+
+  showToast("名前を保存しました ✅");
 }
 
 function loadCharacterStatusOnly(data) {
@@ -517,7 +528,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("roll-button").addEventListener("click", rollDice);
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
-  document.getElementById("name-save-button")?.addEventListener("click", saveNameOnly);
+  document.getElementById("update-name-button").addEventListener("click", saveNameOnly);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
 
@@ -586,26 +597,6 @@ window.addEventListener("DOMContentLoaded", () => {
         loadCharacterStatusOnly(data);
         showToast("ステータスを再読み込みしました！");
       }
-    }
-  });
-
-  // 探索者の名前の変更
-  document.getElementById("update-name-button").addEventListener("click", async () => {
-    const newName = document.getElementById("name-input").value.trim();
-
-    if (!newName) {
-      alert("名前を入力してください");
-      return;
-    }
-
-    const charRef = doc(db, "characters", playerId, "list", characterId, );
-
-    try {
-      await updateDoc(charRef, { name: newName , playerId: playerId}); //エラー修正したところ
-      alert("名前を更新しました！");
-    } catch (error) {
-      console.error("名前更新失敗:", error);
-      alert("名前の更新に失敗しました");
     }
   });
 
