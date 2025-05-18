@@ -394,52 +394,25 @@ function loadCharacterPaletteOnly(data) {
   updateChatPalette();
 }
 
-// async function uploadImage() {
-//   const fileInput = document.getElementById('image-upload');
-//   const file = fileInput.files[0];
+function handleImageFileChange(event) {
+  const file = event.target.files[0];
+  const imageFileName = document.getElementById("image-file-name");
+  const imageElement = document.getElementById("explorer-image");
 
-//   if (!file) {
-//     showToast('ファイルが選択されていません。');
-//     return;
-//   }
+  if (file) {
+    imageFileName.textContent = file.name;
+    console.log("選択されたファイル:", file.name);
 
-//   showToast('画像アップロード中...');
-
-//   try {
-//     const formData = new FormData();
-//     formData.append('image', file);
-//     const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
-
-//     const response = await fetch(workerUrl, {
-//       method: 'POST',
-//       body: formData,
-//     });
-
-//     if (response.ok) {
-//       const result = await response.json();
-//       const imageUrl = result.imageUrl;
-
-//       showToast('アップロード成功！画像を保存中...');
-
-//       const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-//       await setDoc(ref, {
-//         imageUrl,
-//         updatedAt: new Date().toISOString(),
-//       }, { merge: true });
-
-//       const imageElement = document.getElementById("explorer-image");
-//       imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
-
-//       showToast("画像が保存されました ✅");
-
-//     } else {
-//       showToast('アップロード失敗: ' + response.statusText);
-//     }
-//   } catch (error) {
-//     showToast('エラーが発生しました: ' + error.message);
-//     console.error(error);
-//   }
-// }
+    // キャッシュ防止用にプレビュー反映（選択された画像を即表示）
+    const reader = new FileReader();
+    reader.onload = () => {
+      imageElement.src = reader.result + "?t=" + Date.now();
+    };
+    reader.readAsDataURL(file);
+  } else {
+    imageFileName.textContent = "ファイルが選択されていません";
+  }
+}
 
 // シナリオIDの登録
 async function updateScenarioId() {
@@ -591,19 +564,11 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 探索者画像の変更
+  // 画像ファイル選択イベント
   const imageUploadInput = document.getElementById("image-upload");
-  const imageFileName = document.getElementById("image-file-name");
-
-  imageUploadInput?.addEventListener("change", (event) => {
-    const fileName = event.target.files[0]?.name;
-    console.log("選択されたファイル:", fileName);
-  });
-
-  imageUploadInput?.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    imageFileName.textContent = file ? file.name : "ファイルが選択されていません";
-  });
+  imageUploadInput?.addEventListener("change", handleImageFileChange);
+  // 画像アップロードボタン
+  document.getElementById("image-save-button").addEventListener("click", uploadImage);
 
   // キャラクター編集の再読み込み
   document.getElementById("edit-load-button").addEventListener("click", async () => {
