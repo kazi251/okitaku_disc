@@ -10,35 +10,15 @@ import {
   setDoc,
   addDoc
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+
 import { showToast } from "./utils.js";
-
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-
-const auth = getAuth();
-const provider = new GoogleAuthProvider();
-
-document.getElementById("googleLoginBtn").addEventListener("click", async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    console.log("ログイン成功:", user.uid, user.email);
-
-    // 管理者チェック用の Firestore ドキュメント存在確認
-    const adminDocRef = doc(db, "admins", user.uid);
-    const adminDoc = await getDoc(adminDocRef);
-
-    if (adminDoc.exists()) {
-      console.log("管理者として認証されました");
-      // 管理画面の初期化など
-      await initAdminPage();
-    } else {
-      alert("あなたは管理者ではありません");
-    }
-  } catch (error) {
-    console.error("ログイン失敗:", error);
-    alert("ログインに失敗しました");
-  }
-});
 
 const firebaseConfig = {
   apiKey: "AIzaSyBvrggu4aMoRwAG2rccnWQwhDGsS60Tl8Q",
@@ -53,6 +33,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const scenarioMap = new Map();
+
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("ログイン済み:", user.displayName);
+    initAdminPage(); // ログイン済みなら初期化
+  } else {
+    // ログインしていない場合はログインを促す
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log("ログイン成功:", result.user.displayName);
+        initAdminPage(); // 成功後に初期化
+      })
+      .catch((error) => {
+        console.error("ログインエラー:", error);
+        alert("ログインに失敗しました。");
+      });
+  }
+});
 
 
 // ✅ 各種ロード関数
