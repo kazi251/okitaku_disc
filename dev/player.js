@@ -372,7 +372,7 @@ function savePaletteOnly() {
     updatedAt: new Date().toISOString()
   }, { merge: true });
   showToast("チャットパレットを保存しました！");
-  loadCharacterPaletteOnly({ palette: paletteValue }); // 再反映
+  loadCharacterPaletteOnly({ palette: document.getElementById("chat-palette-input").value }); // 再反映
 }
 
 function saveNameOnly() {
