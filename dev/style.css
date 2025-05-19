@@ -77,6 +77,8 @@ input[type="text"]{ /* テキストボックス */
 }
 
 #suggestions {
+  width: 100%;
+  max-width: 300px;
   background: #444;              /* 濃いグレー背景 */
   border: 1px solid #666;        /* 少し明るめの境界線 */
   max-height: 120px;
