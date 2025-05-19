@@ -70,15 +70,25 @@ input[type="text"]{ /* テキストボックス */
   min-height: 150px; /* 高さを確保 */
 }
 
+.input-wrapper {
+  position: relative; /* 子要素のabsolute位置指定の基準にする */
+  display: inline-block;
+  width: 100%;
+}
+
 #suggestions {
   background: #444;              /* 濃いグレー背景 */
   border: 1px solid #666;        /* 少し明るめの境界線 */
   max-height: 120px;
   overflow-y: auto;
   position: absolute;
+  bottom: 100%;               /* 入力欄の上に表示 */
+  left: 0;
+  right: 0;
   z-index: 1000;
   display: none;
   color: #F8F8F2;                /* 明るい文字色 */
+  margin-bottom: 5px;         /* 入力欄との間隔 */
 }
 
 #suggestions div {
