@@ -641,6 +641,18 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   });
 
+  // セリフ送信テキストエリアの制御
+  const textarea = document.getElementById("say-content");
+
+  textarea.addEventListener("input", () => {
+    textarea.style.height = "auto"; // 一度高さをリセット
+    const lineHeight = 24; // 行の高さ（CSSと合わせる）
+    const maxLines = 5;
+    const maxHeight = lineHeight * maxLines;
+
+    textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+  });
+
   // アコーディオン処理
   document.querySelectorAll(".toggle-button").forEach(button => {
   button.addEventListener("click", () => {
