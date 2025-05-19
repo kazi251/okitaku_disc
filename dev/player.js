@@ -680,10 +680,23 @@ window.addEventListener("DOMContentLoaded", () => {
   updateDisplay();
   loadCharacterList();
 
-  // タブがアクティブになったときのリロード処理
-  document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") {
-    location.reload();
-  }
-});
+  // タブがアクティブに戻ったときにステータスとパレットのみ再読み込み
+  document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState === "visible") {
+      if (!currentCharacterId || !playerId) return;
+
+      try {
+        const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
+          loadCharacterStatusOnly(data);
+          loadCharacterPaletteOnly(data);
+          console.log("アクティブ復帰時に再読み込み完了");
+        }
+      } catch (error) {
+        console.error("アクティブ復帰時のデータ取得エラー:", error);
+      }
+    }
+  });
 });
