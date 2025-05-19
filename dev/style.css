@@ -90,7 +90,7 @@ input[type="text"]{ /* テキストボックス */
   z-index: 1000;
   display: none;
   color: #F8F8F2;                /* 明るい文字色 */
-  margin-bottom: 5px;         /* 入力欄との間隔 */
+  margin-bottom: 0;         /* 入力欄との間隔 */
 }
 
 #suggestions div {
