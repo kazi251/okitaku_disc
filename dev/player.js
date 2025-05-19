@@ -310,6 +310,7 @@ async function saveCharacterData() {
     await setDoc(ref, characterData, { merge: true });
 
     showToast("キャラクターを保存しました！");
+    loadCharacterStatusOnly(characterData); // 保存直後に再反映！
 
     // Discord通知（パラメータ保存ボタンからの呼び出し時のみ）
     if (isLegacySave) {
@@ -359,6 +360,7 @@ async function saveCharacterData() {
     console.error("キャラクター保存失敗:", error);
     showToast("保存に失敗しました");
   }
+
 }
 
 function savePaletteOnly() {
@@ -370,6 +372,7 @@ function savePaletteOnly() {
     updatedAt: new Date().toISOString()
   }, { merge: true });
   showToast("チャットパレットを保存しました！");
+  loadCharacterPaletteOnly({ palette: paletteValue }); // 再反映
 }
 
 function saveNameOnly() {
@@ -468,26 +471,6 @@ async function uploadImage() {
   } catch (error) {
     console.error(error);
     showToast('エラーが発生しました: ' + error.message);
-  }
-}
-
-function handleImageFileChange(event) {
-  const file = event.target.files[0];
-  const imageFileName = document.getElementById("image-file-name");
-  const imageElement = document.getElementById("explorer-image");
-
-  if (file) {
-    imageFileName.textContent = file.name;
-    console.log("選択されたファイル:", file.name);
-
-    // キャッシュ防止用にプレビュー反映（選択された画像を即表示）
-    const reader = new FileReader();
-    reader.onload = () => {
-      imageElement.src = reader.result + "?t=" + Date.now();
-    };
-    reader.readAsDataURL(file);
-  } else {
-    imageFileName.textContent = "ファイルが選択されていません";
   }
 }
 
@@ -684,4 +667,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
   updateDisplay();
   loadCharacterList();
+
+  // タブがアクティブになったときのリロード処理
+  document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    location.reload();
+  }
+});
 });
