@@ -141,6 +141,7 @@ async function rollDice() {
 
       showToast("ダイスを振りました！");
       displayText += "\n" + decoratedText;
+      document.getElementById("dice-command").value = "";
 
     } else {
       displayText += "\nエラー: " + result.reason;
