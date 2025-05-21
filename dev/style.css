@@ -54,6 +54,10 @@ input[type="text"]{ /* テキストボックス */
   margin-top: 10px;
 }
 
+.scenario-label {
+  font-size: 13px;
+}
+
 #current-scenario-name {
   word-break: break-word;
 }
@@ -212,6 +216,11 @@ input[type="text"]{ /* テキストボックス */
   float: right;
 }
 
+.char-edit-label {
+  width: 5em; /* ラベルの幅を固定 */
+  text-align: left; /* 左寄せ */
+}
+
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
 @media screen and (max-width: 600px) {
   body {
@@ -236,6 +245,12 @@ input[type="text"]{ /* テキストボックス */
     flex-direction: column; /* 縦並びにする */
     align-items: center; /* 中央揃え */
     gap: 20px; /* 要素間の縦方向の間隔 */
+  }
+
+  .scenario-label {
+  font-size: 13px;
+  text-align: center; /* 中央揃え */
+  margin-top: 1em;
   }
 
   .explorer-section {
