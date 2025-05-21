@@ -244,7 +244,7 @@ input[type="text"]{ /* テキストボックス */
   #explorer-container {
     flex-direction: column; /* 縦並びにする */
     align-items: center; /* 中央揃え */
-    gap: 10px; /* 要素間の縦方向の間隔 */
+    gap: 20px; /* 要素間の縦方向の間隔 */
   }
 
   .scenario-label {
@@ -273,16 +273,32 @@ input[type="text"]{ /* テキストボックス */
     margin-top: 2em; /* 上方向の余白（em単位で調整） */
   }
 
-  .explorer-stats div {
+  /* .explorer-stats div {
     display: flex; /* ラベルと値を横並びにする */
-    align-items: baseline; /* ベースラインで揃える */
-    gap: 5px; /* ラベルと値の間の間隔 */
-  }
+     /*align-items: baseline; /* ベースラインで揃える */
+     /*gap: 5px; /* ラベルと値の間の間隔 */
+   /*} */
 
-  .explorer-stats .stat-label { 
+    /* ラベルと入力の整列用（パラメータ＋キャラ編集に共通） */
+    .parameter-section > div,
+    .explorer-stats > div {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+  /* .explorer-stats .stat-label { 
     display: inline-block;
     width: 3em;
     text-align: left;
+  } */
+   .stat-label {
+    display: inline-block;
+    width: 5em;
+    text-align: left;
+    font-weight: bold;
   }
 
   #other1-label,
@@ -303,7 +319,6 @@ input[type="text"]{ /* テキストボックス */
     padding: 8px; /* 入力フォームとボタンの内側の余白 */
   }
 
-  /* #new-character-button, */
   #say-content,
   #dice-command,
   #suggestions,
@@ -315,8 +330,4 @@ input[type="text"]{ /* テキストボックス */
     width: 95%; /* 幅を親要素の95%に */
     min-height: 150px; /* 最小の高さ */
   }
-
-  .char-edit-label {
-  width: 7em; /* ラベルの幅を固定 */
-}
 }
