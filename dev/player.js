@@ -647,7 +647,7 @@ window.addEventListener("DOMContentLoaded", () => {
   textarea.addEventListener("input", () => {
     textarea.style.height = "auto"; // 一度高さをリセット
     const lineHeight = 24; // 行の高さ（CSSと合わせる）
-    const maxLines = 3;
+    const maxLines = 4;
     const maxHeight = lineHeight * maxLines;
 
     textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
