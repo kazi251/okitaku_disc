@@ -317,6 +317,6 @@ input[type="text"]{ /* テキストボックス */
   }
 
   .char-edit-label {
-  width: 6em; /* ラベルの幅を固定 */
+  width: 7em; /* ラベルの幅を固定 */
 }
 }
