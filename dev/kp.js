@@ -49,13 +49,16 @@ async function loadScenarios() {
     if (data.kpId === kpId) {
       const div = document.createElement("div");
       div.style.marginBottom = "10px";
+
       div.innerHTML = `
-        <strong>${data.name}</strong>
-        <button onclick="location.href='kp_scenario.html?scenarioId=${docSnap.id}'">管理へ</button>
+        <strong>${data.name}</strong><br>
+        <label>ID: <input type="text" value="${docSnap.id}" readonly style="width: 300px;"></label><br>
+        <button onclick="location.href='kp_scenario.html?scenarioId=${docSnap.id}&kpId=${kpId}'">管理へ</button>
       `;
       scenarioListDiv.appendChild(div);
     }
   });
 }
+
 
 loadScenarios();
