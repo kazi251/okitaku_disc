@@ -22,21 +22,22 @@ const createButton = document.getElementById("create-scenario");
 
 createButton.addEventListener("click", async () => {
   const input = document.getElementById("new-scenario-name");
-  const title = input.value.trim();
+  const name = input.value.trim();
 
-  if (!title) {
+  if (!name) {
     alert("シナリオ名を入力してください");
     return;
   }
 
   await addDoc(collection(db, "scenarios"), {
-    title,
+    name,
     kpId,
     createdAt: new Date()
   });
 
   input.value = "";
   loadScenarios();
+  showToast("シナリオを登録しました！");
 });
 
 async function loadScenarios() {
