@@ -49,7 +49,7 @@ async function loadScenarios() {
       const div = document.createElement("div");
       div.style.marginBottom = "10px";
       div.innerHTML = `
-        <strong>${data.title}</strong>
+        <strong>${data.name}</strong>
         <button onclick="location.href='kp_scenario.html?scenarioId=${docSnap.id}'">管理へ</button>
       `;
       scenarioListDiv.appendChild(div);
