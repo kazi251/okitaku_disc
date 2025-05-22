@@ -216,30 +216,13 @@ input[type="text"]{ /* テキストボックス */
   float: right;
 }
 
-/* キャラクター編集のラベル幅調整 */
-.character-edit-section div {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
+.char-edit-label {
+  width: 6em; /* ラベルの幅を固定 */
+  text-align: left; /* 左寄せ */
 }
 
-.character-edit-section label {
-  display: inline-block;
-  width: 5em; /* ラベルを5文字分の幅に固定 */
-  text-align: right;
-  margin-right: 5px;
-}
-
-/* インプットやボタンのスタイル調整 */
-.character-edit-section input[type="text"],
-.character-edit-section input[type="file"] {
-  flex: 1;
-  padding: 5px;
-}
-
-.character-edit-section button {
-  margin-left: 5.5em; /* ラベル幅+余白と同じ分インデント */
-  margin-top: 3px;
+.character-edit .button-group {
+  margin-left: 4em; /* ラベル幅分インデント */
 }
 
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
