@@ -161,7 +161,7 @@ input[type="text"]{ /* テキストボックス */
 .parameter-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 .parameter-section .stat-label {
@@ -229,7 +229,7 @@ input[type="text"]{ /* テキストボックス */
 .character-edit .button-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 10px;
 }
 
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
