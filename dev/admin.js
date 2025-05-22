@@ -358,8 +358,7 @@ function setupEventListeners() {
       await addDoc(ref, {
         name,
         imageUrl,
-        webhook,
-        playerId: playerId, 
+        webhook, 
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
