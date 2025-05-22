@@ -272,6 +272,7 @@ function setupEventListeners() {
       const ref = doc(db, "players", playerId);
       await setDoc(ref, {
         name: name,
+        playerId: playerId,
         createdAt: new Date().toISOString()
       });
 
@@ -309,6 +310,7 @@ function setupEventListeners() {
       const ref = doc(db, "kpUsers", kpId);
       await setDoc(ref, {
         name: name,
+        kpId: kpId,
         createdAt: new Date().toISOString()
       });
 
@@ -361,6 +363,7 @@ function setupEventListeners() {
         webhook,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
+
       });
       showToast(`キャラクター「${name}」を ${playerId} に作成しました`);
       await loadCharacterMatrix();
