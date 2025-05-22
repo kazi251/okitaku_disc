@@ -226,7 +226,7 @@ input[type="text"]{ /* テキストボックス */
 .explorer-stats .button-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 8px;
 }
 
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
