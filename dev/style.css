@@ -161,7 +161,7 @@ input[type="text"]{ /* テキストボックス */
 .parameter-section {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
 }
 
 .parameter-section .stat-label {
@@ -219,8 +219,6 @@ input[type="text"]{ /* テキストボックス */
 .character-edit {
   margin-top: 10px;
 }
-
-
 
 .character-edit .char-edit-label {
   display: inline-block;
