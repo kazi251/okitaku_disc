@@ -224,6 +224,7 @@ input[type="text"]{ /* テキストボックス */
   display: flex; /* 行内要素を横並びにする */
   align-items: baseline; /* ベースラインを揃える */
   gap: 10px; /* ラベルと値の間隔 */
+  margin-bottom: 10px;
 }
 
 .character-edit .char-edit-label {
