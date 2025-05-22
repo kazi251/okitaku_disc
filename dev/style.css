@@ -220,11 +220,7 @@ input[type="text"]{ /* テキストボックス */
   margin-top: 10px;
 }
 
-.character-edit div {
-  display: flex; /* 行内要素を横並びにする */
-  align-items: baseline; /* ベースラインを揃える */
-  gap: 10px; /* ラベルと値の間隔 */
-}
+
 
 .character-edit .char-edit-label {
   display: inline-block;
