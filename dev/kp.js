@@ -32,7 +32,7 @@ createButton.addEventListener("click", async () => {
   await addDoc(collection(db, "scenarios"), {
     name,
     kpId,
-    createdAt: new Date()
+    createdAt: new Date().toISOString()
   });
 
   input.value = "";

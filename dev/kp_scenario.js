@@ -18,24 +18,24 @@ const db = getFirestore(app);
 const urlParams = new URLSearchParams(window.location.search);
 const scenarioId = urlParams.get("scenarioId");
 
-const titleElem = document.getElementById("scenario-title");
+const nameElem = document.getElementById("scenario-name");
 const charListElem = document.getElementById("character-list");
 
 async function loadScenario() {
   if (!scenarioId) {
-    titleElem.textContent = "シナリオIDが指定されていません。";
+    nameElem.textContent = "シナリオIDが指定されていません。";
     return;
   }
 
   // シナリオ情報を取得
   const scenarioDoc = await getDoc(doc(db, "scenarios", scenarioId));
   if (!scenarioDoc.exists()) {
-    titleElem.textContent = "シナリオが見つかりません。";
+    nameElem.textContent = "シナリオが見つかりません。";
     return;
   }
 
   const scenarioData = scenarioDoc.data();
-  titleElem.textContent = `シナリオ：${scenarioData.title}`;
+  nameElem.textContent = `シナリオ：${scenarioData.name}`;
 
   // キャラクター一覧を取得
   await loadCharacters(scenarioId);
