@@ -218,8 +218,12 @@ input[type="text"]{ /* テキストボックス */
 
 .explorer-stats .char-edit-label {
   display: inline-block;
-  width: 10em; /* ラベルの幅を固定 */
+  width: 5em; /* ラベルの幅を固定 */
   text-align: left; /* 左寄せ */
+}
+
+.char-edit-label .button-group{
+  margin-left: 4em;
 }
 
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
