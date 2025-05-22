@@ -221,10 +221,6 @@ input[type="text"]{ /* テキストボックス */
   text-align: left; /* 左寄せ */
 }
 
-.character-edit .button-group {
-  margin-left: 6em; /* ラベル幅分インデント */
-}
-
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
 @media screen and (max-width: 600px) {
   body {
