@@ -18,10 +18,10 @@ if (!uuidRegex.test(kpId)) {
 }
 
 const scenarioListDiv = document.getElementById("scenario-list");
-const createButton = document.getElementById("create-scenario-button");
+const createButton = document.getElementById("create-scenario");
 
 createButton.addEventListener("click", async () => {
-  const input = document.getElementById("new-scenario-title");
+  const input = document.getElementById("new-scenario-name");
   const title = input.value.trim();
 
   if (!title) {
