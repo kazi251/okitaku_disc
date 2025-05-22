@@ -282,6 +282,8 @@ input[type="text"]{ /* テキストボックス */
   .explorer-image {
     width: 128px; /* 画像の幅 */
     height: 128px; /* 画像の高さ */
+    -webkit-user-drag: none;
+    user-select: none;
   }
 
   .explorer-stats {
