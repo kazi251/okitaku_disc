@@ -220,7 +220,7 @@ input[type="text"]{ /* テキストボックス */
   margin-top: 10px;
   display: flex;
   flex-direction: column; /* 縦方向に並べる */
-  gap: 15px;            /* 子要素間の余白を設定（例: 15px） */
+  gap: 10px;            /* 子要素間の余白を設定（例: 15px） */
 }
 
 .character-edit .char-edit-label {
