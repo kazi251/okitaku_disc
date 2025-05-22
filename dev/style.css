@@ -222,7 +222,7 @@ input[type="text"]{ /* テキストボックス */
 }
 
 .character-edit .button-group {
-  margin-left: 4em; /* ラベル幅分インデント */
+  margin-left: 6em; /* ラベル幅分インデント */
 }
 
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
