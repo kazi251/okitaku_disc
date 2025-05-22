@@ -6,8 +6,16 @@ import { showToast } from './utils.js';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ✅ 仮のKP ID（認証機能をつける場合は後で変更）
-const kpId = "dummy-kp-id";
+// KP IDチェック
+const urlParams = new URLSearchParams(window.location.search);
+const kpId = urlParams.get("kpIdId");
+
+// UUID v4 形式をチェック
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+if (!uuidRegex.test(kpId)) {
+  alert("無効なkpIdです。URLを確認してください。");
+  throw new Error("Invalid kpId");
+}
 
 const scenarioListDiv = document.getElementById("scenario-list");
 const createButton = document.getElementById("create-scenario-button");
