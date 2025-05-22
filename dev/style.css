@@ -316,4 +316,44 @@ input[type="text"]{ /* テキストボックス */
     min-height: 150px; /* 最小の高さ */
   }
 
+  /* キャラクター編集欄：2カラムボタン配置など */
+  .explorer-stats label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .explorer-stats .char-edit-label {
+    display: inline-block;
+    width: 6em;
+    min-width: 6em;
+  }
+
+  .explorer-stats input[type="text"],
+  .explorer-stats input[type="file"],
+  .explorer-stats input[type="number"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-top: 4px;
+  }
+
+  .explorer-stats .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-left: 6em;
+    margin-top: 5px;
+  }
+
+  .explorer-stats button {
+    flex: 1 1 45%;
+    min-width: 100px;
+    max-width: 48%;
+  }
+
+  .explorer-stats .single-button {
+    margin-left: 6em;
+    margin-top: 5px;
+  }
 }
