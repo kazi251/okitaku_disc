@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KPシナリオ管理</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="kp.css" />
+  <script src="./firebaseConfig.js"></script>
+</head>
+<body>
+  <h2 id="scenario-title">シナリオタイトル</h2>
+
+  <section class="section">
+    <h3>参加キャラクター一覧</h3>
+    <div id="character-list"></div>
+  </section>
+
+  <section class="section">
+    <h3>Webhook設定</h3>
+    <div id="webhook-settings"></div>
+  </section>
+
+  <section class="section">
+    <h3>エネミー・KPC管理</h3>
+    <button id="manage-npc-button">管理画面へ</button>
+  </section>
+
+  <section class="section">
+    <h3>戦闘管理</h3>
+    <button id="combat-manager-button">戦闘管理画面へ</button>
+  </section>
+
+  <section class="section">
+    <button onclick="location.href='kp.html'">← ホームに戻る</button>
+  </section>
+
+  <script src="kp_scenario.js"></script>
+</body>
+</html>
