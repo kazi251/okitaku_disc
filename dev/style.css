@@ -223,7 +223,7 @@ input[type="text"]{ /* テキストボックス */
 }
 
 .char-edit-label .button-group{
-  margin-left: 4em;
+  gap: 10px;
 }
 
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
