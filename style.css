@@ -54,6 +54,10 @@ input[type="text"]{ /* テキストボックス */
   margin-top: 10px;
 }
 
+.scenario-label {
+  font-size: 13px;
+}
+
 #current-scenario-name {
   word-break: break-word;
 }
@@ -212,6 +216,25 @@ input[type="text"]{ /* テキストボックス */
   float: right;
 }
 
+.character-edit {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column; /* 縦方向に並べる */
+  gap: 10px;            /* 子要素間の余白を設定 */
+}
+
+.character-edit .char-edit-label {
+  display: inline-block;
+  width: 5em;
+  text-align: left; /* 左寄せ */
+}
+
+.character-edit .button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
 @media screen and (max-width: 600px) {
   body {
@@ -235,7 +258,13 @@ input[type="text"]{ /* テキストボックス */
   #explorer-container {
     flex-direction: column; /* 縦並びにする */
     align-items: center; /* 中央揃え */
-    gap: 20px; /* 要素間の縦方向の間隔 */
+    gap: 10px; /* 要素間の縦方向の間隔 */
+  }
+
+  .scenario-label {
+  font-size: 13px;
+  text-align: center; /* 中央揃え */
+  margin-top: 1em;
   }
 
   .explorer-section {
@@ -246,7 +275,8 @@ input[type="text"]{ /* テキストボックス */
   }
 
   .explorer-image-container {
-    width: 150px; /* 画像コンテナの幅 */
+    width: auto; /* 画像コンテナの幅 */
+    margin-bottom: 0.5em;
   }
 
   .explorer-image {
@@ -255,7 +285,7 @@ input[type="text"]{ /* テキストボックス */
   }
 
   .explorer-stats {
-    margin-top: 2em; /* 上方向の余白（em単位で調整） */
+    margin-top: 0.5em; /* 上方向の余白（em単位で調整） */
   }
 
   .explorer-stats div {
@@ -300,4 +330,5 @@ input[type="text"]{ /* テキストボックス */
     width: 95%; /* 幅を親要素の95%に */
     min-height: 150px; /* 最小の高さ */
   }
+
 }
