@@ -218,6 +218,7 @@ input[type="text"]{ /* テキストボックス */
 
 .character-edit {
   margin-top: 10px;
+  gap: 10px;
 }
 
 .character-edit div {
