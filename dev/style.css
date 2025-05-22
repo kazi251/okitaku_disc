@@ -261,16 +261,6 @@ input[type="text"]{ /* テキストボックス */
     gap: 10px; /* 要素間の縦方向の間隔 */
   }
 
-  #character-name {
-    margin: 0;
-    padding: 0;
-    font-size: 1em;
-  }
-
-  .explorer-image-container div {
-    margin-bottom: 0.3em;
-  }
-
   .scenario-label {
   font-size: 13px;
   text-align: center; /* 中央揃え */
@@ -285,7 +275,8 @@ input[type="text"]{ /* テキストボックス */
   }
 
   .explorer-image-container {
-    width: 150px; /* 画像コンテナの幅 */
+    width: auto; /* 画像コンテナの幅 */
+    margin-bottom: 0.5em;
   }
 
   .explorer-image {
@@ -294,7 +285,7 @@ input[type="text"]{ /* テキストボックス */
   }
 
   .explorer-stats {
-    margin-top: 2em; /* 上方向の余白（em単位で調整） */
+    margin-top: 0.5em; /* 上方向の余白（em単位で調整） */
   }
 
   .explorer-stats div {
