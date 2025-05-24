@@ -43,7 +43,7 @@ async function loadScenario() {
 
 async function loadCharacters(scenarioId) {
   const charactersRef = collectionGroup(db, "list");
-  const q = query(charactersRef, where("currentScenario", "==", scenarioId));
+  const q = query(charactersRef, where("scenarioId", "==", scenarioId));
 
   const querySnapshot = await getDocs(q);
   charListElem.innerHTML = "";
