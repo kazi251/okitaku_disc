@@ -1,0 +1,18 @@
+/* kp.css */
+
+.scenario-block {
+  margin-bottom: 16px;
+}
+
+.scenario-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.scenario-id {
+  font-family: monospace;
+  font-size: 0.9em;
+}
