@@ -18,9 +18,9 @@ if (!uuidRegex.test(kpId)) {
 }
 
 const scenarioListDiv = document.getElementById("scenario-list");
-const createButton = document.getElementById("create-scenario");
 
-createButton.addEventListener("click", async () => {
+async function handleCreateScenario() {
+  
   const input = document.getElementById("new-scenario-name");
   const name = input.value.trim();
 
@@ -38,7 +38,8 @@ createButton.addEventListener("click", async () => {
   input.value = "";
   loadScenarios();
   showToast("シナリオを登録しました！");
-});
+
+}
 
 async function loadScenarios() {
   const querySnapshot = await getDocs(collection(db, "scenarios"));
@@ -71,5 +72,17 @@ function copyToClipboard(text) {
       showToast("コピーに失敗しました: " + err);
     });
 }
+window.copyToClipboard = copyToClipboard;
 
-loadScenarios();
+function setupEventListeners() {
+  document.getElementById("create-scenario").addEventListener("click", handleCreateScenario);
+}
+
+function initKpHomePage() {
+  setupEventListeners();
+  loadScenarios();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  initKpHomePage();
+});
