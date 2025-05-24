@@ -60,7 +60,6 @@ function renderCharacterCards(characters, container) {
   characters.forEach((char) => {
     const {
       name,
-      playerName,
       hp, hpMax,
       mp, mpMax,
       san, sanMax,
@@ -88,7 +87,7 @@ function renderCharacterCards(characters, container) {
           ${other2Name ? `<div><strong>${other2Name}:</strong> ${other2}</div>` : ""}
         </div>
         <div class="card-footer">
-          <div class="card-name">${name}（${playerName}）</div>
+          <div class="card-name">${name}</div>
           <button class="edit-button">編集</button>
         </div>
       </div>
