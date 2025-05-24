@@ -148,11 +148,11 @@ async function loadCharacterMatrix() {
       const opt = document.createElement("option");
       opt.value = id;
       opt.textContent = name;
-      if (data.currentScenario === id) opt.selected = true;
+      if (data.scenarioId === id) opt.selected = true;
       select.appendChild(opt);
     });
 
-    if (!data.currentScenario) {
+    if (!data.scenarioId) {
       select.value = "";
     }
 
@@ -185,7 +185,7 @@ async function loadCharacterMatrix() {
     saveBtn.addEventListener("click", async () => {
       await setDoc(docSnap.ref, {
         ...data,
-        currentScenario: select.value || null, 
+        scenarioId: select.value || null, 
         webhook: webhookInput.value,
         imageUrl: imageInput.value
       }, { merge: true });

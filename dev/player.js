@@ -197,7 +197,7 @@ async function loadCharacterData(charId) {
 
     // 進行中のシナリオ名を取得
     const scenarioNameEl = document.getElementById("current-scenario-name");
-    const scenarioId = data.currentScenario;
+    const scenarioId = data.scenarioId;
 
     if (scenarioNameEl) {
       if (scenarioId) {
@@ -256,7 +256,7 @@ async function loadCharacterData(charId) {
     // シナリオID入力欄にも反映
     const scenarioInput = document.getElementById("scenario-id-input");
     if (scenarioInput) {
-      scenarioInput.value = data.currentScenario || "";
+      scenarioInput.value = data.scenarioId || "";
     }
     
     updateDisplay();
@@ -301,8 +301,8 @@ async function saveCharacterData() {
       characterData.webhook = currentCharacterData.webhook;
     }
 
-    if (currentCharacterData?.currentScenario) {
-      characterData.currentScenario = currentCharacterData.currentScenario;
+    if (currentCharacterData?.scenarioId) {
+      characterData.scenarioId = currentCharacterData.scenarioId;
     }
 
     if (imageUrl) {
@@ -493,7 +493,7 @@ async function updateScenarioId() {
 
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
-      currentScenario: scenarioId,
+      scenarioId: scenarioId,
       playerId: playerId, 
       updatedAt: new Date().toISOString()
     }, { merge: true });
@@ -515,7 +515,7 @@ async function clearScenarioId() {
   try {
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
-      currentScenario: deleteField(),
+      scenarioId: deleteField(),
       playerId: playerId, 
       updatedAt: new Date().toISOString()
     }, { merge: true });
