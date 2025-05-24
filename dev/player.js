@@ -525,8 +525,9 @@ async function clearScenarioId() {
       accessKpId: deleteField()
     }, { merge: true });
    
+    document.getElementById("scenario-id-input").value = "";
+    
     showToast("シナリオIDを解除しました。");
-    await loadCharacterList();
   } catch (e) {
     console.error("シナリオ解除失敗", e);
     showToast("解除に失敗しました");
