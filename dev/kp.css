@@ -17,75 +17,103 @@
   font-size: 0.9em;
 }
 
+#character-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* キャラクターカード */
 .character-card {
   display: flex;
-  gap: 12px;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
+  align-items: flex-start;
+  background-color: #ffffff;
   border-radius: 12px;
-  background-color: #fafafa;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  flex-wrap: wrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  gap: 1rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.character-card:hover {
+  transform: scale(1.01);
+}
+
+/* 画像部分（128x128） */
+.card-image {
+  width: 128px;
+  height: 128px;
+  flex-shrink: 0;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .card-image img {
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
 }
 
+/* 情報エリア */
 .card-info {
-  flex: 1;
-  min-width: 200px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.card-stats div {
-  margin-bottom: 4px;
+/* ステータス */
+.card-stats {
   font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
 }
 
+/* 名前とボタン */
 .card-footer {
+  margin-top: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
 }
 
 .card-name {
   font-weight: bold;
+  font-size: 15px;
 }
 
 .edit-button {
-  background-color: #1976d2;
+  background-color: #4caf50;
   color: white;
   border: none;
+  padding: 6px 12px;
   border-radius: 6px;
-  padding: 4px 8px;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
 }
 
 .edit-button:hover {
-  background-color: #115293;
+  background-color: #45a049;
 }
 
+/* モバイル対応 */
 @media (max-width: 600px) {
   .character-card {
     flex-direction: column;
     align-items: center;
+    text-align: center;
   }
 
   .card-info {
     align-items: center;
-    text-align: center;
   }
 
   .card-footer {
     flex-direction: column;
-    gap: 6px;
+    gap: 0.5rem;
   }
 }
