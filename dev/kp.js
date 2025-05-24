@@ -51,12 +51,14 @@ async function loadScenarios() {
 
     if (data.kpId === kpId) {
       const div = document.createElement("div");
-      div.style.marginBottom = "16px";
-      div.innerHTML = `
+      wrapper.className = "scenario-block";
+      wrapper.innerHTML = `
         <strong>${data.name}</strong><br>
-        <small>ID: ${scenarioId}</small>
-        <button onclick="copyToClipboard('${scenarioId}')">コピー</button>
-        <button onclick="location.href='kp_scenario.html?scenarioId=${scenarioId}&kpId=${kpId}'">管理へ</button>
+          <div class="scenario-meta">
+          <small>ID: ${scenarioId}</small>
+          <button onclick="copyToClipboard('${scenarioId}')">コピー</button>
+          <button onclick="location.href='kp_scenario.html?scenarioId=${scenarioId}&kpId=${kpId}'">管理へ</button>
+        </div>
       `;
       scenarioListDiv.appendChild(div);
     }
