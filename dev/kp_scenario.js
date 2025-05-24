@@ -61,5 +61,16 @@ async function loadCharacters(scenarioId) {
   });
 }
 
-// 初期化
-loadScenario();
+
+// function setupEventListeners() {
+//   document.getElementById("create-scenario").addEventListener("click", handleCreateScenario);
+// }
+
+function initKpScenarioPage() {
+  // setupEventListeners();
+  loadScenario();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  initKpScenarioPage();
+});
