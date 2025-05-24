@@ -183,11 +183,25 @@ async function loadCharacterMatrix() {
     const saveBtn = document.createElement("button");
     saveBtn.textContent = "保存";
     saveBtn.addEventListener("click", async () => {
+
+      const scenarioId = select.value || null;
+      let kpId = null;
+
+      if (scenarioId) {
+        const scenarioRef = doc(db, "scenarios", scenarioId);
+        const scenarioSnap = await getDoc(scenarioRef);
+        if (scenarioSnap.exists()) {
+          const scenarioData = scenarioSnap.data();
+          kpId = scenarioData.kpId || null;
+        }
+      }
+
       await setDoc(docSnap.ref, {
         ...data,
         scenarioId: select.value || null, 
         webhook: webhookInput.value,
-        imageUrl: imageInput.value
+        imageUrl: imageInput.value,
+        caccessKpIds: kpId ? [kpId] : []
       }, { merge: true });
       showToast(`${data.name} を更新しました`);
     });
