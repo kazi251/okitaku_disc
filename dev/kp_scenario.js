@@ -7,7 +7,9 @@ import {
   collectionGroup,
   query,
   where,
-  getDocs
+  getDocs,
+  updateDoc,
+  docRef
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { showToast } from './utils.js';
 
@@ -65,7 +67,9 @@ function renderCharacterCards(characters, container) {
       san, sanMax,
       other, other1Name,
       other2, other2Name,
-      imageUrl
+      imageUrl,
+      id, // listドキュメントのid
+      scenarioId
     } = char;
 
     const sanBracket = sanMax - Math.floor(sanMax / 5);
@@ -74,30 +78,82 @@ function renderCharacterCards(characters, container) {
     const card = document.createElement("div");
     card.className = "character-card";
 
+    const inputField = (key, val) => {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.value = val ?? 0;
+      input.dataset.key = key;
+      input.className = "status-input";
+      return input;
+    };
+
+    const hpInput = inputField("hp", hp);
+    const hpMaxInput = inputField("hpMax", hpMax);
+    const mpInput = inputField("mp", mp);
+    const mpMaxInput = inputField("mpMax", mpMax);
+    const sanInput = inputField("san", san);
+    const sanMaxInput = inputField("sanMax", sanMax);
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "保存";
+    saveButton.className = "save-button";
+    saveButton.disabled = true;
+
+    const inputs = [hpInput, hpMaxInput, mpInput, mpMaxInput, sanInput, sanMaxInput];
+    const original = { hp, hpMax, mp, mpMax, san, sanMax };
+
+    inputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        const changed = inputs.some(i => Number(i.value) !== original[i.dataset.key]);
+        saveButton.disabled = !changed;
+      });
+    });
+
+    saveButton.addEventListener("click", async () => {
+      const newData = {};
+      inputs.forEach((input) => {
+        newData[input.dataset.key] = Number(input.value);
+      });
+
+      try {
+        const listDocPath = `scenarios/${scenarioId}/list/${char.id}`;
+        const docRefFull = doc(db, listDocPath);
+        await updateDoc(docRefFull, newData);
+        showToast("保存しました");
+        Object.assign(original, newData);
+        saveButton.disabled = true;
+      } catch (e) {
+        console.error("保存エラー", e);
+        alert("保存に失敗しました");
+      }
+    });
+
     card.innerHTML = `
       <div class="card-image">
         <img src="${displayImage}" alt="${name}">
       </div>
       <div class="card-info">
-        <div class="card-stats">
-          <div><strong>HP:</strong> ${hp}/${hpMax}</div>
-          <div><strong>MP:</strong> ${mp}/${mpMax}</div>
-          <div><strong>SAN:</strong> ${san}/${sanMax} (${sanBracket})</div>
-          ${other1Name ? `<div><strong>${other1Name}:</strong> ${other}</div>` : ""}
-          ${other2Name ? `<div><strong>${other2Name}:</strong> ${other2}</div>` : ""}
-        </div>
+        <div class="card-stats"></div>
         <div class="card-footer">
           <div class="card-name">${name}</div>
-          <button class="edit-button">編集</button>
         </div>
       </div>
     `;
 
-    // 編集ボタン処理（必要に応じてコールバック追加）
-    card.querySelector(".edit-button").addEventListener("click", () => {
-      // 編集モーダルなどを開く処理をここに
-      alert(`${name} を編集します`);
-    });
+    const stats = card.querySelector(".card-stats");
+    const addStatRow = (label, input1, input2) => {
+      const row = document.createElement("div");
+      row.innerHTML = `<strong>${label}:</strong> `;
+      row.appendChild(input1);
+      row.appendChild(document.createTextNode("/"));
+      row.appendChild(input2);
+      stats.appendChild(row);
+    };
+
+    addStatRow("HP", hpInput, hpMaxInput);
+    addStatRow("MP", mpInput, mpMaxInput);
+    addStatRow("SAN", sanInput, sanMaxInput);
+    stats.appendChild(saveButton);
 
     container.appendChild(card);
   });

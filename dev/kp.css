@@ -104,6 +104,33 @@
   background-color: #45a049;
 }
 
+.status-input {
+  width: 3.5em;
+  background-color: #222;
+  color: #f0f0f0;
+  border: 1px solid #666;
+  border-radius: 4px;
+  margin: 0 4px;
+  padding: 2px 4px;
+  font-size: 13px;
+}
+
+.save-button {
+  padding: 4px 10px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.save-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
 /* モバイル対応 */
 @media (max-width: 600px) {
   .character-card {
@@ -141,5 +168,15 @@
   .edit-button {
     padding: 4px 6px;
     font-size: 12px;
+  }
+
+    .status-input {
+    width: 3em;
+    font-size: 12px;
+  }
+
+  .save-button {
+    font-size: 12px;
+    padding: 3px 8px;
   }
 }
