@@ -37,38 +37,84 @@ async function loadScenario() {
   const scenarioData = scenarioDoc.data();
   nameElem.textContent = `シナリオ：${scenarioData.name}`;
 
-  // キャラクター一覧を取得
-  await loadCharacters(scenarioId);
 }
 
-async function loadCharacters(scenarioId) {
+async function fetchCharacters(scenarioId) {
   const charactersRef = collectionGroup(db, "list");
   const q = query(charactersRef, where("scenarioId", "==", scenarioId));
-
   const querySnapshot = await getDocs(q);
-  charListElem.innerHTML = "";
 
-  if (querySnapshot.empty) {
-    charListElem.innerHTML = "<p>参加キャラクターがいません。</p>";
-    return;
+  const characters = [];
+
+  for (const docSnap of querySnapshot.docs) {
+    const data = docSnap.data();
+    characters.push(data);
   }
 
-  querySnapshot.forEach((docSnap) => {
-    const char = docSnap.data();
-    const li = document.createElement("li");
-    li.textContent = char.name || "(名前なし)";
-    charListElem.appendChild(li);
-  });
+  return characters;
 }
 
+function renderCharacterCards(characters, container) {
+  container.innerHTML = "";
+
+  characters.forEach((char) => {
+    const {
+      name,
+      playerName,
+      hp, hpMax,
+      mp, mpMax,
+      san, sanMax,
+      other, other1Name,
+      other2, other2Name,
+      imageUrl
+    } = char;
+
+    const sanBracket = sanMax - Math.floor(sanMax / 5);
+    const displayImage = imageUrl || "./seeker_vault/default.png";
+
+    const card = document.createElement("div");
+    card.className = "character-card";
+
+    card.innerHTML = `
+      <div class="card-image">
+        <img src="${displayImage}" alt="${name}">
+      </div>
+      <div class="card-info">
+        <div class="card-stats">
+          <div><strong>HP:</strong> ${hp}/${hpMax}</div>
+          <div><strong>MP:</strong> ${mp}/${mpMax}</div>
+          <div><strong>SAN:</strong> ${san}/${sanMax} (${sanBracket})</div>
+          ${other1Name ? `<div><strong>${other1Name}:</strong> ${other}</div>` : ""}
+          ${other2Name ? `<div><strong>${other2Name}:</strong> ${other2}</div>` : ""}
+        </div>
+        <div class="card-footer">
+          <div class="card-name">${name}（${playerName}）</div>
+          <button class="edit-button">編集</button>
+        </div>
+      </div>
+    `;
+
+    // 編集ボタン処理（必要に応じてコールバック追加）
+    card.querySelector(".edit-button").addEventListener("click", () => {
+      // 編集モーダルなどを開く処理をここに
+      alert(`${name} を編集します`);
+    });
+
+    container.appendChild(card);
+  });
+}
 
 // function setupEventListeners() {
 //   document.getElementById("create-scenario").addEventListener("click", handleCreateScenario);
 // }
 
-function initKpScenarioPage() {
-  // setupEventListeners();
-  loadScenario();
+async function initKpScenarioPage() {
+  
+  await loadScenario();
+
+  // キャラクター一覧取得と描画
+  const characters = await fetchCharacters(scenarioId);
+  renderCharacterCards(characters, charListElem);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
