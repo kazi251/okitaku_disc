@@ -24,17 +24,17 @@
   padding: 1rem;
 }
 
-/* キャラクターカード */
 .character-card {
   display: flex;
-  align-items: flex-start;
-  background-color: #444; /* カード背景：ダークグレー */
+  flex-direction: row;
+  background-color: #444;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  padding: 1rem;
-  gap: 1rem;
-  color: #f0f0f0; /* 文字色：明るめ */
-  transition: transform 0.2s ease-in-out;
+  padding: 0.8rem;
+  gap: 0.8rem;
+  color: #f0f0f0;
+  font-size: 14px;
+  align-items: flex-start;
 }
 
 .character-card:hover {
@@ -46,9 +46,9 @@
   width: 48px;
   height: 48px;
   flex-shrink: 0;
-  background-color: #222;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
+  background-color: #222;
 }
 
 .card-image img {
@@ -67,16 +67,15 @@
 
 /* ステータス */
 .card-stats {
-  font-size: 14px;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  color: #e0e0e0;
+  gap: 0.3rem 0.8rem;
+  font-size: 13px;
+  margin-bottom: 0.4rem;
 }
 
 /* 名前とボタン */
 .card-footer {
-  margin-top: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -84,7 +83,7 @@
 
 .card-name {
   font-weight: bold;
-  font-size: 15px;
+  font-size: 14px;
   color: #fff;
 }
 
@@ -92,11 +91,10 @@
   background-color: #4caf50;
   color: #fff;
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
 }
 
 .edit-button:hover {
@@ -106,17 +104,39 @@
 /* モバイル対応 */
 @media (max-width: 600px) {
   .character-card {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0.6rem;
+    font-size: 13px;
   }
 
-  .card-info {
-    align-items: center;
+  .card-image {
+    width: 48px;
+    height: 48px;
+    margin-right: 0.6rem;
+  }
+
+  .card-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.8rem;
+    font-size: 12px;
+    margin-bottom: 0.3rem;
   }
 
   .card-footer {
-    flex-direction: column;
-    gap: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .card-name {
+    font-size: 13px;
+  }
+
+  .edit-button {
+    padding: 4px 6px;
+    font-size: 12px;
   }
 }
