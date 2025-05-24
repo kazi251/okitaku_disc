@@ -499,7 +499,7 @@ async function updateScenarioId() {
       scenarioId: scenarioId,
       playerId: playerId, 
       updatedAt: new Date().toISOString(),
-      accessKpIds: [kpId]
+      accessKpId: kpId
     }, { merge: true });
 
     showToast("シナリオIDを更新しました ");
@@ -571,7 +571,7 @@ window.addEventListener("DOMContentLoaded", () => {
       webhook: defaultWebhook, 
       imageUrl: "./seeker_vault/default.png", 
       playerId: playerId, 
-      accessKpIds: [],
+      accessKpId: "",
       updatedAt: new Date().toISOString()
     });
 
