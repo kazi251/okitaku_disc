@@ -491,11 +491,15 @@ async function updateScenarioId() {
       return;
     }
 
+    const scenarioData = scenarioSnap.data();
+    const kpId = scenarioData.kpId;
+
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
       scenarioId: scenarioId,
       playerId: playerId, 
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      accessKpIds: [kpId]
     }, { merge: true });
 
     showToast("シナリオIDを更新しました ");
