@@ -201,7 +201,7 @@ async function loadCharacterMatrix() {
         scenarioId: select.value || null, 
         webhook: webhookInput.value,
         imageUrl: imageInput.value,
-        caccessKpIds: kpId ? [kpId] : []
+        accessKpIds: kpId.value
       }, { merge: true });
       showToast(`${data.name} を更新しました`);
     });
