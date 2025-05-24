@@ -42,7 +42,8 @@ async function handleCreateScenario() {
 }
 
 async function loadScenarios() {
-  const querySnapshot = await getDocs(collection(db, "scenarios"));
+  const scenariosQuery = query(collection(db, "scenarios"), orderBy("createdAt", "desc"));
+  const querySnapshot = await getDocs(scenariosQuery);
   scenarioListDiv.innerHTML = "";
 
   querySnapshot.forEach((docSnap) => {
@@ -50,17 +51,18 @@ async function loadScenarios() {
     const scenarioId = docSnap.id;
 
     if (data.kpId === kpId) {
-      const div = document.createElement("div");
-      wrapper.className = "scenario-block";
+      const wrapper = document.createElement("div");
+      wrapper.style.marginBottom = "16px";
+
       wrapper.innerHTML = `
-        <strong>${data.name}</strong><br>
-          <div class="scenario-meta">
-          <small>ID: ${scenarioId}</small>
+        <strong>${data.name}</strong>
+        <div class="scenario-meta">
+          <small class="scenario-id">ID: ${scenarioId}</small>
           <button onclick="copyToClipboard('${scenarioId}')">コピー</button>
           <button onclick="location.href='kp_scenario.html?scenarioId=${scenarioId}&kpId=${kpId}'">管理へ</button>
         </div>
       `;
-      scenarioListDiv.appendChild(div);
+      scenarioListDiv.appendChild(wrapper);
     }
   });
 }
