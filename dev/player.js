@@ -521,9 +521,11 @@ async function clearScenarioId() {
     await setDoc(charRef, {
       scenarioId: deleteField(),
       playerId: playerId, 
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      accessKpId: kpId
     }, { merge: true });
 
+    await loadCharacterList();
     showToast("シナリオIDを解除しました。");
   } catch (e) {
     console.error("シナリオ解除失敗", e);
