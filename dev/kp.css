@@ -272,4 +272,28 @@
     padding: 4px 6px;
     font-size: 12px;
   }
+
+  /* webhookリスト */
+  #thread-list li {
+    flex-direction: column;
+    align-items: flex-start; /* 左揃え */
+  }
+
+  .thread-name {
+    flex: none;
+    width: 100%;
+  }
+
+  .thread-buttons {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .thread-buttons button {
+    flex: none;
+    margin-right: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
 }
