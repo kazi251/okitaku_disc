@@ -19,7 +19,32 @@
 
   <section class="section">
     <h3>Webhook設定</h3>
-    <div id="webhook-settings"></div>
+    <div id="webhook-settings">
+    <!-- スレッド作成フォーム -->
+    <section>
+      <h2>＋ 新しいスレッドを作成</h2>
+      <input type="text" id="new-thread-name" placeholder="スレッド名">
+      <button id="create-thread-button">作成</button>
+    </section>
+
+    <!-- スレッド一覧 -->
+    <section>
+      <h2>スレッド一覧</h2>
+      <ul id="thread-list"></ul>
+    </section>
+
+    <!-- キャラクターの発言先設定 -->
+    <section>
+      <h2>キャラクターの発言先設定</h2>
+      <table>
+        <thead>
+          <tr><th>キャラ名</th><th>発言先</th><th>ステータス通知先</th></tr>
+        </thead>
+        <tbody id="character-settings-body"></tbody>
+      </table>
+      <button id="save-settings-button">保存</button>
+    </section>
+  </div>
   </section>
 
   <section class="section">
@@ -81,5 +106,6 @@
   </div>
 
   <script type="module" src="kp_scenario.js"></script>
+  <script type="module" src="kp_webhook_settings.js"></script>
 </body>
 </html>
