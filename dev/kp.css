@@ -110,14 +110,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.6rem; /* 要素間の余白 */
+  gap: 1rem;
   margin-bottom: 0.5rem;
 }
 
 /* スレッド名部分を固定幅に */
 .thread-name {
-  display: inline-block;
-  width: 180px; /* 好きな幅に調整 */
+  flex: 0 0 200px; 
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -126,12 +125,7 @@
 .thread-buttons {
   display: flex;
   gap: 0.4rem;
-  flex-wrap: nowrap; /* ボタンが折り返さないようにする */
-}
-
-/* ボタンは揃った位置に */
-.thread-buttons button {
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* モーダル */

@@ -53,7 +53,7 @@ function renderThreadList() {
     
     const nameSpan = document.createElement("span");
     nameSpan.className = "thread-name";
-    li.textContent = thread.name;
+    nameSpan.textContent = thread.name;
 
     const buttonContainer = document.createElement("div");
     buttonContainer.className = "thread-buttons";
