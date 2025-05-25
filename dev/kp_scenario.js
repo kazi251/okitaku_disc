@@ -119,6 +119,12 @@ function renderCharacterCards(characters, container) {
   });
 }
 
+// モーダルのパラメータが空だった時の処理
+function parseInputValue(id) {
+  const val = document.getElementById(id).value;
+  return val === "" ? null : Number(val);
+}
+
 function setupEventListeners() {
 
   editForm.addEventListener("submit", async (e) => {
@@ -126,12 +132,12 @@ function setupEventListeners() {
     if (!currentDocRef) return;
 
     const updatedData = {
-      hp: Number(document.getElementById("edit-hp").value),
-      hpMax: Number(document.getElementById("edit-hpMax").value),
-      mp: Number(document.getElementById("edit-mp").value),
-      mpMax: Number(document.getElementById("edit-mpMax").value),
-      san: Number(document.getElementById("edit-san").value),
-      sanMax: Number(document.getElementById("edit-sanMax").value),
+      hp: parseInputValue("edit-hp"),
+      hpMax: parseInputValue("edit-hpMax"),
+      mp: parseInputValue("edit-mp"),
+      mpMax: parseInputValue("edit-mpMax"),
+      san: parseInputValue("edit-san"),
+      sanMax: parseInputValue("edit-sanMax"),
     };
 
     try {
