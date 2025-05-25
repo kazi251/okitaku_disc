@@ -51,7 +51,10 @@ async function fetchCharacters(scenarioId) {
 
   for (const docSnap of querySnapshot.docs) {
     const data = docSnap.data();
-    characters.push(data);
+    characters.push({
+      ...data,
+      ref: docSnap.ref,
+    });
   }
 
   return characters;
@@ -98,6 +101,8 @@ function renderCharacterCards(characters, container) {
 
     // 編集ボタン処理（必要に応じてコールバック追加）
     card.querySelector(".edit-button").addEventListener("click", () => {
+      currentDocRef = char.ref;
+
       document.getElementById("edit-hp").value = char.hp ?? "";
       document.getElementById("edit-hpMax").value = char.hpMax ?? "";
       document.getElementById("edit-mp").value = char.mp ?? "";
@@ -105,11 +110,11 @@ function renderCharacterCards(characters, container) {
       document.getElementById("edit-san").value = char.san ?? "";
       document.getElementById("edit-sanMax").value = char.sanMax ?? "";
 
-    // ドキュメント参照を保存
-    currentDocRef = docSnap.ref;
-    // モーダル表示
-    editModal.classList.remove("hidden");
-    });
+      // ドキュメント参照を保存
+      currentDocRef = docSnap.ref;
+      // モーダル表示
+      editModal.classList.remove("hidden");
+      });
 
     container.appendChild(card);
   });
@@ -118,7 +123,7 @@ function renderCharacterCards(characters, container) {
 function setupEventListeners() {
 
   editForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    e.preventDefault();
     if (!currentDocRef) return;
 
     const updatedData = {
