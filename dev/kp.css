@@ -291,13 +291,12 @@
     width: 100%;
     justify-content: flex-start;
     flex-wrap: wrap;
-    margin-top: 0.1rem;
+    margin: 0;
   }
 
   .thread-buttons button {
     flex: none;
-    margin-right: 0.5rem;
-    margin-bottom: 0.4rem;
+    margin: 0;
     padding: 0.3rem 0.6rem;
     line-height: 1.2;
   }
