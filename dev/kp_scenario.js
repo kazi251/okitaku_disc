@@ -114,8 +114,8 @@ function renderCharacterCards(characters, container) {
       document.getElementById("edit-other2").value = char.other2 ?? "";
 
       // ラベル名
-      document.getElementById("label-other1-name").textContent = char.other1Name || "その他";
-      document.getElementById("label-other2-name").textContent = char.other2Name || "その他2";
+      document.getElementById("edit-other1-name").value = char.other1Name || "";
+      document.getElementById("edit-other2-name").value = char.other2Name || "";
 
       // モーダル表示
       editModal.classList.remove("hidden");
@@ -146,6 +146,8 @@ function setupEventListeners() {
       sanMax: parseInputValue("edit-sanMax"),
       other: parseInputValue("edit-other"),
       other2: parseInputValue("edit-other2"),
+      other1Name: document.getElementById("edit-other1-name").value.trim(),
+      other2Name: document.getElementById("edit-other2-name").value.trim(),
     };
 
     try {
