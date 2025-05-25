@@ -1,6 +1,6 @@
 // kp_webhook_settings.js
 
-import { db } from "./firebaseConfig.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   collection,
   addDoc,
@@ -10,6 +10,10 @@ import {
   deleteDoc,
   setDoc,
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-lite.js";
+import { showToast } from './utils.js';
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // シナリオIDはURLから取得（例: ?kpId=xxxx&scenarioId=yyyy）
 const urlParams = new URLSearchParams(window.location.search);
