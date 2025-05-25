@@ -9,7 +9,7 @@ import {
   updateDoc,
   deleteDoc,
   setDoc,
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-lite.js";
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; //getFirestore() のような初期化系や複雑な操作は firebase-firestore.js にしか含まれないため他と違う。
 import { showToast } from './utils.js';
 
 const app = initializeApp(firebaseConfig);
