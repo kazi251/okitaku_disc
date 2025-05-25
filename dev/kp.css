@@ -172,7 +172,7 @@
   margin-right: 4px;
 }
 
-.wide-input {
+.wide-input input[type="text"] {
   width: 100%;
 }
 
