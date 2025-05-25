@@ -8,7 +8,8 @@ import {
   getDocs,
   setDoc,
   deleteDoc,
-  addDoc
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { showToast } from './utils.js';
 
