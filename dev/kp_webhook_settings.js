@@ -10,7 +10,6 @@ import {
   deleteDoc,
   addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { firebaseConfig } from "./firebaseConfig.js";
 import { showToast } from './utils.js';
 
 const app = initializeApp(firebaseConfig);
