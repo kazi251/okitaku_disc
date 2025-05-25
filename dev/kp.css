@@ -106,6 +106,13 @@
 }
 
 /* webhookリスト */
+#thread-list {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
 #thread-list li {
   display: flex;
   align-items: center;
@@ -114,9 +121,9 @@
   margin-bottom: 0.5rem;
 }
 
-/* スレッド名部分を固定幅に */
 .thread-name {
-  flex: 0 0 200px; 
+  width: 200px;
+  flex-shrink: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
