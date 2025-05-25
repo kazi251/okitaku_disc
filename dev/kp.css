@@ -172,6 +172,10 @@
   margin-right: 4px;
 }
 
+.wide-input {
+  width: 100%;
+}
+
 .modal-buttons {
   display: flex;
   justify-content: space-between;
@@ -187,13 +191,15 @@
   cursor: pointer;
 }
 
-#save-button {
+#save-button,
+#save-thread-settings-button {
   background-color: #4caf50;
   border: none;
   color: #fff;
 }
 
-#cancel-button {
+#cancel-button,
+#cancel-thread-settings-button {
   background-color: #777;
   border: none;
   color: #fff;
