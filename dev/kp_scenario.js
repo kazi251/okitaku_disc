@@ -42,6 +42,7 @@ async function loadScenario() {
 
 }
 
+// キャラクターの読み込み
 async function fetchCharacters(scenarioId) {
   const charactersRef = collectionGroup(db, "list");
   const q = query(charactersRef, where("scenarioId", "==", scenarioId));
@@ -102,7 +103,6 @@ function renderCharacterCards(characters, container) {
     // 編集ボタン処理（必要に応じてコールバック追加）
     card.querySelector(".edit-button").addEventListener("click", () => {
       currentDocRef = char.ref;
-
       document.getElementById("edit-hp").value = char.hp ?? "";
       document.getElementById("edit-hpMax").value = char.hpMax ?? "";
       document.getElementById("edit-mp").value = char.mp ?? "";
@@ -110,8 +110,6 @@ function renderCharacterCards(characters, container) {
       document.getElementById("edit-san").value = char.san ?? "";
       document.getElementById("edit-sanMax").value = char.sanMax ?? "";
 
-      // ドキュメント参照を保存
-      currentDocRef = docSnap.ref;
       // モーダル表示
       editModal.classList.remove("hidden");
       });
