@@ -285,7 +285,6 @@
     flex: none;
     width: 100%; 
     margin: 0;
-    gap: 0;
   }
 
   .thread-buttons {
@@ -293,12 +292,10 @@
     justify-content: flex-start;
     flex-wrap: wrap;
     margin: 0;
-    gap: 0;
   }
 
   .thread-buttons button {
     flex: none;
     margin: 0;
-    gap: 0;
   }
 }
