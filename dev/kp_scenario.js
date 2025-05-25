@@ -110,6 +110,12 @@ function renderCharacterCards(characters, container) {
       document.getElementById("edit-mpMax").value = char.mpMax ?? "";
       document.getElementById("edit-san").value = char.san ?? "";
       document.getElementById("edit-sanMax").value = char.sanMax ?? "";
+      document.getElementById("edit-other").value = char.other ?? "";
+      document.getElementById("edit-other2").value = char.other2 ?? "";
+
+      // ラベル名
+      document.getElementById("label-other1-name").textContent = char.other1Name || "その他";
+      document.getElementById("label-other2-name").textContent = char.other2Name || "その他2";
 
       // モーダル表示
       editModal.classList.remove("hidden");
@@ -138,6 +144,8 @@ function setupEventListeners() {
       mpMax: parseInputValue("edit-mpMax"),
       san: parseInputValue("edit-san"),
       sanMax: parseInputValue("edit-sanMax"),
+      other: parseInputValue("edit-other"),
+      other2: parseInputValue("edit-other2"),
     };
 
     try {

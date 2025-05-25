@@ -38,21 +38,46 @@
 
   <!-- モーダル -->
   <div id="edit-modal" class="modal hidden">
-    <div class="modal-content">
-      <h3>キャラクター編集</h3>
-      <form id="edit-form">
-        <label>HP: <input type="number" id="edit-hp"></label>
-        <label>HP Max: <input type="number" id="edit-hpMax"></label>
-        <label>MP: <input type="number" id="edit-mp"></label>
-        <label>MP Max: <input type="number" id="edit-mpMax"></label>
-        <label>SAN: <input type="number" id="edit-san"></label>
-        <label>SAN Max: <input type="number" id="edit-sanMax"></label>
-        <div class="modal-buttons">
-          <button type="submit" id="save-button">保存</button>
-          <button type="button" id="cancel-button">キャンセル</button>
-        </div>
-      </form>
-    </div>
+    <form id="edit-form" class="modal-content">
+      <h2>キャラクター編集</h2>
+      <div class="field-group">
+        <label>HP:
+          <input type="number" id="edit-hp" placeholder="現在値">
+          ／
+          <input type="number" id="edit-hpMax" placeholder="最大値">
+        </label>
+      </div>
+      <div class="field-group">
+        <label>MP:
+          <input type="number" id="edit-mp" placeholder="現在値">
+          ／
+          <input type="number" id="edit-mpMax" placeholder="最大値">
+        </label>
+      </div>
+      <div class="field-group">
+        <label>SAN:
+          <input type="number" id="edit-san" placeholder="現在値">
+          ／
+          <input type="number" id="edit-sanMax" placeholder="最大値">
+        </label>
+      </div>
+      <div class="field-group">
+        <label id="label-other1">
+          <span id="label-other1-name">その他</span>：
+          <input type="number" id="edit-other">
+        </label>
+      </div>
+      <div class="field-group">
+        <label id="label-other2">
+          <span id="label-other2-name">その他2</span>：
+          <input type="number" id="edit-other2">
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" id="save-button">保存</button>
+        <button type="button" id="cancel-button">キャンセル</button>
+      </div>
+    </form>
   </div>
 
   <script type="module" src="kp_scenario.js"></script>
