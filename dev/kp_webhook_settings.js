@@ -25,7 +25,7 @@ if (!scenarioId || !kpId) {
 }
 
 const threadsColRef = collection(db, `scenarios/${scenarioId}/threads`);
-const charactersColRef = collection(db, `scenarios/${scenarioId}/characters`);
+const charactersColRef = collection(db, `characters`);
 
 const newThreadNameInput = document.getElementById("new-thread-name");
 const createThreadButton = document.getElementById("create-thread-button");
