@@ -73,11 +73,11 @@ function renderThreadList() {
     deleteBtn.onclick = async () => {
       await deleteDoc(doc(threadsColRef, thread.id));
       await fetchThreads();
+      showToast("スレッドを削除しました");
     };
 
     li.append(" ", settingBtn, copyBtn, deleteBtn);
     threadList.appendChild(li);
-    showToast("スレッドを削除しました");
   });
 }
 
