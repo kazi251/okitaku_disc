@@ -277,7 +277,6 @@
   #thread-list li {
     flex-direction: column;
     align-items: flex-start; /* 左揃え */
-    margin-bottom: 0.1rem;
   }
 
   .thread-name {
