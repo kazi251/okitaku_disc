@@ -53,6 +53,9 @@ function renderThreadList() {
     nameSpan.className = "thread-name";
     li.textContent = thread.name;
 
+    const buttonContainer = document.createElement("div");
+    buttonContainer.className = "thread-buttons";
+
     const settingBtn = document.createElement("button");
     settingBtn.textContent = "設定"; 
     settingBtn.onclick = async () => openThreadModal(thread.id);
@@ -80,7 +83,8 @@ function renderThreadList() {
       showToast("スレッドを削除しました");
     };
 
-    li.append(" ", settingBtn, copyBtn, deleteBtn);
+    buttonContainer.append(" ", settingBtn, copyBtn, deleteBtn);
+    li.append(nameSpan, buttonContainer);
     threadList.appendChild(li);
   });
 }
