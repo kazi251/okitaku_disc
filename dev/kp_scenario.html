@@ -36,6 +36,25 @@
     <button onclick="location.href='kp.html'">← ホームに戻る(後で直す)</button>
   </section>
 
+  <!-- モーダル -->
+  <div id="edit-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>キャラクター編集</h3>
+      <form id="edit-form">
+        <label>HP: <input type="number" id="edit-hp" required></label>
+        <label>HP Max: <input type="number" id="edit-hpMax" required></label>
+        <label>MP: <input type="number" id="edit-mp" required></label>
+        <label>MP Max: <input type="number" id="edit-mpMax" required></label>
+        <label>SAN: <input type="number" id="edit-san" required></label>
+        <label>SAN Max: <input type="number" id="edit-sanMax" required></label>
+        <div class="modal-buttons">
+          <button type="submit" id="save-button">保存</button>
+          <button type="button" id="cancel-button">キャンセル</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script type="module" src="kp_scenario.js"></script>
 </body>
 </html>

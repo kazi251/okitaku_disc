@@ -20,6 +20,10 @@ const scenarioId = urlParams.get("scenarioId");
 const nameElem = document.getElementById("scenario-name");
 const charListElem = document.getElementById("character-list");
 
+const editModal = document.getElementById("edit-modal");
+const editForm = document.getElementById("edit-form");
+let currentDocRef = null;
+
 async function loadScenario() {
   if (!scenarioId) {
     nameElem.textContent = "シナリオIDが指定されていません。";
@@ -94,17 +98,54 @@ function renderCharacterCards(characters, container) {
 
     // 編集ボタン処理（必要に応じてコールバック追加）
     card.querySelector(".edit-button").addEventListener("click", () => {
-      // 編集モーダルなどを開く処理をここに
-      alert(`${name} を編集します`);
+      document.getElementById("edit-hp").value = char.hp ?? "";
+      document.getElementById("edit-hpMax").value = char.hpMax ?? "";
+      document.getElementById("edit-mp").value = char.mp ?? "";
+      document.getElementById("edit-mpMax").value = char.mpMax ?? "";
+      document.getElementById("edit-san").value = char.san ?? "";
+      document.getElementById("edit-sanMax").value = char.sanMax ?? "";
+
+    // ドキュメント参照を保存
+    currentDocRef = docSnap.ref;
+    // モーダル表示
+    editModal.classList.remove("hidden");
     });
 
     container.appendChild(card);
   });
 }
 
-// function setupEventListeners() {
-//   document.getElementById("create-scenario").addEventListener("click", handleCreateScenario);
-// }
+function setupEventListeners() {
+
+  editForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+    if (!currentDocRef) return;
+
+    const updatedData = {
+      hp: Number(document.getElementById("edit-hp").value),
+      hpMax: Number(document.getElementById("edit-hpMax").value),
+      mp: Number(document.getElementById("edit-mp").value),
+      mpMax: Number(document.getElementById("edit-mpMax").value),
+      san: Number(document.getElementById("edit-san").value),
+      sanMax: Number(document.getElementById("edit-sanMax").value),
+    };
+
+    try {
+      await updateDoc(currentDocRef, updatedData);
+      showToast("保存しました");
+      editModal.classList.add("hidden");
+      await initKpScenarioPage(); // 再読み込み
+    } catch (err) {
+      showToast("保存に失敗しました");
+      console.error(err);
+    }
+  });
+
+  document.getElementById("cancel-button").addEventListener("click", () => {
+    editModal.classList.add("hidden");
+  });
+
+}
 
 async function initKpScenarioPage() {
   
@@ -113,6 +154,7 @@ async function initKpScenarioPage() {
   // キャラクター一覧取得と描画
   const characters = await fetchCharacters(scenarioId);
   renderCharacterCards(characters, charListElem);
+  setupEventListeners();
 }
 
 window.addEventListener("DOMContentLoaded", () => {
