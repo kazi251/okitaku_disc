@@ -36,7 +36,8 @@ const saveSettingsButton = document.getElementById("save-settings-button");
 let threadListCache = []; // { id, name }
 
 async function fetchThreads() {
-  const snap = await getDocs(threadsColRef, orderBy("name"));
+  const q = query(threadsColRef, orderBy("name"));
+  const snap = await getDocs(q);
   threadListCache = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   renderThreadList();
   renderCharacterSettings();
