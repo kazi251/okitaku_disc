@@ -61,7 +61,7 @@
     <button onclick="location.href='kp.html'">← ホームに戻る(後で直す)</button>
   </section>
 
-  <!-- モーダル -->
+  <!-- キャラクター編集モーダル -->
   <div id="edit-modal" class="modal hidden">
     <form id="edit-form" class="modal-content">
       <h2>キャラクター編集</h2>
@@ -104,6 +104,36 @@
       </div>
     </form>
   </div>
+
+<!-- スレッド設定モーダル -->
+<div id="thread-modal" class="modal hidden">
+  <form id="thread-form" class="modal-content">
+    <h2>スレッド設定</h2>
+
+    <div class="field-group">
+      <label>スレッド名:
+        <input type="text" id="modal-thread-name" readonly />
+      </label>
+    </div>
+
+    <div class="field-group">
+      <label>Webhook URL:
+        <input type="text" id="modal-webhook-url" />
+      </label>
+    </div>
+
+    <div class="field-group">
+      <label>スレッドID (任意):
+        <input type="text" id="modal-thread-id" placeholder="thread_id を指定する場合" />
+      </label>
+    </div>
+
+    <div class="modal-buttons">
+      <button type="button" id="save-thread-settings-button">保存</button>
+      <button type="button" id="cancel-thread-settings-button">キャンセル</button>
+    </div>
+  </form>
+</div>
 
   <script type="module" src="kp_scenario.js"></script>
   <script type="module" src="kp_webhook_settings.js"></script>

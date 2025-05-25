@@ -20,11 +20,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const scenarioId = urlParams.get("scenarioId");
 const kpId = urlParams.get("kpId");
 
-if (!scenarioId || !kpId) {
-  alert("URL に scenarioId と kpId を含めてください。");
-  throw new Error("パラメータ不足");
-}
-
 const threadsColRef = collection(db, `scenarios/${scenarioId}/threads`);
 const charactersColRef = collection(db, `characters`);
 
@@ -35,6 +30,12 @@ const characterSettingsBody = document.getElementById("character-settings-body")
 const saveSettingsButton = document.getElementById("save-settings-button");
 
 let threadListCache = []; // { id, name }
+let editingThreadId = null;
+
+if (!scenarioId || !kpId) {
+  alert("URL に scenarioId と kpId を含めてください。");
+  throw new Error("パラメータ不足");
+}
 
 async function fetchThreads() {
   const q = query(threadsColRef, orderBy("name"));
@@ -51,7 +52,8 @@ function renderThreadList() {
     li.textContent = thread.name;
 
     const settingBtn = document.createElement("button");
-    settingBtn.textContent = "設定"; // 未実装
+    settingBtn.textContent = "設定"; 
+    settingBtn.onclick = async () => openThreadModal(thread.id);
 
     const copyBtn = document.createElement("button");
     copyBtn.textContent = "コピー";
@@ -150,5 +152,42 @@ saveSettingsButton.onclick = async () => {
   }
   showToast("保存しました");
 };
+
+function openThreadModal(threadId) {
+  const thread = threadListCache.find(t => t.id === threadId);
+  if (!thread) return;
+
+  editingThreadId = threadId;
+
+  document.getElementById("modal-thread-name").value = thread.name || "";
+  const fullUrl = thread.webhookUrl || "";
+  const match = fullUrl.match(/^(https:\/\/[^?]+)(?:\?thread_id=(.+))?$/);
+  document.getElementById("modal-webhook-url").value = match?.[1] || "";
+  document.getElementById("modal-thread-id").value = match?.[2] || "";
+
+  document.getElementById("thread-modal").classList.remove("hidden");
+}
+
+function closeThreadModal() {
+  document.getElementById("thread-modal").classList.add("hidden");
+  editingThreadId = null;
+}
+
+document.getElementById("save-thread-settings-button").onclick = async () => {
+  const url = document.getElementById("modal-webhook-url").value.trim();
+  const threadIdPart = document.getElementById("modal-thread-id").value.trim();
+  const fullUrl = threadIdPart ? `${url}?thread_id=${threadIdPart}` : url;
+
+  if (!editingThreadId) return;
+
+  const threadRef = doc(threadsColRef, editingThreadId);
+  await setDoc(threadRef, { webhookUrl: fullUrl }, { merge: true });
+
+  await fetchThreads();
+  closeThreadModal();
+  showToast("スレッド設定を保存しました");
+};
+
+document.getElementById("cancel-thread-settings-button").onclick = closeThreadModal;
 
 fetchThreads();
