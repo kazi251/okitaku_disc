@@ -24,7 +24,7 @@ if (!scenarioId || !kpId) {
   throw new Error("パラメータ不足");
 }
 
-const threadsColRef = collection(db, `scenarios/${scenarioId}/webhookThreads`);
+const threadsColRef = collection(db, `scenarios/${scenarioId}/threads`);
 const charactersColRef = collection(db, `scenarios/${scenarioId}/characters`);
 
 const newThreadNameInput = document.getElementById("new-thread-name");
