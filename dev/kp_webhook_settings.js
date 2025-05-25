@@ -36,7 +36,7 @@ const saveSettingsButton = document.getElementById("save-settings-button");
 let threadListCache = []; // { id, name }
 
 async function fetchThreads() {
-  const snap = await getDocs(threadsColRef);
+  const snap = await getDocs(threadsColRef, orderBy("name"));
   threadListCache = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   renderThreadList();
   renderCharacterSettings();
@@ -61,6 +61,7 @@ function renderThreadList() {
         createdAt: Date.now()
       });
       await fetchThreads();
+      showToast("スレッドをコピーしました");
     };
 
     const deleteBtn = document.createElement("button");
@@ -72,6 +73,7 @@ function renderThreadList() {
 
     li.append(" ", settingBtn, copyBtn, deleteBtn);
     threadList.appendChild(li);
+    showToast("スレッドを削除しました");
   });
 }
 
