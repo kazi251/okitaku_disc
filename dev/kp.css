@@ -108,8 +108,8 @@
 /* webhookリスト */
 #thread-list li {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.6rem; /* 要素間の余白 */
   margin-bottom: 0.5rem;
 }
 
@@ -124,6 +124,7 @@
 
 /* ボタンは揃った位置に */
 .thread-buttons button {
+  display: flex;
   margin-left: 0.4rem;
 }
 
