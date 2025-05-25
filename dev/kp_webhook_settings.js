@@ -4,24 +4,25 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
   getFirestore,
   collection,
-  addDoc,
-  getDocs,
   doc,
-  updateDoc,
-  deleteDoc,
+  getDocs,
   setDoc,
+  deleteDoc,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { firebaseConfig } from "./firebaseConfig.js";
 import { showToast } from './utils.js';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// シナリオIDはURLから取得（例: ?kpId=xxxx&scenarioId=yyyy）
 const urlParams = new URLSearchParams(window.location.search);
 const scenarioId = urlParams.get("scenarioId");
-if (!scenarioId) {
-  alert("シナリオIDが指定されていません。");
-  throw new Error("シナリオIDが必要です。");
+const kpId = urlParams.get("kpId");
+
+if (!scenarioId || !kpId) {
+  alert("URL に scenarioId と kpId を含めてください。");
+  throw new Error("パラメータ不足");
 }
 
 const threadsColRef = collection(db, `scenarios/${scenarioId}/webhookThreads`);
@@ -33,7 +34,7 @@ const threadList = document.getElementById("thread-list");
 const characterSettingsBody = document.getElementById("character-settings-body");
 const saveSettingsButton = document.getElementById("save-settings-button");
 
-let threadListCache = []; // threadId, name
+let threadListCache = []; // { id, name }
 
 async function fetchThreads() {
   const snap = await getDocs(threadsColRef);
@@ -49,13 +50,17 @@ function renderThreadList() {
     li.textContent = thread.name;
 
     const settingBtn = document.createElement("button");
-    settingBtn.textContent = "設定";
-    // 実装予定: スレッド個別設定
+    settingBtn.textContent = "設定"; // 未実装
 
     const copyBtn = document.createElement("button");
     copyBtn.textContent = "コピー";
     copyBtn.onclick = async () => {
-      await addDoc(threadsColRef, { name: thread.name + "_copy" });
+      const newRef = doc(threadsColRef);
+      await setDoc(newRef, {
+        name: thread.name + "_copy",
+        kpId,
+        createdAt: Date.now()
+      });
       await fetchThreads();
     };
 
@@ -74,7 +79,12 @@ function renderThreadList() {
 createThreadButton.onclick = async () => {
   const name = newThreadNameInput.value.trim();
   if (!name) return;
-  await addDoc(threadsColRef, { name });
+  const newRef = doc(threadsColRef);
+  await setDoc(newRef, {
+    name,
+    kpId,
+    createdAt: Date.now()
+  });
   newThreadNameInput.value = "";
   await fetchThreads();
 };
@@ -115,7 +125,6 @@ async function renderCharacterSettings() {
     tr.append(nameTd, sayTd, statusTd);
     characterSettingsBody.appendChild(tr);
 
-    // セレクトを記録用に tr に保持（保存時に使う）
     tr.dataset.charId = docSnap.id;
     tr._saySel = saySel;
     tr._statusSel = statusSel;
@@ -128,11 +137,15 @@ saveSettingsButton.onclick = async () => {
     const charId = tr.dataset.charId;
     const sayWebhook = tr._saySel.value;
     const statusWebhook = tr._statusSel.value;
+
     const charRef = doc(charactersColRef, charId);
-    await updateDoc(charRef, { sayWebhook, statusWebhook });
+    await setDoc(charRef, {
+      sayWebhook,
+      statusWebhook,
+      kpId
+    }, { merge: true });
   }
-  alert("保存しました。");
+  showToast("保存しました");
 };
 
-// 初期読み込み
 fetchThreads();
