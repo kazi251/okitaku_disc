@@ -62,7 +62,9 @@ function renderThreadList() {
       await setDoc(newRef, {
         name: thread.name + "_copy",
         kpId,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        webhookUrl: thread.webhookUrl ?? "",
+        threadId: thread.threadId ?? ""
       });
       await fetchThreads();
       showToast("スレッドをコピーしました");
