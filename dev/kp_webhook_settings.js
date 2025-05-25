@@ -49,6 +49,8 @@ function renderThreadList() {
   threadList.innerHTML = "";
   threadListCache.forEach(thread => {
     
+    const li = document.createElement("li");
+    
     const nameSpan = document.createElement("span");
     nameSpan.className = "thread-name";
     li.textContent = thread.name;
