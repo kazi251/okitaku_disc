@@ -277,11 +277,14 @@
   #thread-list li {
     flex-direction: column;
     align-items: flex-start; /* 左揃え */
+    margin: 0 0 0.3rem 0;
+    margin: 0;
   }
 
   .thread-name {
     flex: none;
     width: 100%; 
+    margin: 0;
   }
 
   .thread-buttons {
@@ -295,5 +298,7 @@
     flex: none;
     margin-right: 0.5rem;
     margin-bottom: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    line-height: 1.2;
   }
 }
