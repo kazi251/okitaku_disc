@@ -70,6 +70,7 @@ async function sendSay() {
     if (!content) return;
     const avatarUrl = document.getElementById("explorer-image").src;
     const webhook = currentCharacterData?.webhook;
+    console.log("webhookの中身:", webhook);
     try {
         const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
             method: "POST",
