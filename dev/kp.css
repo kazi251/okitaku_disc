@@ -282,6 +282,7 @@
   .thread-name {
     flex: none;
     width: 100%;
+    margin-bottom: 0.1rem;
   }
 
   .thread-buttons {
