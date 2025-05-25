@@ -288,7 +288,7 @@
     width: 100%;
     justify-content: flex-start;
     flex-wrap: wrap;
-    margin-top: 0.2rem;
+    margin-top: 1.0rem;
   }
 
   .thread-buttons button {
