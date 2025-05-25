@@ -296,7 +296,5 @@
   .thread-buttons button {
     flex: none;
     margin: 0;
-    padding: 0.3rem 0.6rem;
-    line-height: 1.2;
   }
 }
