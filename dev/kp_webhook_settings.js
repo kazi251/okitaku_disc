@@ -85,7 +85,7 @@ function renderThreadList() {
       showToast("スレッドを削除しました");
     };
 
-    buttonContainer.append(" ", settingBtn, copyBtn, deleteBtn);
+    buttonContainer.append(settingBtn, copyBtn, deleteBtn);
     li.append(nameSpan, buttonContainer);
     threadList.appendChild(li);
   });

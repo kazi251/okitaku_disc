@@ -109,6 +109,7 @@
 #thread-list li {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.6rem; /* 要素間の余白 */
   margin-bottom: 0.5rem;
 }
@@ -122,10 +123,15 @@
   text-overflow: ellipsis;
 }
 
+.thread-buttons {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: nowrap; /* ボタンが折り返さないようにする */
+}
+
 /* ボタンは揃った位置に */
 .thread-buttons button {
-  display: flex;
-  margin-left: 0.4rem;
+  white-space: nowrap;
 }
 
 /* モーダル */
