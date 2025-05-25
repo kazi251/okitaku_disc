@@ -105,6 +105,23 @@
   background-color: #45a049;
 }
 
+/* webhookリスト */
+#thread-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* スレッド名部分を固定幅に */
+.thread-name {
+  display: inline-block;
+  width: 180px; /* 好きな幅に調整 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* モーダル */
 .modal {
   position: fixed;
