@@ -159,8 +159,17 @@ async function renderCharacterSettings() {
 }
 
 saveSettingsButton.onclick = async () => {
+
+  tr.dataset.charPath = docSnap.ref.path;
+  console.log("charPath:", docSnap.ref.path);
+
   const trs = [...characterSettingsBody.querySelectorAll("tr")];
   for (const tr of trs) {
+    const path = tr.dataset.charPath;
+    if (!path) {
+      console.warn("charPath が空です。スキップします", tr);
+      continue;
+    }
     const charRef = doc(db, tr.dataset.charPath);
     await setDoc(charRef, {
       sayWebhook: tr._saySel.value,
