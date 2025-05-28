@@ -9,7 +9,9 @@ import {
   setDoc,
   deleteDoc,
   query,
-  orderBy
+  orderBy,
+  collectionGroup,
+  where
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { showToast } from './utils.js';
 
@@ -21,7 +23,6 @@ const scenarioId = urlParams.get("scenarioId");
 const kpId = urlParams.get("kpId");
 
 const threadsColRef = collection(db, `scenarios/${scenarioId}/threads`);
-const charactersColRef = collection(db, `characters`);
 
 const newThreadNameInput = document.getElementById("new-thread-name");
 const createThreadButton = document.getElementById("create-thread-button");
@@ -106,13 +107,16 @@ createThreadButton.onclick = async () => {
 };
 
 async function renderCharacterSettings() {
-  const charSnap = await getDocs(charactersColRef);
 
-  console.log("キャラクター数:", charSnap.docs.length);
-  charSnap.docs.forEach(docSnap => {
-    const data = docSnap.data();
-    console.log("キャラ:", data.name);
-  });
+  const charQuery = query(
+  collectionGroup(db, "list"),
+  where("scenarioId", "==", scenarioId)
+  );
+
+  const charSnap = await getDocs(charQuery);
+  characterSettingsBody.innerHTML = "";
+
+  console.log("キャラクター数:", charSnap.size); // デバッグ
 
   characterSettingsBody.innerHTML = "";
   charSnap.docs.forEach(docSnap => {
@@ -157,19 +161,16 @@ async function renderCharacterSettings() {
 saveSettingsButton.onclick = async () => {
   const trs = [...characterSettingsBody.querySelectorAll("tr")];
   for (const tr of trs) {
-    const charId = tr.dataset.charId;
-    const sayWebhook = tr._saySel.value;
-    const statusWebhook = tr._statusSel.value;
-
-    const charRef = doc(charactersColRef, charId);
+    const charRef = doc(db, tr.dataset.charPath);
     await setDoc(charRef, {
-      sayWebhook,
-      statusWebhook,
+      sayWebhook: tr._saySel.value,
+      statusWebhook: tr._statusSel.value,
       kpId
     }, { merge: true });
   }
   showToast("保存しました");
 };
+
 
 function openThreadModal(threadId) {
   const thread = threadListCache.find(t => t.id === threadId);
