@@ -234,6 +234,39 @@
   color: #fff;
 }
 
+/* キャラクターの発言先設定 */
+.char-settings-inner {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.thread-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.thread-checkboxes label {
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.status-webhook-group {
+  margin-top: 0.7rem;
+}
+
+.status-webhook-group select {
+  width: 100%;
+  max-width: 300px;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.3rem 0;
+}
+
 /* モバイル対応 */
 @media (max-width: 600px) {
   .character-card {

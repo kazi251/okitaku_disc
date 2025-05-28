@@ -24,6 +24,8 @@ const kpId = urlParams.get("kpId");
 
 const threadsColRef = collection(db, `scenarios/${scenarioId}/threads`);
 
+const characterSettingsContainer = document.getElementById("character-settings-container");
+
 const newThreadNameInput = document.getElementById("new-thread-name");
 const createThreadButton = document.getElementById("create-thread-button");
 const threadList = document.getElementById("thread-list");
@@ -107,79 +109,90 @@ createThreadButton.onclick = async () => {
 };
 
 async function renderCharacterSettings() {
+  const q = query(collectionGroup(db, "list"), where("kpId", "==", kpId));
+  const charSnap = await getDocs(q);
+  characterSettingsContainer.innerHTML = "";
 
-  const charQuery = query(
-  collectionGroup(db, "list"),
-  where("scenarioId", "==", scenarioId)
-  );
-
-  const charSnap = await getDocs(charQuery);
-  characterSettingsBody.innerHTML = "";
-
-  console.log("キャラクター数:", charSnap.size); // デバッグ
-
-  characterSettingsBody.innerHTML = "";
-  charSnap.docs.forEach(docSnap => {
+  charSnap.forEach(docSnap => {
     const data = docSnap.data();
-    const tr = document.createElement("tr");
+    const docPath = docSnap.ref.path;
+    const sayWebhooks = data.sayWebhooks || [];
+    const statusWebhook = data.statusWebhook || "";
 
-    tr.dataset.charPath = docSnap.ref.path;
-    console.log("charPath:", docSnap.ref.path);
+    const details = document.createElement("details");
+    details.className = "char-setting";
 
-    const nameTd = document.createElement("td");
-    nameTd.textContent = data.name ?? "(名前なし)";
+    const summary = document.createElement("summary");
+    summary.textContent = data.name || "(名前なし)";
+    details.appendChild(summary);
 
-    const saySel = document.createElement("select");
+    const inner = document.createElement("div");
+    inner.className = "char-settings-inner";
+
+    // 発言先（チェックボックス）
+    const sayGroup = document.createElement("div");
+    sayGroup.className = "say-webhook-group";
+    sayGroup.innerHTML = "<label>発言先（複数選択）:</label>";
+
+    const checkboxContainer = document.createElement("div");
+    checkboxContainer.className = "thread-checkboxes";
+    threadListCache.forEach(t => {
+      const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = t.id;
+      if (sayWebhooks.includes(t.id)) checkbox.checked = true;
+      label.appendChild(checkbox);
+      label.append(" " + t.name);
+      checkboxContainer.appendChild(label);
+    });
+    sayGroup.appendChild(checkboxContainer);
+
+    // ステータス通知先（セレクト）
+    const statusGroup = document.createElement("div");
+    statusGroup.className = "status-webhook-group";
+    statusGroup.innerHTML = "<label>ステータス通知先（1つ選択）:</label>";
+
+    const select = document.createElement("select");
+    const defaultOpt = document.createElement("option");
+    defaultOpt.value = "";
+    defaultOpt.textContent = "選択してください";
+    select.appendChild(defaultOpt);
+
     threadListCache.forEach(t => {
       const opt = document.createElement("option");
       opt.value = t.id;
       opt.textContent = t.name;
-      if (data.sayWebhook === t.id) opt.selected = true;
-      saySel.appendChild(opt);
+      if (t.id === statusWebhook) opt.selected = true;
+      select.appendChild(opt);
     });
+    statusGroup.appendChild(select);
 
-    const statusSel = document.createElement("select");
-    threadListCache.forEach(t => {
-      const opt = document.createElement("option");
-      opt.value = t.id;
-      opt.textContent = t.name;
-      if (data.statusWebhook === t.id) opt.selected = true;
-      statusSel.appendChild(opt);
-    });
+    inner.append(sayGroup, statusGroup);
+    details.appendChild(inner);
+    characterSettingsContainer.appendChild(details);
 
-    const sayTd = document.createElement("td");
-    sayTd.appendChild(saySel);
-    const statusTd = document.createElement("td");
-    statusTd.appendChild(statusSel);
-
-    tr.append(nameTd, sayTd, statusTd);
-    characterSettingsBody.appendChild(tr);
-
-    tr.dataset.charId = docSnap.id;
-    tr._saySel = saySel;
-    tr._statusSel = statusSel;
+    // 保存用にパスと入力参照保持
+    details.dataset.charPath = docPath;
+    details._checkboxes = [...checkboxContainer.querySelectorAll("input[type=checkbox]")];
+    details._statusSelect = select;
   });
 }
 
 saveSettingsButton.onclick = async () => {
-
-  const trs = [...characterSettingsBody.querySelectorAll("tr")];
-  for (const tr of trs) {
-    const path = tr.dataset.charPath;
-    if (!path) {
-      console.warn("charPath が空です。スキップします", tr);
-      continue;
-    }
-    const charRef = doc(db, tr.dataset.charPath);
+  const detailsList = [...characterSettingsContainer.querySelectorAll("details")];
+  for (const d of detailsList) {
+    const charRef = doc(db, d.dataset.charPath);
+    const sayWebhooks = d._checkboxes.filter(cb => cb.checked).map(cb => cb.value);
+    const statusWebhook = d._statusSelect.value;
     await setDoc(charRef, {
-      sayWebhook: tr._saySel.value,
-      statusWebhook: tr._statusSel.value,
+      sayWebhooks,
+      statusWebhook,
       kpId
     }, { merge: true });
   }
   showToast("保存しました");
 };
-
 
 function openThreadModal(threadId) {
   const thread = threadListCache.find(t => t.id === threadId);
