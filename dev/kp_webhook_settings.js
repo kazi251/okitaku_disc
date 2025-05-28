@@ -46,13 +46,7 @@ async function fetchThreads() {
 }
 
 function renderThreadList() {
-
-console.log("キャラクター数:", charSnap.docs.length);
-charSnap.docs.forEach(docSnap => {
-  const data = docSnap.data();
-  console.log("キャラ:", data.name);
-});
-
+  
   threadList.innerHTML = "";
   threadListCache.forEach(thread => {
     
@@ -113,6 +107,13 @@ createThreadButton.onclick = async () => {
 
 async function renderCharacterSettings() {
   const charSnap = await getDocs(charactersColRef);
+
+  console.log("キャラクター数:", charSnap.docs.length);
+  charSnap.docs.forEach(docSnap => {
+    const data = docSnap.data();
+    console.log("キャラ:", data.name);
+  });
+
   characterSettingsBody.innerHTML = "";
   charSnap.docs.forEach(docSnap => {
     const data = docSnap.data();
