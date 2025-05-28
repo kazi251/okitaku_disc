@@ -123,6 +123,9 @@ async function renderCharacterSettings() {
     const data = docSnap.data();
     const tr = document.createElement("tr");
 
+    tr.dataset.charPath = docSnap.ref.path;
+    console.log("charPath:", docSnap.ref.path);
+
     const nameTd = document.createElement("td");
     nameTd.textContent = data.name ?? "(名前なし)";
 
@@ -159,9 +162,6 @@ async function renderCharacterSettings() {
 }
 
 saveSettingsButton.onclick = async () => {
-
-  tr.dataset.charPath = docSnap.ref.path;
-  console.log("charPath:", docSnap.ref.path);
 
   const trs = [...characterSettingsBody.querySelectorAll("tr")];
   for (const tr of trs) {
