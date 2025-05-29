@@ -287,7 +287,7 @@ async function sendKpSay() {
     showToast("Webhookが設定されていません");
     return;
   }
-  console.log("Webhook URL:", webhookUrl);
+  console.log("Webhook URL:", webhook);
   try {
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
