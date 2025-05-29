@@ -324,6 +324,17 @@ async function loadCharacterData(charId) {
         }
       }
 
+      // 名前で昇順にソート（日本語対応）
+      threadOptions.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+
+      // ソート後に <option> を追加
+      threadOptions.forEach(thread => {
+        const option = document.createElement("option");
+        option.value = thread.id;
+        option.textContent = thread.name;
+        saySelect.appendChild(option);
+      });
+
       if (sayWebhooks.length > 0) {
         saySelect.value = sayWebhooks[0]; 
       }
