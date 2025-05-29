@@ -407,7 +407,7 @@ async function saveCharacterData() {
         `\`\`\``;
 
       const avatarUrl = imageSrc;
-      const webhook = currentCharacterData?.webhook;
+      const webhook = currentCharacterData?.webhook?.statusWebhook || null;
 
       try {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
