@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
+import { memo } from "react";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -331,12 +332,12 @@ async function saveCharacterData() {
       const message =
         `ステータス更新\n` +
         `\`\`\`\n` +
-        `HP: ${hp} / ${hpMax}\n` +
-        `MP: ${mp} / ${mpMax}\n` +
+        `HP: ${hp} / ${hpMax} ` +
+        `MP: ${mp} / ${mpMax} ` +
         `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
-        `${other1Name || "その他1"}: ${other || "-"}\n` +
-        `${other2Name || "その他2"}: ${other2 || "-"}` +
-        (memo ? `\n\nメモ: ${memo}` : "") + 
+        `${other1Name || "その他1"}: ${other || "-"} ` +
+        `${other2Name || "その他2"}: ${other2 || "-"}\n` +
+        (memo ? `メモ: ${memo}` : "") + 
         `\`\`\``;
 
       const avatarUrl = imageSrc;
@@ -574,7 +575,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
       name,
       hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
-      other: "", other2: "", other1Name: "", other2Name: "",
+      other: "", other2: "", other1Name: "", other2Name: "", memo: "",
       palette: "",
       webhook: defaultWebhook, 
       imageUrl: "./seeker_vault/default.png", 
@@ -684,7 +685,7 @@ window.addEventListener("DOMContentLoaded", () => {
   [
     "hp-input", "hp-max-input", "mp-input", "mp-max-input",
     "san-input", "san-max-input", "other-input", "other2-input",
-    "other1-name", "other2-name"
+    "other1-name", "other2-name", "memo-input"
   ].forEach(id => {
     const input = document.getElementById(id);
     if (input) input.addEventListener("input", updateDisplay);
