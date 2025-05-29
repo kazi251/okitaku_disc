@@ -293,6 +293,7 @@ async function saveCharacterData() {
       other2: document.getElementById("other2-input").value,
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
+      memo: document.getElementById("memo-input").value,
       playerId: playerId, 
       updatedAt: new Date().toISOString()
     };
@@ -334,6 +335,7 @@ async function saveCharacterData() {
         `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
         `${other1Name || "その他1"}: ${other || "-"}\n` +
         `${other2Name || "その他2"}: ${other2 || "-"}` +
+        (memo ? `\n\nメモ: ${memo}` : "") + // ← ここでメモがあれば追加
         `\`\`\``;
 
       const avatarUrl = imageSrc;
@@ -421,6 +423,8 @@ function loadCharacterStatusOnly(data) {
   document.getElementById("other2").textContent = data.other2 || "-";
   document.getElementById("other1-label").textContent = data.other1Name || "その他";
   document.getElementById("other2-label").textContent = data.other2Name || "その他";
+
+  document.getElementById("memo-input").value = data.memo || ""; 
 
   updateDisplay();
 }
@@ -595,10 +599,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-    document.getElementById("legacy-status-save").addEventListener("click", () => {
-    isLegacySave = true;
-    saveCharacterData();
-    });
+  document.getElementById("legacy-status-save").addEventListener("click", () => {
+  isLegacySave = true;
+  saveCharacterData();
+  });
 
   document.getElementById("legacy-status-load").addEventListener("click", async () => {
     if (currentCharacterId) {
