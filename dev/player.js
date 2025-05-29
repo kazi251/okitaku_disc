@@ -271,7 +271,7 @@ async function loadCharacterData(charId) {
     if (saySelect) {
       saySelect.innerHTML = "";
 
-      const sayWebhooks = data.webhook?.sayWebhooks || [];
+      const sayWebhooks = data.sayWebhooks || [];
       sayWebhooks.forEach((url, index) => {
         const option = document.createElement("option");
         option.value = url;
