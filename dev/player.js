@@ -65,11 +65,38 @@ function showSuggestions() {
     suggestions.style.display = "block";
 }
 
+// Webhook URLを取得する関数
+async function getSelectedWebhookUrl() {
+  const select = document.getElementById("say-webhook-select");
+  const threadId = select?.value;
+  const scenarioId = currentCharacterData?.scenarioId;
+
+  if (!threadId || !scenarioId) return null;
+
+  try {
+    const threadRef = doc(db, "scenarios", scenarioId, "threads", threadId);
+    const threadSnap = await getDoc(threadRef);
+    if (threadSnap.exists()) {
+      return threadSnap.data().webhookUrl || null;
+    }
+  } catch (e) {
+    console.error("Webhook取得失敗:", e);
+  }
+
+  return null;
+}
+
+
 async function sendSay() {
     const content = document.getElementById("say-content").value.trim();
     if (!content) return;
     const avatarUrl = document.getElementById("explorer-image").src;
-    const webhook = document.getElementById("say-webhook-select")?.value;
+    const webhookUrl = await getSelectedWebhookUrl();
+    if (!webhookUrl) {
+      showToast("Webhookが設定されていません");
+      return;
+    }
+
     try {
         const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
             method: "POST",
@@ -110,7 +137,11 @@ async function rollDice() {
 
   const userName = currentCharacterName;
   const avatarUrl = document.getElementById("explorer-image").src;
-  const webhook = document.getElementById("say-webhook-select")?.value;
+  const webhookUrl = await getSelectedWebhookUrl();
+  if (!webhookUrl) {
+    showToast("Webhookが設定されていません");
+    return;
+  }
 
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
@@ -264,20 +295,33 @@ async function loadCharacterData(charId) {
     updateDisplay();
     updateChatPalette();
 
-    console.log(currentCharacterData.sayWebhooks);
     // sayWebhookのセレクトを初期化
     const saySelect = document.getElementById("say-webhook-select");
     
     if (saySelect) {
       saySelect.innerHTML = "";
 
+      const scenarioId = data.scenarioId;
       const sayWebhooks = data.sayWebhooks || [];
-      sayWebhooks.forEach((url, index) => {
-        const option = document.createElement("option");
-        option.value = url;
-        option.textContent = `発言先 ${index + 1}`;
-        saySelect.appendChild(option);
-      });
+
+      for (const threadId of sayWebhooks) {
+        try {
+          const threadRef = doc(db, "scenarios", scenarioId, "threads", threadId);
+          const threadSnap = await getDoc(threadRef);
+
+          if (threadSnap.exists()) {
+            const threadData = threadSnap.data();
+            const option = document.createElement("option");
+            option.value = threadId;
+            option.textContent = threadData.name || `スレッド ${threadId}`;
+            saySelect.appendChild(option);
+          } else {
+            console.warn(`スレッドが見つかりません: ${threadId}`);
+          }
+        } catch (e) {
+          console.warn(`スレッド情報取得失敗: ${threadId}`, e);
+        }
+      }
 
       if (sayWebhooks.length > 0) {
         saySelect.value = sayWebhooks[0]; 
