@@ -200,11 +200,17 @@ async function renderKPCAndEnemies(scenarioId) {
 
   // キャラ表示関数に渡す
   renderCharacterCards(kpcList, inner);
+
+  // KPCとエネミーの間にスペーサー
+  const spacer = document.createElement("div");
+  spacer.style.paddingBottom = "1rem";
+  inner.appendChild(spacer);
+
   renderCharacterCards(enemyList, inner);
 
   accordion.appendChild(inner);
   container.appendChild(accordion);
-  
+
 }
 
 function sendMessageAsCharacter(name, message) {
