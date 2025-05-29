@@ -198,7 +198,9 @@ async function renderKPCAndEnemies(scenarioId) {
 
   // ドキュメントデータに .ref を追加して再利用可能に
   const kpcList = kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
+  console.log("kpcList:", kpcList);
   const enemyList = enemiesSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
+  console.log("enemyList:", enemyList);
 
   // キャラ表示関数に渡す
   renderCharacterCards(kpcList, inner);
