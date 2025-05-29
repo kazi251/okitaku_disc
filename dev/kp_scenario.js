@@ -292,7 +292,7 @@ async function sendKpSay() {
         avatar_url: char.imageUrl,
         webhook: webhook
       }
-  console.log("送信内容:", JSON.stringify(payload));
+  console.log("送信内容:", JSON.stringify(payload, null, 2));
   try {
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
