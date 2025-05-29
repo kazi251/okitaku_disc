@@ -208,6 +208,8 @@ async function renderKPCAndEnemies(scenarioId) {
 
   accordion.appendChild(inner);
   container.appendChild(accordion);
+
+  console.log("DOMに追加されたキャラ数:", inner.querySelectorAll(".character-card").length);
 }
 
 function sendMessageAsCharacter(name, message) {
@@ -225,7 +227,6 @@ async function initKpScenarioPage() {
 
   // KPC・エネミーの描画
   await renderKPCAndEnemies(scenarioId);
-  console.log("DOMに追加されたキャラ数:", inner.querySelectorAll(".character-card").length);
   
   setupEventListeners();
 }
