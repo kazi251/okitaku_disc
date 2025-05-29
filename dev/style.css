@@ -31,7 +31,8 @@ input[type="text"]{ /* テキストボックス */
   padding: 5px 10px; /* ボタンのpaddingに合わせて調整 */
 }
 
-.explorer-image-container {
+.explorer-image-container ,
+.say-webhook-select {
   display: flex;
   flex-direction: column; /* 名前を画像の下に配置 */
   align-items: center; /* 名前を中央揃え */
