@@ -171,8 +171,8 @@ function setupEventListeners() {
 
 }
 
-async function renderKPCAndEnemies() {
-  const scenarioId = getScenarioIdFromURL();
+async function renderKPCAndEnemies(scenarioId) {
+  
   const scenarioRef = doc(db, "scenarios", scenarioId);
 
   const [kpcSnap, enemiesSnap] = await Promise.all([
@@ -219,7 +219,7 @@ async function initKpScenarioPage() {
   renderCharacterCards(characters, charListElem);
 
   // KPC・エネミーの描画
-  await renderKPCAndEnemies();
+  await renderKPCAndEnemies(scenarioId);
   
   setupEventListeners();
 }
