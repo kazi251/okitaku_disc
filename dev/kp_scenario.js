@@ -215,7 +215,7 @@ async function renderKPCAndEnemies(scenarioId) {
 
 // 発言・ダイスUIエリア
 async function initKpCharacterDropdown(scenarioId) {
-  const select = document.getElementById("kp-character-select");
+  const select = document.getElementById("kp-character-dropdown");
   select.innerHTML = '<option value="">選択してください</option>';
 
   const types = ["mobs", "kpc", "enemies"];
