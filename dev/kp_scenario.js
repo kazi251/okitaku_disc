@@ -114,7 +114,7 @@ function renderCharacterCards(characters, container) {
       document.getElementById("edit-sanMax").value = char.sanMax ?? "";
       document.getElementById("edit-other").value = char.other ?? "";
       document.getElementById("edit-other2").value = char.other2 ?? "";
-      document.getElementById("edit-memo").value = char.other2 ?? "";
+      document.getElementById("edit-memo").value = char.memo ?? "";
 
       // ラベル名
       document.getElementById("edit-other1-name").value = char.other1Name || "";

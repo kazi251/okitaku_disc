@@ -313,7 +313,7 @@ input[type="text"]{ /* テキストボックス */
     min-width: 4em; /* 最小幅を4文字分に設定 */
   }
   #memo-input {
-    width: 95%;
+    width: 90%;
   }
 
   .parameter-section {
@@ -337,7 +337,7 @@ input[type="text"]{ /* テキストボックス */
   }
 
   #chat-palette-input {
-    width: 95%; /* 幅を親要素の95%に */
+    width: 90%; /* 幅を親要素の90%に */
     min-height: 150px; /* 最小の高さ */
   }
 
