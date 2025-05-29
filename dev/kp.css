@@ -17,7 +17,8 @@
   font-size: 0.9em;
 }
 
-#character-list {
+#character-list,
+#kpc-enemy-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;

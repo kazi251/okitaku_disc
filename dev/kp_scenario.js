@@ -193,14 +193,10 @@ async function renderKPCAndEnemies(scenarioId) {
 
   const inner = document.createElement("div");
   inner.className = "kpc-enemy-inner";
-  console.log("kpcSnap size:", kpcSnap.size);
-  console.log("enemiesSnap size:", enemiesSnap.size);
 
   // ドキュメントデータに .ref を追加して再利用可能に
   const kpcList = kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
-  console.log("kpcList:", kpcList);
   const enemyList = enemiesSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
-  console.log("enemyList:", enemyList);
 
   // キャラ表示関数に渡す
   renderCharacterCards(kpcList, inner);
@@ -208,8 +204,7 @@ async function renderKPCAndEnemies(scenarioId) {
 
   accordion.appendChild(inner);
   container.appendChild(accordion);
-
-  console.log("DOMに追加されたキャラ数:", inner.querySelectorAll(".character-card").length);
+  
 }
 
 function sendMessageAsCharacter(name, message) {
