@@ -18,22 +18,22 @@
   </section>
 
   <!-- 発言・ダイスUIエリア -->
-  <div id="say-roll-area">
-    <h2>発言・ダイス入力</h2>
-    <div class="say-roll-form">
-      <select id="character-select">
-        <option value="">キャラクターを選択</option>
-      </select>
-      <div>
-        <input type="text" id="say-input" placeholder="発言内容">
-        <button id="say-button">発言</button>
-      </div>
-      <div>
-        <input type="text" id="roll-input" placeholder="ダイスコマンド (例: 1d100<50)">
-        <button id="roll-button">ロール</button>
-      </div>
+  <div class="section">
+    <h2>キャラ発言・ロール</h2>
+    <select id="kp-character-select"></select>
+
+    <div>
+      <textarea id="kp-say-content" placeholder="セリフを入力..."></textarea>
+      <button id="kp-send-button">送信</button>
+    </div>
+
+    <div>
+      <input type="text" id="kp-dice-command" placeholder="ダイスコマンド">
+      <button id="kp-roll-button">ロール</button>
+      <div id="kp-result"></div>
     </div>
   </div>
+
 
   <section class="section">
     <h2>エネミー・KPC管理</h2>

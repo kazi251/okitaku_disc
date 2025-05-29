@@ -214,34 +214,119 @@ async function renderKPCAndEnemies(scenarioId) {
 }
 
 // 発言・ダイスUIエリア
-async function populateCharacterDropdown(scenarioId) {
-  const scenarioRef = doc(db, "scenarios", scenarioId);
+async function initKpCharacterDropdown(scenarioId) {
+  const select = document.getElementById("kp-character-select");
+  select.innerHTML = '<option value="">選択してください</option>';
 
-  const [kpcSnap, enemySnap, mobSnap] = await Promise.all([
-    getDocs(collection(scenarioRef, "kpc")),
-    getDocs(collection(scenarioRef, "enemies")),
-    getDocs(collection(scenarioRef, "mobs")),
-  ]);
+  const types = ["mobs", "kpc", "enemies"];
 
-  const allCharacters = [
-    ...kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref, type: "KPC" })),
-    ...enemySnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref, type: "Enemy" })),
-    ...mobSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref, type: "Mob" })),
-  ];
+  for (const type of types) {
+    const snap = await getDocs(collection(db, "scenarios", scenarioId, type));
+    snap.forEach(doc => {
+      const data = doc.data();
+      const option = document.createElement("option");
+      option.value = JSON.stringify({ name: data.name, imageUrl: data.imageUrl });
+      option.textContent = `[${type}] ${data.name}`;
+      select.appendChild(option);
+    });
+  }
+}
 
-  const select = document.getElementById("character-select");
-  allCharacters.forEach(char => {
-    const option = document.createElement("option");
-    option.value = char.ref.path;
-    option.textContent = `[${char.type}] ${char.name}`;
-    select.appendChild(option);
-  });
+// KPによるセリフ送信
+async function sendKpSay() {
+  const content = document.getElementById("kp-say-content").value.trim();
+  if (!content) return;
 
-  // 今後のためにグローバルに保持
-  window.allSelectableCharacters = allCharacters;
+  const selected = document.getElementById("kp-character-select").value;
+  if (!selected) return showToast("キャラクターを選択してください");
+
+  const { name, imageUrl } = JSON.parse(selected);
+  const webhook = await getSelectedWebhookUrl();
+
+  if (!webhook) {
+    showToast("Webhookが設定されていません");
+    return;
+  }
+
+  try {
+    const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, message: content, avatar_url: imageUrl, webhook })
+    });
+    if (response.ok) {
+      document.getElementById("kp-say-content").value = "";
+      showToast("セリフを送信しました！");
+    } else {
+      const errorText = await response.text();
+      throw new Error(`送信失敗: ${response.status} ${errorText}`);
+    }
+  } catch (error) {
+    console.error(`セリフ送信エラー: ${error.message}`);
+  }
+}
+
+// KPによるダイスロール
+async function rollKpDice() {
+  const input = document.getElementById("kp-dice-command").value.trim();
+  if (!input) return;
+
+  const selected = document.getElementById("kp-character-select").value;
+  if (!selected) return showToast("キャラクターを選択してください");
+
+  const { name, imageUrl } = JSON.parse(selected);
+  const webhook = await getSelectedWebhookUrl();
+
+  if (!webhook) {
+    showToast("Webhookが設定されていません");
+    return;
+  }
+
+  const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+  workerUrl.searchParams.append("command", input);
+  workerUrl.searchParams.append("name", name);
+  workerUrl.searchParams.append("avatar_url", imageUrl);
+  workerUrl.searchParams.append("webhook", webhook);
+
+  try {
+    const response = await fetch(workerUrl.toString());
+    const result = await response.json();
+
+    let displayText = `🎲 ${input}:`;
+    if (result.ok) {
+      let resultText = result.text ?? "";
+
+      resultText = resultText.replace(/\n{2,}(#\d+)/g, '\n$1');
+
+      const lines = resultText.split("\n").map(line => {
+        if (line.includes("致命的失敗")) return line + " 💀";
+        else if (line.includes("失敗")) return line + " 🥶";
+        else if (line.includes("決定的成功/スペシャル")) return line + " 🎉🎊✨";
+        else if (line.includes("スペシャル") || line.includes("成功")) return line + " 😊";
+        else return line;
+      });
+
+      const decoratedText = lines.join("\n");
+
+      showToast("ダイスを振りました！");
+      displayText += "\n" + decoratedText;
+      document.getElementById("kp-dice-command").value = "";
+
+    } else {
+      displayText += "\nエラー: " + result.reason;
+    }
+
+    document.getElementById("kp-dice-result").innerHTML = displayText.replace(/\n/g, "<br>");
+  } catch (error) {
+    document.getElementById("kp-dice-result").innerText = "⚠️ 通信エラーが発生しました";
+    console.error("Fetch error:", error);
+  }
 }
 
 async function initKpScenarioPage() {
+
+  document.getElementById("kp-send-button")?.addEventListener("click", sendKpSay);
+  document.getElementById("kp-roll-button")?.addEventListener("click", rollKpDice);
   
   await loadScenario();
 
@@ -253,7 +338,7 @@ async function initKpScenarioPage() {
   await renderKPCAndEnemies(scenarioId);
 
   // 発言・ダイス
-  await populateCharacterDropdown(scenarioId);
+  await initKpCharacterDropdown(scenarioId);
   
   setupEventListeners();
 }
