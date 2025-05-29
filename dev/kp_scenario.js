@@ -171,6 +171,45 @@ function setupEventListeners() {
 
 }
 
+async function renderKPCAndEnemies() {
+  const scenarioId = getScenarioIdFromURL();
+  const scenarioRef = doc(db, "scenarios", scenarioId);
+
+  const [kpcSnap, enemiesSnap] = await Promise.all([
+    getDocs(collection(scenarioRef, "kpc")),
+    getDocs(collection(scenarioRef, "enemies"))
+  ]);
+
+  const container = document.getElementById("kpc-enemy-container");
+  container.innerHTML = "";
+
+  const accordion = document.createElement("details");
+  accordion.open = true;
+
+  const summary = document.createElement("summary");
+  summary.textContent = "📘 KPC・エネミー一覧";
+  accordion.appendChild(summary);
+
+  const inner = document.createElement("div");
+  inner.className = "kpc-enemy-inner";
+
+  // ドキュメントデータに .ref を追加して再利用可能に
+  const kpcList = kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
+  const enemyList = enemiesSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
+
+  // キャラ表示関数に渡す
+  renderCharacterCards(kpcList, inner);
+  renderCharacterCards(enemyList, inner);
+
+  accordion.appendChild(inner);
+  container.appendChild(accordion);
+}
+
+function sendMessageAsCharacter(name, message) {
+  console.log(`[${name}] → ${message}`);
+  // TODO: Webhook経由でDiscordに送信
+}
+
 async function initKpScenarioPage() {
   
   await loadScenario();
@@ -178,6 +217,10 @@ async function initKpScenarioPage() {
   // キャラクター一覧取得と描画
   const characters = await fetchCharacters(scenarioId);
   renderCharacterCards(characters, charListElem);
+
+  // KPC・エネミーの描画
+  await renderKPCAndEnemies();
+  
   setupEventListeners();
 }
 
