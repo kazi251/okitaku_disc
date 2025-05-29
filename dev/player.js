@@ -69,7 +69,7 @@ async function sendSay() {
     const content = document.getElementById("say-content").value.trim();
     if (!content) return;
     const avatarUrl = document.getElementById("explorer-image").src;
-    const webhook = currentCharacterData?.webhook;
+    const webhook = document.getElementById("say-webhook-select")?.value;
     try {
         const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
             method: "POST",
@@ -110,7 +110,7 @@ async function rollDice() {
 
   const userName = currentCharacterName;
   const avatarUrl = document.getElementById("explorer-image").src;
-  const webhook = currentCharacterData?.webhook;
+  const webhook = document.getElementById("say-webhook-select")?.value;
 
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
@@ -263,6 +263,24 @@ async function loadCharacterData(charId) {
     
     updateDisplay();
     updateChatPalette();
+
+    // sayWebhookのセレクトを初期化
+    const saySelect = document.getElementById("say-webhook-select");
+    if (saySelect) {
+      saySelect.innerHTML = "";
+
+      const sayWebhooks = data.webhook?.sayWebhooks || [];
+      sayWebhooks.forEach((url, index) => {
+        const option = document.createElement("option");
+        option.value = url;
+        option.textContent = `発言先 ${index + 1}`;
+        saySelect.appendChild(option);
+      });
+
+      if (sayWebhooks.length > 0) {
+        saySelect.value = sayWebhooks[0]; 
+      }
+    }
 
     showToast("キャラクターを読み込みました！");
   } catch (error) {
@@ -565,35 +583,35 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("new-character-button").addEventListener("click", async () => {
-  const name = prompt("キャラクター名を入力してください");
-  if (!name) return;
+    const name = prompt("キャラクター名を入力してください");
+    if (!name) return;
 
-  try {
-    // 🔽 デフォルトWebhookを取得
-    const webhookSnap = await getDoc(doc(db, "defaults", "webhook"));
-    const defaultWebhook = webhookSnap.exists() ? webhookSnap.data().url : "";
+    try {
+      // 🔽 デフォルトWebhookを取得
+      const webhookSnap = await getDoc(doc(db, "defaults", "webhook"));
+      const defaultWebhook = webhookSnap.exists() ? webhookSnap.data().url : "";
 
-    const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
-      name,
-      hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
-      other: "", other2: "", other1Name: "", other2Name: "", memo: "",
-      palette: "",
-      webhook: defaultWebhook, 
-      imageUrl: "./seeker_vault/default.png", 
-      playerId: playerId, 
-      accessKpId: "",
-      updatedAt: new Date().toISOString()
-    });
+      const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
+        name,
+        hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
+        other: "", other2: "", other1Name: "", other2Name: "", memo: "",
+        palette: "",
+        webhook: defaultWebhook, 
+        imageUrl: "./seeker_vault/default.png", 
+        playerId: playerId, 
+        accessKpId: "",
+        updatedAt: new Date().toISOString()
+      });
 
-    showToast("キャラクターを作成しました");
-    await loadCharacterList();
-    document.getElementById("character-select").value = newChar.id;
-    await loadCharacterData(newChar.id);
-  } catch (e) {
-    console.error("キャラ作成失敗:", e);
-    showToast("キャラ作成に失敗しました");
-  }
-});
+      showToast("キャラクターを作成しました");
+      await loadCharacterList();
+      document.getElementById("character-select").value = newChar.id;
+      await loadCharacterData(newChar.id);
+    } catch (e) {
+      console.error("キャラ作成失敗:", e);
+      showToast("キャラ作成に失敗しました");
+    }
+  });
 
   document.getElementById("character-select").addEventListener("change", async () => {
     const selected = document.getElementById("character-select").value;
@@ -670,17 +688,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // アコーディオン処理
   document.querySelectorAll(".toggle-button").forEach(button => {
-  button.addEventListener("click", () => {
-    const parent = button.closest(".section");
-    const content = parent?.querySelector(".toggle-content");
+    button.addEventListener("click", () => {
+      const parent = button.closest(".section");
+      const content = parent?.querySelector(".toggle-content");
 
-    if (!content) return;
+      if (!content) return;
 
-    const isOpen = content.style.display === "block";
-    content.style.display = isOpen ? "none" : "block";
-    button.classList.toggle("open", !isOpen);
+      const isOpen = content.style.display === "block";
+      content.style.display = isOpen ? "none" : "block";
+      button.classList.toggle("open", !isOpen);
+    });
   });
-});
 
   // パラメータの反映
   [
