@@ -304,6 +304,7 @@ async function loadCharacterData(charId) {
 
       const scenarioId = data.scenarioId;
       const sayWebhooks = data.sayWebhooks || [];
+      const threadOptions = [];
 
       for (const threadId of sayWebhooks) {
         try {
