@@ -407,12 +407,13 @@ async function saveCharacterData() {
         `\`\`\``;
 
       const avatarUrl = imageSrc;
-      const statusThreadId = currentCharacterData?.webhook?.statusWebhook || null;
+      const statusThreadId = currentCharacterData?.statusWebhook || null;
+      console.log("statusThreadId1:", statusThreadId);
       let webhook = null;
 
       // statusWebhookが存在すれば対応するURLを取得
       if (statusThreadId && currentCharacterData?.scenarioId) {
-          console.log("statusThreadId:", statusThreadId);
+          console.log("statusThreadId2:", statusThreadId);
           console.log("scenarioId:", currentCharacterData.scenarioId);
         try {
           const threadRef = doc(db, "scenarios", currentCharacterData.scenarioId, "threads", statusThreadId);
