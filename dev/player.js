@@ -407,7 +407,21 @@ async function saveCharacterData() {
         `\`\`\``;
 
       const avatarUrl = imageSrc;
-      const webhook = currentCharacterData?.webhook?.statusWebhook || null;
+      const statusThreadId = currentCharacterData?.webhook?.statusWebhook || null;
+      let webhook = null;
+
+      // statusWebhookが存在すれば対応するURLを取得
+      if (statusThreadId && currentCharacterData?.scenarioId) {
+        try {
+          const threadRef = doc(db, "scenarios", currentCharacterData.scenarioId, "threads", statusThreadId);
+          const threadSnap = await getDoc(threadRef);
+          if (threadSnap.exists()) {
+            webhook = threadSnap.data().webhookUrl || null;
+          }
+        } catch (error) {
+          console.error("statusWebhookのURL取得失敗:", error);
+        }
+      }
 
       try {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
