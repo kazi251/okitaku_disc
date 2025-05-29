@@ -424,7 +424,6 @@ function loadCharacterStatusOnly(data) {
   document.getElementById("other2").textContent = data.other2 || "-";
   document.getElementById("other1-label").textContent = data.other1Name || "その他";
   document.getElementById("other2-label").textContent = data.other2Name || "その他";
-
   document.getElementById("memo-input").textContent = data.memo || ""; 
 
   updateDisplay();
