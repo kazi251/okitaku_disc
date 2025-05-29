@@ -253,6 +253,7 @@ async function loadCharacterData(charId) {
     document.getElementById("other2").textContent = data.other2 || "-";
     document.getElementById("other1-label").textContent = data.other1Name || "その他";
     document.getElementById("other2-label").textContent = data.other2Name || "その他";
+    document.getElementById("memo").textContent = data.memo || "-";
 
     // シナリオID入力欄にも反映
     const scenarioInput = document.getElementById("scenario-id-input");
@@ -426,6 +427,7 @@ function loadCharacterStatusOnly(data) {
   document.getElementById("other2").textContent = data.other2 || "-";
   document.getElementById("other1-label").textContent = data.other1Name || "その他";
   document.getElementById("other2-label").textContent = data.other2Name || "その他";
+  document.getElementById("memo").textContent = data.memo || "-";
 
   updateDisplay();
 }
