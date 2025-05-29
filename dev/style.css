@@ -201,7 +201,7 @@ input[type="text"]{ /* テキストボックス */
 }
 
 .toggle-button {
-  width: 400px; /* 固定幅 */
+  width: 450px; /* 固定幅 */
   text-align: left;
   font-weight: bold;
   font-size: 1.2em;               /* h2 に近い大きさ */
@@ -313,7 +313,7 @@ input[type="text"]{ /* テキストボックス */
     min-width: 4em; /* 最小幅を4文字分に設定 */
   }
   #memo-input {
-    width: 90%;
+    width: 80%;
   }
 
   .parameter-section {
@@ -337,7 +337,7 @@ input[type="text"]{ /* テキストボックス */
   }
 
   #chat-palette-input {
-    width: 90%; /* 幅を親要素の90%に */
+    width: 80%; /* 幅を親要素の80%に */
     min-height: 150px; /* 最小の高さ */
   }
 
