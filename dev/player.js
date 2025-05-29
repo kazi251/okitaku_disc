@@ -326,6 +326,7 @@ async function saveCharacterData() {
       const other2Name = document.getElementById("other2-name").value;
       const other = document.getElementById("other-input").value;
       const other2 = document.getElementById("other2-input").value;
+      const memo = document.getElementById("memo-input").value;
 
       const message =
         `ステータス更新\n` +
@@ -335,7 +336,7 @@ async function saveCharacterData() {
         `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
         `${other1Name || "その他1"}: ${other || "-"}\n` +
         `${other2Name || "その他2"}: ${other2 || "-"}` +
-        (memo ? `\n\nメモ: ${memo}` : "") + // ← ここでメモがあれば追加
+        (memo ? `\n\nメモ: ${memo}` : "") + 
         `\`\`\``;
 
       const avatarUrl = imageSrc;
