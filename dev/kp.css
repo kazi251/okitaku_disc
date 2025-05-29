@@ -339,4 +339,8 @@ details summary {
     padding: 0.3rem 0.6rem;
     line-height: 1.2;
   }
+
+  .wide-input {
+  width: 90% !important;
+  }
 }
