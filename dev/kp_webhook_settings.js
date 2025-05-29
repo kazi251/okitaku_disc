@@ -215,6 +215,7 @@ function closeThreadModal() {
 }
 
 document.getElementById("save-thread-settings-button").onclick = async () => {
+  const threadname = document.getElementById("modal-thread-name").value.trim();
   const url = document.getElementById("modal-webhook-url").value.trim();
   const threadIdPart = document.getElementById("modal-thread-id").value.trim();
   const fullUrl = threadIdPart ? `${url}?thread_id=${threadIdPart}` : url;
@@ -222,7 +223,7 @@ document.getElementById("save-thread-settings-button").onclick = async () => {
   if (!editingThreadId) return;
 
   const threadRef = doc(threadsColRef, editingThreadId);
-  await setDoc(threadRef, { webhookUrl: fullUrl }, { merge: true });
+  await setDoc(threadname,threadRef, { webhookUrl: fullUrl }, { merge: true });
 
   await fetchThreads();
   closeThreadModal();
