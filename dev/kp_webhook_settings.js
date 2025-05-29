@@ -29,7 +29,6 @@ const characterSettingsContainer = document.getElementById("character-settings-c
 const newThreadNameInput = document.getElementById("new-thread-name");
 const createThreadButton = document.getElementById("create-thread-button");
 const threadList = document.getElementById("thread-list");
-const characterSettingsBody = document.getElementById("character-settings-body");
 const saveSettingsButton = document.getElementById("save-settings-button");
 
 let threadListCache = []; // { id, name }

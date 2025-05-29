@@ -17,6 +17,24 @@
     <div id="character-list"></div>
   </section>
 
+  <!-- 発言・ダイスUIエリア -->
+  <div id="say-roll-area">
+    <h2>発言・ダイス入力</h2>
+    <div class="say-roll-form">
+      <select id="character-select">
+        <option value="">キャラクターを選択</option>
+      </select>
+      <div>
+        <input type="text" id="say-input" placeholder="発言内容">
+        <button id="say-button">発言</button>
+      </div>
+      <div>
+        <input type="text" id="roll-input" placeholder="ダイスコマンド (例: 1d100<50)">
+        <button id="roll-button">ロール</button>
+      </div>
+    </div>
+  </div>
+
   <section class="section">
     <h2>エネミー・KPC管理</h2>
   <div id="kpc-enemy-container"></div>
@@ -33,8 +51,7 @@
     <div id="webhook-settings">
     <!-- スレッド作成フォーム -->
     <section>
-      <h3>＋ 新しいスレッドを作成</h3>
-      <input type="text" id="new-thread-name" placeholder="スレッド名">
+      <input type="text" id="new-thread-name" placeholder="新しいスレッドを作成">
       <button id="create-thread-button">作成</button>
     </section>
 

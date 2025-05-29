@@ -213,9 +213,32 @@ async function renderKPCAndEnemies(scenarioId) {
 
 }
 
-function sendMessageAsCharacter(name, message) {
-  console.log(`[${name}] → ${message}`);
-  // TODO: Webhook経由でDiscordに送信
+// 発言・ダイスUIエリア
+async function populateCharacterDropdown(scenarioId) {
+  const scenarioRef = doc(db, "scenarios", scenarioId);
+
+  const [kpcSnap, enemySnap, mobSnap] = await Promise.all([
+    getDocs(collection(scenarioRef, "kpc")),
+    getDocs(collection(scenarioRef, "enemies")),
+    getDocs(collection(scenarioRef, "mobs")),
+  ]);
+
+  const allCharacters = [
+    ...kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref, type: "KPC" })),
+    ...enemySnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref, type: "Enemy" })),
+    ...mobSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref, type: "Mob" })),
+  ];
+
+  const select = document.getElementById("character-select");
+  allCharacters.forEach(char => {
+    const option = document.createElement("option");
+    option.value = char.ref.path;
+    option.textContent = `[${char.type}] ${char.name}`;
+    select.appendChild(option);
+  });
+
+  // 今後のためにグローバルに保持
+  window.allSelectableCharacters = allCharacters;
 }
 
 async function initKpScenarioPage() {
@@ -228,6 +251,9 @@ async function initKpScenarioPage() {
 
   // KPC・エネミーの描画
   await renderKPCAndEnemies(scenarioId);
+
+  // 発言・ダイス
+  await populateCharacterDropdown(scenarioId);
   
   setupEventListeners();
 }
