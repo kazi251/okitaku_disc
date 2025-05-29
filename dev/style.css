@@ -312,9 +312,6 @@ input[type="text"]{ /* テキストボックス */
     width: auto; /* 幅を自動調整 */
     min-width: 4em; /* 最小幅を4文字分に設定 */
   }
-  #memo-input {
-    width: 80%;
-  }
 
   .parameter-section {
     gap: 5px; /* パラメータ要素間の縦方向の間隔 */
@@ -328,16 +325,21 @@ input[type="text"]{ /* テキストボックス */
     padding: 8px; /* 入力フォームとボタンの内側の余白 */
   }
 
-  /* #new-character-button, */
   #say-content,
   #dice-command,
-  #suggestions,
-  .toggle-button {
+  #suggestions {
     width: 95%; /* 幅を親要素の95%に */
   }
 
+  .toggle-button {
+    width: 100%; /* 幅を親要素の95%に */
+  }
+
+  #memo-input {
+    width: 85%;
+  }
   #chat-palette-input {
-    width: 80%; /* 幅を親要素の80%に */
+    width: 85%; /* 幅を親要素の85%に */
     min-height: 150px; /* 最小の高さ */
   }
 
