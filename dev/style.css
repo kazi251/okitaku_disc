@@ -189,6 +189,11 @@ input[type="text"]{ /* テキストボックス */
   width: 100px; /* 全角6文字程度が入る幅の目安 */
 }
 
+#memo-input {
+  width: 100%;
+  resize: vertical;
+}
+
 .toggle-content {
   display: none;
   margin-top: 10px;
@@ -306,6 +311,9 @@ input[type="text"]{ /* テキストボックス */
   #other2-label {
     width: auto; /* 幅を自動調整 */
     min-width: 4em; /* 最小幅を4文字分に設定 */
+  }
+  #memo-input {
+    width: 95%;
   }
 
   .parameter-section {
