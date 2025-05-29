@@ -264,8 +264,10 @@ async function loadCharacterData(charId) {
     updateDisplay();
     updateChatPalette();
 
+    console.log(currentCharacterData.sayWebhooks);
     // sayWebhookのセレクトを初期化
     const saySelect = document.getElementById("say-webhook-select");
+    
     if (saySelect) {
       saySelect.innerHTML = "";
 
