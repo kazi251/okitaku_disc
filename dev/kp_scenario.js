@@ -64,7 +64,7 @@ async function fetchCharacters(scenarioId) {
 }
 
 function renderCharacterCards(characters, container) {
-  container.innerHTML = "";
+  // container.innerHTML = "";
 
   characters.forEach((char) => {
     const {
