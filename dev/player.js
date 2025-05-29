@@ -91,8 +91,9 @@ async function sendSay() {
     const content = document.getElementById("say-content").value.trim();
     if (!content) return;
     const avatarUrl = document.getElementById("explorer-image").src;
-    const webhookUrl = await getSelectedWebhookUrl();
-    if (!webhookUrl) {
+    const webhook = await getSelectedWebhookUrl();
+    
+    if (!webhook) {
       showToast("Webhookが設定されていません");
       return;
     }
@@ -137,8 +138,8 @@ async function rollDice() {
 
   const userName = currentCharacterName;
   const avatarUrl = document.getElementById("explorer-image").src;
-  const webhookUrl = await getSelectedWebhookUrl();
-  if (!webhookUrl) {
+  const webhook = await getSelectedWebhookUrl();
+  if (!webhook) {
     showToast("Webhookが設定されていません");
     return;
   }
