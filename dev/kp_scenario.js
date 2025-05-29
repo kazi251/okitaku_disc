@@ -286,22 +286,18 @@ async function sendKpSay() {
     showToast("Webhookが設定されていません");
     return;
   }
-  
+  const payload = {
+        name: char.name,
+        message: content,
+        avatar_url: char.imageUrl,
+        webhook: webhook
+      }
+  console.log("送信内容:", JSON.stringify(payload));
   try {
-    // 必須項目チェック
-    if (!char.name || !content || !webhook) {
-      showToast("送信データに不足があります");
-      return;
-    }
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: char.name,
-        message: content,
-        avatar_url: char.imageUrl || undefined,
-        webhook: webhook
-      })
+      body: JSON.stringify(payload)
     });
 
     if (response.ok) {
