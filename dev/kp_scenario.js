@@ -283,7 +283,7 @@ async function sendKpSay() {
   }
 
   // 画像を絶対パスに変換
-  const avatar_url = new URL(charData.imageUrl, location.origin).href;
+  const avatar_url = new URL(char.imageUrl, location.origin).href;
 
   const webhook = await getSelectedWebhookUrl();
   if (!webhook) {
@@ -328,7 +328,7 @@ async function rollKpDice() {
     return;
   }
   // 画像を絶対パスに変換
-  const avatar_url = new URL(charData.imageUrl, location.origin).href;
+  const avatar_url = new URL(char.imageUrl, location.origin).href;
 
   const webhook = await getSelectedWebhookUrl();
   if (!webhook) {
