@@ -25,6 +25,7 @@ const charListElem = document.getElementById("character-list");
 const editModal = document.getElementById("edit-modal");
 const editForm = document.getElementById("edit-form");
 let currentDocRef = null;
+let characterMap = {}; 
 
 async function loadScenario() {
   if (!scenarioId) {
@@ -218,16 +219,27 @@ async function initKpCharacterDropdown(scenarioId) {
   const select = document.getElementById("kp-character-dropdown");
   select.innerHTML = '<option value="">選択してください</option>';
 
+  characterMap = {}; // 初期化
+
   const types = ["mobs", "kpc", "enemies"];
 
   for (const type of types) {
     const snap = await getDocs(collection(db, "scenarios", scenarioId, type));
     snap.forEach(doc => {
       const data = doc.data();
+      const charId = doc.id;
+
       const option = document.createElement("option");
-      option.value = JSON.stringify({ name: data.name, imageUrl: data.imageUrl });
+      option.value = charId;
       option.textContent = `[${type}] ${data.name}`;
       select.appendChild(option);
+
+      // 🔑 characterMap に保存
+      characterMap[charId] = {
+        name: data.name,
+        imageUrl: data.imageUrl || "",
+        webhook: data.webhook || "", // もし必要なら
+      };
     });
   }
 }
