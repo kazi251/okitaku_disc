@@ -281,7 +281,6 @@ async function sendKpSay() {
     showToast("キャラが選択されていません");
     return;
   }
-console.log("char:", char);
   const webhook = await getSelectedWebhookUrl();
   if (!webhook) {
     showToast("Webhookが設定されていません");
@@ -289,13 +288,18 @@ console.log("char:", char);
   }
   
   try {
+    // 必須項目チェック
+    if (!char.name || !content || !webhook) {
+      showToast("送信データに不足があります");
+      return;
+    }
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: char.name,
         message: content,
-        avatar_url: char.imageUrl,
+        avatar_url: char.imageUrl || undefined,
         webhook: webhook
       })
     });
