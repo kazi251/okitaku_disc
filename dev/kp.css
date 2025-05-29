@@ -106,10 +106,6 @@
   background-color: #45a049;
 }
 
-.kpc-enemy-inner {
-  padding: 1rem;
-}
-
 /* webhookリスト */
 #thread-list {
   max-width: 600px;
