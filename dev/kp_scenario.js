@@ -188,11 +188,13 @@ async function renderKPCAndEnemies(scenarioId) {
   accordion.open = true;
 
   const summary = document.createElement("summary");
-  summary.textContent = "📘 KPC・エネミー一覧";
+  summary.textContent = "KPC・エネミー一覧";
   accordion.appendChild(summary);
 
   const inner = document.createElement("div");
   inner.className = "kpc-enemy-inner";
+  console.log("kpcSnap size:", kpcSnap.size);
+  console.log("enemiesSnap size:", enemiesSnap.size);
 
   // ドキュメントデータに .ref を追加して再利用可能に
   const kpcList = kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
