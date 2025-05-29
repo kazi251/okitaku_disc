@@ -281,23 +281,26 @@ async function sendKpSay() {
     showToast("キャラが選択されていません");
     return;
   }
+
+  // 画像を絶対パスに変換
+  const avatar_url = new URL(charData.imageUrl, location.origin).href;
+
   const webhook = await getSelectedWebhookUrl();
   if (!webhook) {
     showToast("Webhookが設定されていません");
     return;
   }
-  const payload = {
-        name: char.name,
-        message: content,
-        avatar_url: char.imageUrl,
-        webhook: webhook
-      }
-  console.log("送信内容:", JSON.stringify(payload, null, 2));
+  
   try {
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        name: char.name,
+        message: content,
+        avatar_url: avatar_url,
+        webhook: webhook
+      })
     });
 
     if (response.ok) {
@@ -324,6 +327,8 @@ async function rollKpDice() {
     showToast("キャラが選択されていません");
     return;
   }
+  // 画像を絶対パスに変換
+  const avatar_url = new URL(charData.imageUrl, location.origin).href;
 
   const webhook = await getSelectedWebhookUrl();
   if (!webhook) {
@@ -335,7 +340,7 @@ async function rollKpDice() {
   const url = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   url.searchParams.append("command", command);
   url.searchParams.append("name", char.name);
-  url.searchParams.append("avatar_url", char.imageUrl);
+  url.searchParams.append("avatar_url", avatar_url);
   url.searchParams.append("webhook", webhook);
 
   try {
