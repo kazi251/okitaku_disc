@@ -244,18 +244,33 @@ async function initKpCharacterDropdown(scenarioId) {
   }
 }
 
-async function populateThreadDropdown(scenarioId) {
+async function initThreadDropdown(scenarioId) {
   const threadSelect = document.getElementById("kp-thread-dropdown");
-  threadSelect.innerHTML = '<option value="">選択してください</option>';
+  threadSelect.innerHTML = '<option value="">スレッドを選択</option>';
 
-  const threadsSnap = await getDocs(collection(db, "scenarios", scenarioId, "threads"));
-  threadsSnap.forEach(doc => {
+  const snap = await getDocs(collection(db, "scenarios", scenarioId, "threads"));
+  snap.forEach(doc => {
+    const data = doc.data();
     const option = document.createElement("option");
-    option.value = doc.id;
-    option.textContent = doc.id;
+    option.value = JSON.stringify({ threadId: doc.id, webhookUrl: data.webhookUrl });
+    option.textContent = data.name || `スレッドID: ${doc.id}`;
     threadSelect.appendChild(option);
   });
 }
+
+// Webhook URLを取得する関数
+function getSelectedWebhookUrl() {
+  const selected = document.getElementById("kp-thread-dropdown").value;
+  if (!selected) return null;
+  try {
+    const { webhookUrl } = JSON.parse(selected);
+    return webhookUrl;
+  } catch (e) {
+    console.error("Webhook URL の取得に失敗:", e);
+    return null;
+  }
+}
+
 
 // KPによるセリフ送信
 async function sendKpSay() {
@@ -356,15 +371,6 @@ async function rollKpDice() {
   }
 }
 
-// Webhook URLを取得する関数
-async function getSelectedWebhookUrl(scenarioId) {
-  const threadId = document.getElementById("kp-thread-dropdown")?.value;
-  if (!threadId) return null;
-
-  const docSnap = await getDoc(doc(db, "scenarios", scenarioId, "threads", threadId));
-  return docSnap.exists() ? docSnap.data().webhookUrl : null;
-}
-
 async function initKpScenarioPage() {
 
   document.getElementById("kp-send-button")?.addEventListener("click", sendKpSay);
@@ -381,7 +387,7 @@ async function initKpScenarioPage() {
 
   // 発言・ダイス
   await initKpCharacterDropdown(scenarioId);
-  await populateThreadDropdown(scenarioId)
+  await initThreadDropdown(scenarioId)
   
   setupEventListeners();
 }
