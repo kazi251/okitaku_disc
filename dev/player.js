@@ -412,11 +412,15 @@ async function saveCharacterData() {
 
       // statusWebhookが存在すれば対応するURLを取得
       if (statusThreadId && currentCharacterData?.scenarioId) {
+          console.log("statusThreadId:", statusThreadId);
+          console.log("scenarioId:", currentCharacterData.scenarioId);
         try {
           const threadRef = doc(db, "scenarios", currentCharacterData.scenarioId, "threads", statusThreadId);
           const threadSnap = await getDoc(threadRef);
+              console.log("threadSnap.exists:", threadSnap.exists());
           if (threadSnap.exists()) {
             webhook = threadSnap.data().webhookUrl || null;
+            console.log("取得した webhookUrl:", webhook);
           }
         } catch (error) {
           console.error("statusWebhookのURL取得失敗:", error);
