@@ -299,7 +299,8 @@ async function sendKpSay() {
         webhook: webhook
       })
     });
-
+console.log("Webhook URL:", webhook);
+console.log("送信内容:", JSON.stringify(payload));
     if (response.ok) {
       document.getElementById("kp-say-content").value = "";
       showToast("セリフを送信しました！");
