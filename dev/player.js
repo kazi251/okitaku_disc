@@ -422,6 +422,12 @@ async function saveCharacterData() {
           console.error("statusWebhookのURL取得失敗:", error);
         }
       }
+      console.log("送信データ:", {
+        name: currentCharacterName,
+        message,
+        avatar_url: avatarUrl,
+        webhook
+      });
 
       try {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
