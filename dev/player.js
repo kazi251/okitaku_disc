@@ -228,6 +228,7 @@ async function loadCharacterData(charId) {
     document.getElementById("other2-input").value = data.other2 || "";
     document.getElementById("other1-name").value = data.other1Name || "";
     document.getElementById("other2-name").value = data.other2Name || "";
+    document.getElementById("memo-input").value = data.memo || "";
     document.getElementById("chat-palette-input").value = data.palette || "";
 
     // 画像の設定（エラー時に fallback 画像を設定）
@@ -412,6 +413,7 @@ function loadCharacterStatusOnly(data) {
   document.getElementById("other2-input").value = data.other2 || "";
   document.getElementById("other1-name").value = data.other1Name || "";
   document.getElementById("other2-name").value = data.other2Name || "";
+  document.getElementById("memo-input").value = data.memo || "";
 
   document.getElementById("hp").textContent = data.hp || "";
   document.getElementById("hp-max").textContent = data.hpMax || "";
@@ -424,7 +426,6 @@ function loadCharacterStatusOnly(data) {
   document.getElementById("other2").textContent = data.other2 || "-";
   document.getElementById("other1-label").textContent = data.other1Name || "その他";
   document.getElementById("other2-label").textContent = data.other2Name || "その他";
-  document.getElementById("memo-input").textContent = data.memo || ""; 
 
   updateDisplay();
 }
