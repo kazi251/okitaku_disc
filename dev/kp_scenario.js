@@ -26,6 +26,7 @@ const editModal = document.getElementById("edit-modal");
 const editForm = document.getElementById("edit-form");
 let currentDocRef = null;
 let characterMap = {}; 
+let threadListCache = []; 
 
 async function loadScenario() {
   if (!scenarioId) {
@@ -249,44 +250,24 @@ async function initThreadDropdown(scenarioId) {
   threadSelect.innerHTML = '<option value="">スレッドを選択</option>';
 
   const snap = await getDocs(collection(db, "scenarios", scenarioId, "threads"));
-  snap.forEach(doc => {
-    const data = doc.data();
+
+  threadListCache = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); // キャッシュに保存
+
+  threadListCache.forEach(thread => {
     const option = document.createElement("option");
-    option.value = JSON.stringify({ threadId: doc.id, webhookUrl: data.webhookUrl });
-    option.textContent = data.name || `スレッドID: ${doc.id}`;
+    option.value = thread.id; // threadId だけ保持
+    option.textContent = thread.name || `スレッドID: ${thread.id}`;
     threadSelect.appendChild(option);
   });
 }
 
 // Webhook URLを取得する関数
-async function getSelectedWebhookUrl(scenarioId) {
-  const raw = document.getElementById("kp-thread-dropdown").value;
-  if (!raw) return null;
-
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch (e) {
-    console.error("スレッド情報のJSON解析に失敗:", e);
-    return null;
-  }
-  
-  const threadId = parsed.threadId;
+function getSelectedWebhookUrl() {
+  const threadId = document.getElementById("kp-thread-dropdown").value;
   if (!threadId) return null;
 
-  try {
-    const docRef = doc(db, "scenarios", scenarioId, "threads", threadId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data().webhookUrl || null;
-    } else {
-      console.error("指定されたスレッドが存在しません:", threadId);
-      return null;
-    }
-  } catch (e) {
-    console.error("Webhook URL の取得中にエラー:", e);
-    return null;
-  }
+  const thread = threadListCache.find(t => t.id === threadId);
+  return thread?.webhookUrl || null;
 }
 
 // KPによるセリフ送信
