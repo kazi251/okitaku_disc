@@ -260,7 +260,18 @@ async function initThreadDropdown(scenarioId) {
 
 // Webhook URLを取得する関数
 async function getSelectedWebhookUrl(scenarioId) {
-  const threadId = document.getElementById("kp-thread-dropdown").value;
+  const raw = document.getElementById("kp-thread-dropdown").value;
+  if (!raw) return null;
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    console.error("スレッド情報のJSON解析に失敗:", e);
+    return null;
+  }
+  
+  const threadId = parsed.threadId;
   if (!threadId) return null;
 
   try {
