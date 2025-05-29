@@ -73,6 +73,7 @@ function renderCharacterCards(characters, container) {
       san, sanMax,
       other, other1Name,
       other2, other2Name,
+      memo,
       imageUrl
     } = char;
 
@@ -93,6 +94,7 @@ function renderCharacterCards(characters, container) {
           <div><strong>SAN:</strong> ${san}/${sanMax} (${sanBracket})</div>
           ${other1Name ? `<div><strong>${other1Name}:</strong> ${other}</div>` : ""}
           ${other2Name ? `<div><strong>${other2Name}:</strong> ${other2}</div>` : ""}
+          ${memo ? `<div>${memo}</div>` : ""}
         </div>
         <div class="card-footer">
           <div class="card-name">${name}</div>
@@ -112,6 +114,7 @@ function renderCharacterCards(characters, container) {
       document.getElementById("edit-sanMax").value = char.sanMax ?? "";
       document.getElementById("edit-other").value = char.other ?? "";
       document.getElementById("edit-other2").value = char.other2 ?? "";
+      document.getElementById("edit-memo").value = char.other2 ?? "";
 
       // ラベル名
       document.getElementById("edit-other1-name").value = char.other1Name || "";
@@ -148,6 +151,7 @@ function setupEventListeners() {
       other2: parseInputValue("edit-other2"),
       other1Name: document.getElementById("edit-other1-name").value.trim(),
       other2Name: document.getElementById("edit-other2-name").value.trim(),
+      memo: document.getElementById("edit-memo").value.trim()
     };
 
     try {
