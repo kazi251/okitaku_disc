@@ -19,21 +19,24 @@
 
   <!-- 発言・ダイスUIエリア -->
   <div class="section">
-    <h2>キャラ発言・ロール</h2>
-    <select id="kp-character-select"></select>
+    <h2>発言・ダイス</h2>
 
-    <div>
-      <textarea id="kp-say-content" placeholder="セリフを入力..."></textarea>
-      <button id="kp-send-button">送信</button>
-    </div>
+    <!-- キャラクター選択 -->
+    <label for="kp-character-select">キャラクター選択</label>
+    <select id="kp-character-select">
+      <option value="">選択してください</option>
+      <!-- モブ、KPC、エネミーをここに追加 -->
+    </select>
 
-    <div>
-      <input type="text" id="kp-dice-command" placeholder="ダイスコマンド">
-      <button id="kp-roll-button">ロール</button>
-      <div id="kp-result"></div>
-    </div>
+    <!-- 発言入力 -->
+    <textarea id="kp-say-content" placeholder="セリフを入力..."></textarea><br>
+    <button id="kp-send-button">送信</button>
+
+    <!-- ダイス入力 -->
+    <input type="text" id="kp-dice-command" placeholder="コマンドを入力"><br>
+    <button id="kp-roll-button">ダイス実行</button>
+    <div id="kp-dice-result">🎲 結果がここに表示されます</div>
   </div>
-
 
   <section class="section">
     <h2>エネミー・KPC管理</h2>

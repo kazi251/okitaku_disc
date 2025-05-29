@@ -237,12 +237,14 @@ async function sendKpSay() {
   const content = document.getElementById("kp-say-content").value.trim();
   if (!content) return;
 
-  const selected = document.getElementById("kp-character-select").value;
-  if (!selected) return showToast("キャラクターを選択してください");
+  const selectedId = document.getElementById("kp-character-dropdown").value;
+  const char = characterMap[selectedId];
+  if (!char) {
+    showToast("キャラが選択されていません");
+    return;
+  }
 
-  const { name, imageUrl } = JSON.parse(selected);
   const webhook = await getSelectedWebhookUrl();
-
   if (!webhook) {
     showToast("Webhookが設定されていません");
     return;
@@ -252,8 +254,14 @@ async function sendKpSay() {
     const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, message: content, avatar_url: imageUrl, webhook })
+      body: JSON.stringify({
+        name: char.name,
+        message: content,
+        avatar_url: char.imageUrl,
+        webhook: webhook
+      })
     });
+
     if (response.ok) {
       document.getElementById("kp-say-content").value = "";
       showToast("セリフを送信しました！");
@@ -263,6 +271,7 @@ async function sendKpSay() {
     }
   } catch (error) {
     console.error(`セリフ送信エラー: ${error.message}`);
+    showToast("セリフ送信に失敗しました");
   }
 }
 
@@ -271,31 +280,33 @@ async function rollKpDice() {
   const input = document.getElementById("kp-dice-command").value.trim();
   if (!input) return;
 
-  const selected = document.getElementById("kp-character-select").value;
-  if (!selected) return showToast("キャラクターを選択してください");
+  const selectedId = document.getElementById("kp-character-dropdown").value;
+  const char = characterMap[selectedId];
+  if (!char) {
+    showToast("キャラが選択されていません");
+    return;
+  }
 
-  const { name, imageUrl } = JSON.parse(selected);
   const webhook = await getSelectedWebhookUrl();
-
   if (!webhook) {
     showToast("Webhookが設定されていません");
     return;
   }
 
-  const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
-  workerUrl.searchParams.append("command", input);
-  workerUrl.searchParams.append("name", name);
-  workerUrl.searchParams.append("avatar_url", imageUrl);
-  workerUrl.searchParams.append("webhook", webhook);
+  const command = input.replace(/\{SAN\}/g, char.san ?? ""); // 必要に応じて変数展開
+  const url = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+  url.searchParams.append("command", command);
+  url.searchParams.append("name", char.name);
+  url.searchParams.append("avatar_url", char.imageUrl);
+  url.searchParams.append("webhook", webhook);
 
   try {
-    const response = await fetch(workerUrl.toString());
+    const response = await fetch(url.toString());
     const result = await response.json();
 
-    let displayText = `🎲 ${input}:`;
+    let displayText = `🎲 ${command}:`;
     if (result.ok) {
       let resultText = result.text ?? "";
-
       resultText = resultText.replace(/\n{2,}(#\d+)/g, '\n$1');
 
       const lines = resultText.split("\n").map(line => {
@@ -306,21 +317,39 @@ async function rollKpDice() {
         else return line;
       });
 
-      const decoratedText = lines.join("\n");
-
+      displayText += "\n" + lines.join("\n");
       showToast("ダイスを振りました！");
-      displayText += "\n" + decoratedText;
       document.getElementById("kp-dice-command").value = "";
-
     } else {
       displayText += "\nエラー: " + result.reason;
     }
 
     document.getElementById("kp-dice-result").innerHTML = displayText.replace(/\n/g, "<br>");
-  } catch (error) {
+  } catch (err) {
     document.getElementById("kp-dice-result").innerText = "⚠️ 通信エラーが発生しました";
-    console.error("Fetch error:", error);
+    console.error("ダイス通信エラー:", err);
   }
+}
+
+// Webhook URLを取得する関数
+async function getSelectedWebhookUrl() {
+  const select = document.getElementById("say-webhook-select");
+  const threadId = select?.value;
+  const scenarioId = currentCharacterData?.scenarioId;
+
+  if (!threadId || !scenarioId) return null;
+
+  try {
+    const threadRef = doc(db, "scenarios", scenarioId, "threads", threadId);
+    const threadSnap = await getDoc(threadRef);
+    if (threadSnap.exists()) {
+      return threadSnap.data().webhookUrl || null;
+    }
+  } catch (e) {
+    console.error("Webhook取得失敗:", e);
+  }
+
+  return null;
 }
 
 async function initKpScenarioPage() {
