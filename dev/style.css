@@ -25,14 +25,14 @@ input[type="text"]{ /* テキストボックス */
   gap: 10px; /* 要素間の間隔 */
 }
 
-#character-select {
+#character-select,
+#say-webhook-select {
   height: 30px; /* ボタンの高さに合わせる */
   font-size: 16px; /* ボタンの文字サイズに合わせる */
   padding: 5px 10px; /* ボタンのpaddingに合わせて調整 */
 }
 
-.explorer-image-container ,
-.say-webhook-select {
+.explorer-image-container {
   display: flex;
   flex-direction: column; /* 名前を画像の下に配置 */
   align-items: center; /* 名前を中央揃え */
