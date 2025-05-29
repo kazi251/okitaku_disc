@@ -223,7 +223,7 @@ document.getElementById("save-thread-settings-button").onclick = async () => {
   if (!editingThreadId) return;
 
   const threadRef = doc(threadsColRef, editingThreadId);
-  await setDoc(threadname,threadRef, { webhookUrl: fullUrl }, { merge: true });
+  await setDoc(threadRef, { name: threadname, webhookUrl: fullUrl }, { merge: true });
 
   await fetchThreads();
   closeThreadModal();
