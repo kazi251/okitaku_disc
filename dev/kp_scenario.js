@@ -259,18 +259,24 @@ async function initThreadDropdown(scenarioId) {
 }
 
 // Webhook URLを取得する関数
-function getSelectedWebhookUrl() {
-  const selected = document.getElementById("kp-thread-dropdown").value;
-  if (!selected) return null;
+async function getSelectedWebhookUrl(scenarioId) {
+  const threadId = document.getElementById("kp-thread-dropdown").value;
+  if (!threadId) return null;
+
   try {
-    const { webhookUrl } = JSON.parse(selected);
-    return webhookUrl;
+    const docRef = doc(db, "scenarios", scenarioId, "threads", threadId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data().webhookUrl || null;
+    } else {
+      console.error("指定されたスレッドが存在しません:", threadId);
+      return null;
+    }
   } catch (e) {
-    console.error("Webhook URL の取得に失敗:", e);
+    console.error("Webhook URL の取得中にエラー:", e);
     return null;
   }
 }
-
 
 // KPによるセリフ送信
 async function sendKpSay() {
