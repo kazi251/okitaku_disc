@@ -7,7 +7,8 @@ import {
   query,
   where,
   getDocs,
-  updateDoc
+  updateDoc,
+  collection
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { showToast } from './utils.js';
 
