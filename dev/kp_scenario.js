@@ -225,6 +225,7 @@ async function initKpScenarioPage() {
 
   // KPC・エネミーの描画
   await renderKPCAndEnemies(scenarioId);
+  console.log("DOMに追加されたキャラ数:", inner.querySelectorAll(".character-card").length);
   
   setupEventListeners();
 }
