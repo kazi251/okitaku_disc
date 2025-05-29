@@ -407,7 +407,7 @@ async function saveCharacterData() {
         `\`\`\``;
 
       const avatarUrl = imageSrc;
-      const statusThreadId = currentCharacterData?.webhook?.statusWebhook || null;
+      const statusThreadId = currentCharacterData?.webhook?.webhookUrl || null;
       let webhook = null;
 
       // statusWebhookが存在すれば対応するURLを取得
