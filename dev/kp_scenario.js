@@ -244,6 +244,19 @@ async function initKpCharacterDropdown(scenarioId) {
   }
 }
 
+async function populateThreadDropdown(scenarioId) {
+  const threadSelect = document.getElementById("kp-thread-dropdown");
+  threadSelect.innerHTML = '<option value="">選択してください</option>';
+
+  const threadsSnap = await getDocs(collection(db, "scenarios", scenarioId, "threads"));
+  threadsSnap.forEach(doc => {
+    const option = document.createElement("option");
+    option.value = doc.id;
+    option.textContent = doc.id;
+    threadSelect.appendChild(option);
+  });
+}
+
 // KPによるセリフ送信
 async function sendKpSay() {
   const content = document.getElementById("kp-say-content").value.trim();
@@ -344,24 +357,12 @@ async function rollKpDice() {
 }
 
 // Webhook URLを取得する関数
-async function getSelectedWebhookUrl() {
-  const select = document.getElementById("say-webhook-select");
-  const threadId = select?.value;
-  const scenarioId = currentCharacterData?.scenarioId;
+async function getSelectedWebhookUrl(scenarioId) {
+  const threadId = document.getElementById("kp-thread-dropdown")?.value;
+  if (!threadId) return null;
 
-  if (!threadId || !scenarioId) return null;
-
-  try {
-    const threadRef = doc(db, "scenarios", scenarioId, "threads", threadId);
-    const threadSnap = await getDoc(threadRef);
-    if (threadSnap.exists()) {
-      return threadSnap.data().webhookUrl || null;
-    }
-  } catch (e) {
-    console.error("Webhook取得失敗:", e);
-  }
-
-  return null;
+  const docSnap = await getDoc(doc(db, "scenarios", scenarioId, "threads", threadId));
+  return docSnap.exists() ? docSnap.data().webhookUrl : null;
 }
 
 async function initKpScenarioPage() {
@@ -380,6 +381,7 @@ async function initKpScenarioPage() {
 
   // 発言・ダイス
   await initKpCharacterDropdown(scenarioId);
+  await populateThreadDropdown(scenarioId)
   
   setupEventListeners();
 }
