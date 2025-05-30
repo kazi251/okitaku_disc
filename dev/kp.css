@@ -26,6 +26,9 @@
   max-width: 600px; /* 幅400pxに制限 */
 }
 
+#kpc-enemy-container {
+  margin-top: 0.5rem;
+}
 .character-card {
   display: flex;
   flex-direction: row;
