@@ -213,8 +213,13 @@ async function renderKPCAndEnemies(scenarioId) {
   enemySection.className = "enemy-section";
   renderCharacterCards(enemyList, enemySection);
 
-  // 内側に追加
   inner.appendChild(kpcSection);
+
+  // KPCとエネミーの間にスペーサー
+  const spacer = document.createElement("div");
+  spacer.style.paddingBottom = "1rem";
+  inner.appendChild(spacer);
+
   inner.appendChild(enemySection);
 
   // アコーディオン構造に追加
