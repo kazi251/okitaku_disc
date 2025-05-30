@@ -186,8 +186,8 @@ async function renderKPCAndEnemies(scenarioId) {
     getDocs(collection(scenarioRef, "enemies"))
   ]);
 
-  const kpcContainer = document.getElementById("kpc-container");
-  const enemyContainer = document.getElementById("enemy-container");
+  const container = document.getElementById("kpc-enemy-container"); 
+  container.innerHTML = "";
 
   const accordion = document.createElement("details");
   accordion.open = true;
@@ -196,22 +196,32 @@ async function renderKPCAndEnemies(scenarioId) {
   summary.textContent = "KPC・エネミー一覧";
   accordion.appendChild(summary);
 
-  // const inner = document.createElement("div");
-  // inner.className = "kpc-enemy-inner";
+  const inner = document.createElement("div");
+  inner.className = "kpc-enemy-inner";
 
   // ドキュメントデータに .ref を追加して再利用可能に
   const kpcList = kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
   const enemyList = enemiesSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
 
-  // キャラ表示関数に渡す
-  kpcContainer.innerHTML = "";
-  renderCharacterCards(kpcList, kpcContainer);
-  enemyContainer.innerHTML = "";
-  renderCharacterCards(enemyList, enemyContainer);
+    // KPCセクション
+  const kpcSection = document.createElement("div");
+  kpcSection.className = "kpc-section";
+  renderCharacterCards(kpcList, kpcSection);
 
-  // accordion.appendChild(inner);
-  kpcContainer.appendChild(accordion);
-  enemyContainer.appendChild(accordion);
+  // エネミーセクション
+  const enemySection = document.createElement("div");
+  enemySection.className = "enemy-section";
+  renderCharacterCards(enemyList, enemySection);
+
+  // 内側に追加
+  inner.appendChild(kpcSection);
+  inner.appendChild(enemySection);
+
+  // アコーディオン構造に追加
+  accordion.appendChild(inner);
+
+  // 親コンテナに追加
+  container.appendChild(accordion);
 
 }
 
