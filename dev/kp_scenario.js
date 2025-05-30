@@ -156,7 +156,7 @@ function setupEventListeners() {
       other1Name: document.getElementById("edit-other1-name").value.trim(),
       other2Name: document.getElementById("edit-other2-name").value.trim(),
       memo: document.getElementById("edit-memo").value.trim(),
-      kpId: currentKpId
+      accessKpId: accessKpId
     };
 
     try {
