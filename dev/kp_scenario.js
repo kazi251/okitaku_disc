@@ -158,6 +158,7 @@ function setupEventListeners() {
       other2Name: document.getElementById("edit-other2-name").value.trim(),
       memo: document.getElementById("edit-memo").value.trim()
     };
+    console.log("保存するデータ", updatedData);
 
     try {
       await updateDoc(currentDocRef, updatedData);
