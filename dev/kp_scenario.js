@@ -17,6 +17,7 @@ const db = getFirestore(app);
 // URLパラメータから scenarioId を取得
 const urlParams = new URLSearchParams(window.location.search);
 const scenarioId = urlParams.get("scenarioId");
+const accessKpId = urlParams.get("kpId");
 
 const nameElem = document.getElementById("scenario-name");
 const charListElem = document.getElementById("character-list");
