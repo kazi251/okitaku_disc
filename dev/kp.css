@@ -28,6 +28,7 @@
 
 #kpc-enemy-container {
   margin-top: 0px;
+  padding-top: 0px;
 }
 .character-card {
   display: flex;
