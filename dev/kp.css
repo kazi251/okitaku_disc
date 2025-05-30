@@ -107,9 +107,14 @@
   background-color: #45a049;
 }
 
+.kp-interaction-section{
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
 #kp-say-content,
 #kp-dice-command{
-  margin-top: 1rem;
   width: 600px; 
   max-width: 100%; 
 }
