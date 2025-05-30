@@ -68,7 +68,7 @@ async function fetchCharacters(scenarioId) {
 }
 
 function renderCharacterCards(characters, container) {
-  // container.innerHTML = "";
+  container.innerHTML = "";
 
   characters.forEach((char) => {
     const {
@@ -186,8 +186,8 @@ async function renderKPCAndEnemies(scenarioId) {
     getDocs(collection(scenarioRef, "enemies"))
   ]);
 
-  const container = document.getElementById("kpc-enemy-container");
-  container.innerHTML = "";
+  const kpcContainer = document.getElementById("kpc-container");
+  const enemyContainer = document.getElementById("enemy-container");
 
   const accordion = document.createElement("details");
   accordion.open = true;
@@ -204,17 +204,14 @@ async function renderKPCAndEnemies(scenarioId) {
   const enemyList = enemiesSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
 
   // キャラ表示関数に渡す
-  renderCharacterCards(kpcList, inner);
-
-  // KPCとエネミーの間にスペーサー
-  const spacer = document.createElement("div");
-  spacer.style.paddingBottom = "1rem";
-  inner.appendChild(spacer);
-
-  renderCharacterCards(enemyList, inner);
+  kpcContainer.innerHTML = "";
+  renderCharacterCards(kpcList, kpcContainer);
+  enemyContainer.innerHTML = "";
+  renderCharacterCards(enemyList, enemyContainer);
 
   accordion.appendChild(inner);
-  container.appendChild(accordion);
+  kpcContainer.appendChild(accordion);
+  enemyContainer.appendChild(accordion);
 
 }
 
