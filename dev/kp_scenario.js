@@ -7,7 +7,6 @@ import {
   query,
   where,
   getDocs,
-  updateDoc,
   collection
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { showToast } from './utils.js';
@@ -156,12 +155,12 @@ function setupEventListeners() {
       other2: parseInputValue("edit-other2"),
       other1Name: document.getElementById("edit-other1-name").value.trim(),
       other2Name: document.getElementById("edit-other2-name").value.trim(),
-      memo: document.getElementById("edit-memo").value.trim()
+      memo: document.getElementById("edit-memo").value.trim(),
+      kpId: currentKpId
     };
-    console.log("保存するデータ", updatedData);
 
     try {
-      await updateDoc(currentDocRef, updatedData);
+      await setDoc(currentDocRef, updatedData, { merge: true });
       showToast("保存しました");
       editModal.classList.add("hidden");
       await initKpScenarioPage(); // 再読み込み
