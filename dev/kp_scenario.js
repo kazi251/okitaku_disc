@@ -196,8 +196,8 @@ async function renderKPCAndEnemies(scenarioId) {
   summary.textContent = "KPC・エネミー一覧";
   accordion.appendChild(summary);
 
-  const inner = document.createElement("div");
-  inner.className = "kpc-enemy-inner";
+  // const inner = document.createElement("div");
+  // inner.className = "kpc-enemy-inner";
 
   // ドキュメントデータに .ref を追加して再利用可能に
   const kpcList = kpcSnap.docs.map(doc => ({ ...doc.data(), ref: doc.ref }));
@@ -209,7 +209,7 @@ async function renderKPCAndEnemies(scenarioId) {
   enemyContainer.innerHTML = "";
   renderCharacterCards(enemyList, enemyContainer);
 
-  accordion.appendChild(inner);
+  // accordion.appendChild(inner);
   kpcContainer.appendChild(accordion);
   enemyContainer.appendChild(accordion);
 
