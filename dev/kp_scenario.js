@@ -24,6 +24,8 @@ const charListElem = document.getElementById("character-list");
 
 const editModal = document.getElementById("edit-modal");
 const editForm = document.getElementById("edit-form");
+const textarea = document.getElementById("kp-say-content");
+
 let currentDocRef = null;
 let characterMap = {}; 
 let threadListCache = []; 
@@ -315,6 +317,16 @@ async function sendKpSay() {
     showToast("セリフ送信に失敗しました");
   }
 }
+
+// セリフ送信テキストエリアの制御
+textarea.addEventListener("input", () => {
+  textarea.style.height = "auto"; // 一度高さをリセット
+  const lineHeight = 24; // 行の高さ（CSSと合わせる）
+  const maxLines = 4;
+  const maxHeight = lineHeight * maxLines;
+
+  textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+});
 
 // KPによるダイスロール
 async function rollKpDice() {
