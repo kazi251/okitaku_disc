@@ -150,7 +150,7 @@ async function loadCharacterToForm(id, collectionName) {
   if (!snap.exists()) return;
 
   const data = snap.data();
-  const form = document.getElementById("character-form");
+  const form = document.getElementById("shared-char-form");
 
   form.id.value = id;
   form.name.value = data.name || "";
