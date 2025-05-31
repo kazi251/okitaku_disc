@@ -148,11 +148,11 @@ async function loadCharacterMatrix() {
       const opt = document.createElement("option");
       opt.value = id;
       opt.textContent = name;
-      if (data.currentScenario === id) opt.selected = true;
+      if (data.scenarioId === id) opt.selected = true;
       select.appendChild(opt);
     });
 
-    if (!data.currentScenario) {
+    if (!data.scenarioId) {
       select.value = "";
     }
 
@@ -183,11 +183,25 @@ async function loadCharacterMatrix() {
     const saveBtn = document.createElement("button");
     saveBtn.textContent = "保存";
     saveBtn.addEventListener("click", async () => {
+
+      const scenarioId = select.value || null;
+      let kpId = null;
+
+      if (scenarioId) {
+        const scenarioRef = doc(db, "scenarios", scenarioId);
+        const scenarioSnap = await getDoc(scenarioRef);
+        if (scenarioSnap.exists()) {
+          const scenarioData = scenarioSnap.data();
+          kpId = scenarioData.kpId || null;
+        }
+      }
+
       await setDoc(docSnap.ref, {
         ...data,
-        currentScenario: select.value || null, 
+        scenarioId: select.value || null, 
         webhook: webhookInput.value,
-        imageUrl: imageInput.value
+        imageUrl: imageInput.value,
+        accessKpId: kpId
       }, { merge: true });
       showToast(`${data.name} を更新しました`);
     });
@@ -327,7 +341,7 @@ function setupEventListeners() {
     }
   });
 
-  // シナリオ作成
+  // シナリオ作成※廃止
   createScenBtn?.addEventListener("click", async () => {
     const input = document.getElementById("new-scenario-name");
     const name = input.value.trim();
@@ -358,7 +372,7 @@ function setupEventListeners() {
       await addDoc(ref, {
         name,
         imageUrl,
-        webhook,
+        webhook, 
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });

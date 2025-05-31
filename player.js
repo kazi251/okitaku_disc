@@ -65,11 +65,39 @@ function showSuggestions() {
     suggestions.style.display = "block";
 }
 
+// Webhook URLを取得する関数
+async function getSelectedWebhookUrl() {
+  const select = document.getElementById("say-webhook-select");
+  const threadId = select?.value;
+  const scenarioId = currentCharacterData?.scenarioId;
+
+  if (!threadId || !scenarioId) return null;
+
+  try {
+    const threadRef = doc(db, "scenarios", scenarioId, "threads", threadId);
+    const threadSnap = await getDoc(threadRef);
+    if (threadSnap.exists()) {
+      return threadSnap.data().webhookUrl || null;
+    }
+  } catch (e) {
+    console.error("Webhook取得失敗:", e);
+  }
+
+  return null;
+}
+
+
 async function sendSay() {
     const content = document.getElementById("say-content").value.trim();
     if (!content) return;
     const avatarUrl = document.getElementById("explorer-image").src;
-    const webhook = currentCharacterData?.webhook;
+    const webhook = await getSelectedWebhookUrl();
+    
+    if (!webhook) {
+      showToast("Webhookが設定されていません");
+      return;
+    }
+
     try {
         const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
             method: "POST",
@@ -110,7 +138,11 @@ async function rollDice() {
 
   const userName = currentCharacterName;
   const avatarUrl = document.getElementById("explorer-image").src;
-  const webhook = currentCharacterData?.webhook;
+  const webhook = await getSelectedWebhookUrl();
+  if (!webhook) {
+    showToast("Webhookが設定されていません");
+    return;
+  }
 
   const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
   workerUrl.searchParams.append("command", command);
@@ -197,7 +229,7 @@ async function loadCharacterData(charId) {
 
     // 進行中のシナリオ名を取得
     const scenarioNameEl = document.getElementById("current-scenario-name");
-    const scenarioId = data.currentScenario;
+    const scenarioId = data.scenarioId;
 
     if (scenarioNameEl) {
       if (scenarioId) {
@@ -228,6 +260,7 @@ async function loadCharacterData(charId) {
     document.getElementById("other2-input").value = data.other2 || "";
     document.getElementById("other1-name").value = data.other1Name || "";
     document.getElementById("other2-name").value = data.other2Name || "";
+    document.getElementById("memo-input").value = data.memo || "";
     document.getElementById("chat-palette-input").value = data.palette || "";
 
     // 画像の設定（エラー時に fallback 画像を設定）
@@ -252,15 +285,61 @@ async function loadCharacterData(charId) {
     document.getElementById("other2").textContent = data.other2 || "-";
     document.getElementById("other1-label").textContent = data.other1Name || "その他";
     document.getElementById("other2-label").textContent = data.other2Name || "その他";
+    document.getElementById("memo").textContent = data.memo || "-";
 
     // シナリオID入力欄にも反映
     const scenarioInput = document.getElementById("scenario-id-input");
     if (scenarioInput) {
-      scenarioInput.value = data.currentScenario || "";
+      scenarioInput.value = data.scenarioId || "";
     }
     
     updateDisplay();
     updateChatPalette();
+
+    // sayWebhookのセレクトを初期化
+    const saySelect = document.getElementById("say-webhook-select");
+    
+    if (saySelect) {
+      saySelect.innerHTML = "";
+
+      const scenarioId = data.scenarioId;
+      const sayWebhooks = data.sayWebhooks || [];
+      const threadOptions = [];
+
+      for (const threadId of sayWebhooks) {
+        try {
+          const threadRef = doc(db, "scenarios", scenarioId, "threads", threadId);
+          const threadSnap = await getDoc(threadRef);
+
+          if (threadSnap.exists()) {
+            const threadData = threadSnap.data();
+            const option = document.createElement("option");
+            option.value = threadId;
+            option.textContent = threadData.name || `スレッド ${threadId}`;
+            saySelect.appendChild(option);
+          } else {
+            console.warn(`スレッドが見つかりません: ${threadId}`);
+          }
+        } catch (e) {
+          console.warn(`スレッド情報取得失敗: ${threadId}`, e);
+        }
+      }
+
+      // 名前で昇順にソート（日本語対応）
+      threadOptions.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+
+      // ソート後に <option> を追加
+      threadOptions.forEach(thread => {
+        const option = document.createElement("option");
+        option.value = thread.id;
+        option.textContent = thread.name;
+        saySelect.appendChild(option);
+      });
+
+      if (sayWebhooks.length > 0) {
+        saySelect.value = sayWebhooks[0]; 
+      }
+    }
 
     showToast("キャラクターを読み込みました！");
   } catch (error) {
@@ -293,6 +372,7 @@ async function saveCharacterData() {
       other2: document.getElementById("other2-input").value,
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
+      memo: document.getElementById("memo-input").value,
       playerId: playerId, 
       updatedAt: new Date().toISOString()
     };
@@ -301,8 +381,8 @@ async function saveCharacterData() {
       characterData.webhook = currentCharacterData.webhook;
     }
 
-    if (currentCharacterData?.currentScenario) {
-      characterData.currentScenario = currentCharacterData.currentScenario;
+    if (currentCharacterData?.scenarioId) {
+      characterData.scenarioId = currentCharacterData.scenarioId;
     }
 
     if (imageUrl) {
@@ -325,19 +405,34 @@ async function saveCharacterData() {
       const other2Name = document.getElementById("other2-name").value;
       const other = document.getElementById("other-input").value;
       const other2 = document.getElementById("other2-input").value;
+      const memo = document.getElementById("memo-input").value;
 
       const message =
-        `ステータス更新\n` +
         `\`\`\`\n` +
-        `HP: ${hp} / ${hpMax}\n` +
-        `MP: ${mp} / ${mpMax}\n` +
+        `HP: ${hp} / ${hpMax} ` +
+        `MP: ${mp} / ${mpMax} ` +
         `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
-        `${other1Name || "その他1"}: ${other || "-"}\n` +
-        `${other2Name || "その他2"}: ${other2 || "-"}` +
+        `${other1Name || "その他1"}: ${other || "-"} ` +
+        `${other2Name || "その他2"}: ${other2 || "-"}\n` +
+        (memo ? `メモ: ${memo}` : "") + 
         `\`\`\``;
 
       const avatarUrl = imageSrc;
-      const webhook = currentCharacterData?.webhook;
+      const statusThreadId = currentCharacterData?.statusWebhook || null;
+      let webhook = null;
+
+      // statusWebhookが存在すれば対応するURLを取得
+      if (statusThreadId && currentCharacterData?.scenarioId) {
+        try {
+          const threadRef = doc(db, "scenarios", currentCharacterData.scenarioId, "threads", statusThreadId);
+          const threadSnap = await getDoc(threadRef);
+          if (threadSnap.exists()) {
+            webhook = threadSnap.data().webhookUrl || null;
+          }
+        } catch (error) {
+          console.error("statusWebhookのURL取得失敗:", error);
+        }
+      }
 
       try {
         await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
@@ -409,6 +504,7 @@ function loadCharacterStatusOnly(data) {
   document.getElementById("other2-input").value = data.other2 || "";
   document.getElementById("other1-name").value = data.other1Name || "";
   document.getElementById("other2-name").value = data.other2Name || "";
+  document.getElementById("memo-input").value = data.memo || "";
 
   document.getElementById("hp").textContent = data.hp || "";
   document.getElementById("hp-max").textContent = data.hpMax || "";
@@ -421,6 +517,7 @@ function loadCharacterStatusOnly(data) {
   document.getElementById("other2").textContent = data.other2 || "-";
   document.getElementById("other1-label").textContent = data.other1Name || "その他";
   document.getElementById("other2-label").textContent = data.other2Name || "その他";
+  document.getElementById("memo").textContent = data.memo || "-";
 
   updateDisplay();
 }
@@ -491,11 +588,15 @@ async function updateScenarioId() {
       return;
     }
 
+    const scenarioData = scenarioSnap.data();
+    const kpId = scenarioData.kpId;
+
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
-      currentScenario: scenarioId,
+      scenarioId: scenarioId,
       playerId: playerId, 
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      accessKpId: kpId
     }, { merge: true });
 
     showToast("シナリオIDを更新しました ");
@@ -515,11 +616,14 @@ async function clearScenarioId() {
   try {
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
-      currentScenario: deleteField(),
+      scenarioId: deleteField(),
       playerId: playerId, 
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      accessKpId: deleteField()
     }, { merge: true });
-
+   
+    document.getElementById("scenario-id-input").value = "";
+    
     showToast("シナリオIDを解除しました。");
   } catch (e) {
     console.error("シナリオ解除失敗", e);
@@ -551,35 +655,35 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("new-character-button").addEventListener("click", async () => {
-  const name = prompt("キャラクター名を入力してください");
-  if (!name) return;
+    const name = prompt("キャラクター名を入力してください");
+    if (!name) return;
 
-  try {
-    // 🔽 デフォルトWebhookを取得
-    const webhookSnap = await getDoc(doc(db, "defaults", "webhook"));
-    const defaultWebhook = webhookSnap.exists() ? webhookSnap.data().url : "";
+    try {
+      // 🔽 デフォルトWebhookを取得
+      const webhookSnap = await getDoc(doc(db, "defaults", "webhook"));
+      const defaultWebhook = webhookSnap.exists() ? webhookSnap.data().url : "";
 
-    const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
-      name,
-      hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
-      other: "", other2: "", other1Name: "", other2Name: "",
-      palette: "",
-      webhook: defaultWebhook, 
-      imageUrl: "./seeker_vault/default.png", 
-      playerId: playerId, 
-      accessKpIds: [],
-      updatedAt: new Date().toISOString()
-    });
+      const newChar = await addDoc(collection(db, "characters", playerId, "list"), {
+        name,
+        hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
+        other: "", other2: "", other1Name: "", other2Name: "", memo: "",
+        palette: "",
+        webhook: defaultWebhook, 
+        imageUrl: "./seeker_vault/default.png", 
+        playerId: playerId, 
+        accessKpId: "",
+        updatedAt: new Date().toISOString()
+      });
 
-    showToast("キャラクターを作成しました");
-    await loadCharacterList();
-    document.getElementById("character-select").value = newChar.id;
-    await loadCharacterData(newChar.id);
-  } catch (e) {
-    console.error("キャラ作成失敗:", e);
-    showToast("キャラ作成に失敗しました");
-  }
-});
+      showToast("キャラクターを作成しました");
+      await loadCharacterList();
+      document.getElementById("character-select").value = newChar.id;
+      await loadCharacterData(newChar.id);
+    } catch (e) {
+      console.error("キャラ作成失敗:", e);
+      showToast("キャラ作成に失敗しました");
+    }
+  });
 
   document.getElementById("character-select").addEventListener("change", async () => {
     const selected = document.getElementById("character-select").value;
@@ -588,10 +692,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-    document.getElementById("legacy-status-save").addEventListener("click", () => {
-    isLegacySave = true;
-    saveCharacterData();
-    });
+  document.getElementById("legacy-status-save").addEventListener("click", () => {
+  isLegacySave = true;
+  saveCharacterData();
+  });
 
   document.getElementById("legacy-status-load").addEventListener("click", async () => {
     if (currentCharacterId) {
@@ -656,23 +760,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // アコーディオン処理
   document.querySelectorAll(".toggle-button").forEach(button => {
-  button.addEventListener("click", () => {
-    const parent = button.closest(".section");
-    const content = parent?.querySelector(".toggle-content");
+    button.addEventListener("click", () => {
+      const parent = button.closest(".section");
+      const content = parent?.querySelector(".toggle-content");
 
-    if (!content) return;
+      if (!content) return;
 
-    const isOpen = content.style.display === "block";
-    content.style.display = isOpen ? "none" : "block";
-    button.classList.toggle("open", !isOpen);
+      const isOpen = content.style.display === "block";
+      content.style.display = isOpen ? "none" : "block";
+      button.classList.toggle("open", !isOpen);
+    });
   });
-});
 
   // パラメータの反映
   [
     "hp-input", "hp-max-input", "mp-input", "mp-max-input",
     "san-input", "san-max-input", "other-input", "other2-input",
-    "other1-name", "other2-name"
+    "other1-name", "other2-name", "memo-input"
   ].forEach(id => {
     const input = document.getElementById(id);
     if (input) input.addEventListener("input", updateDisplay);

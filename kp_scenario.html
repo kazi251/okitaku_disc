@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>KPホーム画面</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="kp.css" />
+  <script src="./firebaseConfig.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <h3 id="scenario-name">シナリオタイトル</h3>
+
+  <section class="section">
+    <h2>探索者一覧</h2>
+    <div id="character-list"></div>
+  </section>
+
+  <!-- 発言・ダイスUIエリア -->
+  <div class="section">
+    <div class="kp-interaction-section">
+      <h2>発言・ダイス入力</h2>
+      <!-- キャラクター選択 -->
+      <label for="kp-character-dropdown">キャラクター：</label>
+      <select id="kp-character-dropdown"></select>
+      <!-- スレッド選択 -->
+      <label for="kp-thread-dropdown">送信先：</label>
+      <select id="kp-thread-dropdown"></select>
+    </div>  
+    <div class="kp-input-section">
+      <!-- セリフ＆ダイス -->
+      <textarea id="kp-say-content" placeholder="セリフを入力..."></textarea><br>
+      <input type="text" id="kp-dice-command" placeholder="コマンドを入力"><br>
+      <button id="kp-send-button">送信</button>
+      <button id="kp-roll-button">ダイス実行</button>
+      <div id="kp-dice-result">🎲 結果がここに表示されます</div>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2>エネミー・KPC管理</h2>
+    <div id="kpc-enemy-container"></div>
+    <button id="manage-npc-button">管理画面へ</button>
+  </section>
+
+  <section class="section">
+    <h2>戦闘管理</h2>
+    <button id="combat-manager-button">戦闘管理画面へ</button>
+  </section>
+
+  <section class="section">
+    <h2>Webhook設定</h2>
+    <div id="webhook-settings">
+    <!-- スレッド作成フォーム -->
+    <section>
+      <input type="text" id="new-thread-name" placeholder="新しいスレッドを作成">
+      <button id="create-thread-button">作成</button>
+    </section>
+
+    <!-- スレッド一覧 -->
+    <section>
+      <h2>スレッド一覧</h2>
+      <ul id="thread-list"></ul>
+    </section>
+
+    <!-- キャラクターの発言先設定 -->
+  <section>
+    <h2>発言・通知先設定</h2>
+    <div id="character-settings-container"></div>
+    <button id="save-settings-button">保存</button>
+  </section>
+
+  <section class="section">
+    <button onclick="location.href='kp.html'">← ホームに戻る(後で直す)</button>
+  </section>
+
+  <!-- キャラクター編集モーダル -->
+  <div id="edit-modal" class="modal hidden">
+    <form id="edit-form" class="modal-content">
+      <h2>キャラクター編集</h2>
+      <div class="field-group">
+        <label><span class="stat-label">HP</span>:
+          <input type="number" id="edit-hp" placeholder="現在値">
+          ／
+          <input type="number" id="edit-hpMax" placeholder="最大値">
+        </label>
+      </div>
+      <div class="field-group">
+        <label><span class="stat-label">MP</span>:
+          <input type="number" id="edit-mp" placeholder="現在値">
+          ／
+          <input type="number" id="edit-mpMax" placeholder="最大値">
+        </label>
+      </div>
+      <div class="field-group">
+        <label><span class="stat-label">SAN</span>:
+          <input type="number" id="edit-san" placeholder="現在値">
+          ／
+          <input type="number" id="edit-sanMax" placeholder="最大値">
+        </label>
+      </div>
+      <div class="field-group">
+        <label id="label-other1">
+          <input type="text" id="edit-other1-name" placeholder="その他1">:
+          <input type="number" id="edit-other">
+        </label>
+      </div>
+      <div class="field-group">
+        <label id="label-other2">
+          <input type="text" id="edit-other2-name" placeholder="その他2">:
+          <input type="number" id="edit-other2">
+        </label>
+      </div>
+      <div class="field-group">
+        <label>
+          <input type="textarea" rows="2" id="edit-memo" placeholder="メモ">
+        </label>
+      </div>
+      <div class="modal-buttons">
+        <button type="submit" id="save-button">保存</button>
+        <button type="button" id="cancel-button">キャンセル</button>
+      </div>
+    </form>
+  </div>
+
+<!-- スレッド設定モーダル -->
+<div id="thread-modal" class="modal hidden">
+  <form id="thread-form" class="modal-content">
+    <h2>スレッド設定</h2>
+
+    <div class="field-group">
+      <label>スレッド名:
+        <input type="text" id="modal-thread-name" class="wide-input">
+      </label>
+    </div>
+
+    <div class="field-group">
+      <label>Webhook URL:
+        <input type="text" id="modal-webhook-url" class="wide-input">
+      </label>
+    </div>
+
+    <div class="field-group">
+      <label>スレッドID (任意):
+        <input type="text" id="modal-thread-id" placeholder="thread_id を指定する場合" class="wide-input">
+      </label>
+    </div>
+
+    <div class="modal-buttons">
+      <button type="button" id="save-thread-settings-button">保存</button>
+      <button type="button" id="cancel-thread-settings-button">キャンセル</button>
+    </div>
+  </form>
+</div>
+
+  <script type="module" src="kp_scenario.js"></script>
+  <script type="module" src="kp_webhook_settings.js"></script>
+</body>
+</html>

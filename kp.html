@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>KPホーム画面</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="kp.css" />
+  <script src="./firebaseConfig.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <h1>KPホーム画面</h1>
+
+  <div id="scenario-list" class="section">
+    <!-- ここにシナリオ一覧が動的に追加される -->
+  </div>
+
+  <div class="section">
+    <h2>＋新しいシナリオを作成</h2>
+    <input type="text" id="new-scenario-name" placeholder="シナリオ名を入力">
+    <button id="create-scenario">作成</button>
+  </div>
+
+  <script type="module" src="kp.js"></script>
+</body>
+</html>

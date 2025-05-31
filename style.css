@@ -25,7 +25,8 @@ input[type="text"]{ /* テキストボックス */
   gap: 10px; /* 要素間の間隔 */
 }
 
-#character-select {
+#character-select,
+#say-webhook-select {
   height: 30px; /* ボタンの高さに合わせる */
   font-size: 16px; /* ボタンの文字サイズに合わせる */
   padding: 5px 10px; /* ボタンのpaddingに合わせて調整 */
@@ -189,6 +190,11 @@ input[type="text"]{ /* テキストボックス */
   width: 100px; /* 全角6文字程度が入る幅の目安 */
 }
 
+#memo-input {
+  width: 100%;
+  resize: vertical;
+}
+
 .toggle-content {
   display: none;
   margin-top: 10px;
@@ -196,7 +202,7 @@ input[type="text"]{ /* テキストボックス */
 }
 
 .toggle-button {
-  width: 400px; /* 固定幅 */
+  width: 450px; /* 固定幅 */
   text-align: left;
   font-weight: bold;
   font-size: 1.2em;               /* h2 に近い大きさ */
@@ -320,16 +326,21 @@ input[type="text"]{ /* テキストボックス */
     padding: 8px; /* 入力フォームとボタンの内側の余白 */
   }
 
-  /* #new-character-button, */
   #say-content,
   #dice-command,
-  #suggestions,
-  .toggle-button {
+  #suggestions {
     width: 95%; /* 幅を親要素の95%に */
   }
 
+  .toggle-button {
+    width: 100%; /* 幅を親要素の95%に */
+  }
+
+  #memo-input {
+    width: 85%;
+  }
   #chat-palette-input {
-    width: 95%; /* 幅を親要素の95%に */
+    width: 85%; /* 幅を親要素の85%に */
     min-height: 150px; /* 最小の高さ */
   }
 

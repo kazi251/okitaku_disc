@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>KPC/エネミー/モブ管理画面</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="kp.css" />
+  <script src="./firebaseConfig.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <h1>NPC管理画面</h1>
+
+  <section>
+    <h2>KPC</h2>
+    <div id="kpc-list">読み込み中...</div>
+  </section>
+
+  <section>
+    <h2>エネミー</h2>
+    <div id="enemy-list">読み込み中...</div>
+  </section>
+
+  <section>
+    <h2>モブ</h2>
+    <div id="mob-list">読み込み中...</div>
+  </section>
+
+  <section>
+    <h2>キャラクター登録</h2>
+
+    <label>種別:
+      <select id="char-type">
+        <option value="kpc">KPC</option>
+        <option value="enemies">エネミー</option>
+        <option value="mobs">モブ</option>
+      </select>
+    </label>
+
+    <form id="shared-char-form" class="character-form">
+      <input type="hidden" id="id" name="id">
+      <label>名前: <input type="text" id="name" name="name" required></label><br>
+      <label>表示: <input type="checkbox" id="display" name="display" checked></label><br>
+      <label>画像: <img src="./seeker_vault/default.png" class="image-preview" width="80"></label><br>
+
+      <!-- 以下、KPC/エネミー共通 -->
+      <label>HP <input type="number" id="hp" placeholder="現在値" name="hp"></label>
+      <label>／<input type="number" id="hpMax" placeholder="最大値" name="hpMax"></label><br>
+      <label>MP <input type="number" id="mp" placeholder="現在値" name="mp"></label>
+      <label>／<input type="number" id="mpMax" placeholder="最大値" name="mpMax"></label><br>
+      <label>SAN <input type="number" id="san" placeholder="現在値" name="san"></label>
+      <label>／<input type="number" id="sanMax" placeholder="最大値" name="sanMax"></label><br>
+      <label><input type="text" id="other1-name" placeholder="その他1" name="other1Name"></label>
+      <label>／<input type="text" id="other" name="other"></label><br>
+      <label><input type="text" id="other2-name" placeholder="その他2" name="other2Name"></label>
+      <label>／<input type="text" id="other2" name="other2"></label><br>
+
+      <label>メモ:<br><input type="textarea" id="memo" name="memo" rows="3" cols="30"></label><br>
+      <label>チャットパレット:<br><input type="textarea" id="palette" name="palette" rows="4" cols="40"></label><br>
+
+      <button type="submit">保存</button>
+    </form>
+  </section>
+
+
+<script type="module" src="./kp_manage.js"></script>
+</body>
+</html>
