@@ -11,6 +11,7 @@ const db = getFirestore(app);
 // URLパラメータから scenarioId を取得
 const urlParams = new URLSearchParams(window.location.search);
 const scenarioId = urlParams.get("scenarioId");
+const accessKpId = urlParams.get("kpId");
 
 // FirestoreからKPC一覧を取得して表示
 async function loadKpcList() {
@@ -56,7 +57,7 @@ async function saveCharacterFromForm(form, collectionName) {
   const ref = doc(db, `scenarios/${scenarioId}/${collectionName}/${id}`);
 
   const imageSrc = form.querySelector(".image-preview")?.src || "";
-  const isDefaultImage = imageSrc.includes("default.png");
+  const isDefaultImage = imageSrc.includes("./seeker_vault/default.png");
 
   const data = {
     name: form.name.value,
@@ -74,7 +75,8 @@ async function saveCharacterFromForm(form, collectionName) {
     other1Name: form.other1Name.value,
     other2Name: form.other2Name.value,
     memo: form.memo.value,
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
+    accessKpId: accessKpId
   };
 
   await setDoc(ref, data, { merge: true });
@@ -90,9 +92,13 @@ function initManagePage() {
   loadEnemyList();
   loadMobList();
 
-  document.getElementById("kpc-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  await saveCharacterFromForm(e.target, "kpc");
+  document.getElementById("shared-char-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const typeSelect = document.getElementById("char-type");
+    const collectionName = typeSelect.value; // "kpc", "enemies", "mobs"
+
+    await saveCharacterFromForm(e.target, collectionName);
   });
 
 }
