@@ -24,6 +24,8 @@ async function loadKpcList() {
     div.textContent = `・${data.name}`;
     container.appendChild(div);
   });
+  const listElement = document.getElementById("kpc-list");
+  listElement.innerHTML = "";
   renderCharacterList(listElement, characters, "kpc");
 }
 
@@ -37,8 +39,10 @@ async function loadEnemyList() {
     const div = document.createElement("div");
     div.textContent = `・${data.name}`;
     container.appendChild(div);
-    renderCharacterList(listElement, characters, "enemies");
   });
+  const listElement = document.getElementById("enemy-list");
+  listElement.innerHTML = "";
+  renderCharacterList(listElement, characters, "enemy");
 }
 
 // モブ一覧
@@ -51,8 +55,10 @@ async function loadMobList() {
     const div = document.createElement("div");
     div.textContent = `・${data.name}`;
     container.appendChild(div);
-    renderCharacterList(listElement, characters, "mobs");
   });
+  const listElement = document.getElementById("mob-list");
+  listElement.innerHTML = "";
+  renderCharacterList(listElement, characters, "mobs");
 }
 
 async function saveCharacterFromForm(form, collectionName) {
