@@ -54,7 +54,7 @@ async function loadEnemyList() {
 
   const listElement = document.getElementById("enemy-list");
   listElement.innerHTML = "";
-  renderCharacterList(listElement, characters, "enemy");
+  renderCharacterList(listElement, characters, "enemies");
 }
 
 // モブ一覧
