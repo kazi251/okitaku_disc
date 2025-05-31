@@ -35,7 +35,7 @@ let threadListCache = []; // { id, name }
 let editingThreadId = null;
 
 if (!scenarioId || !accessKpId) {
-  alert("URL に scenarioId と accessKpId を含めてください。");
+  alert("URL に scenarioId と KpId を含めてください。");
   throw new Error("パラメータ不足");
 }
 
