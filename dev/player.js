@@ -408,7 +408,6 @@ async function saveCharacterData() {
       const memo = document.getElementById("memo-input").value;
 
       const message =
-        `ステータス更新\n` +
         `\`\`\`\n` +
         `HP: ${hp} / ${hpMax} ` +
         `MP: ${mp} / ${mpMax} ` +
