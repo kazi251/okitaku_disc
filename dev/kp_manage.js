@@ -76,7 +76,6 @@ async function saveCharacterFromForm(form, collectionName) {
     other2Name: form.other2Name.value,
     memo: form.memo.value,
     updatedAt: new Date().toISOString(),
-    accessKpId: accessKpId
   };
 
   await setDoc(ref, data, { merge: true });
