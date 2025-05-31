@@ -159,11 +159,11 @@ async function loadCharacterToForm(id, collectionName) {
   document.getElementById("mp").value = data.mp || "";
   document.getElementById("mpMax").value = data.mpMax || "";
   document.getElementById("san").value = data.san || "";
-  document.getElementById("sanMax").value = data.sanMax || "";
+  document.getElementById("sanMax").value = data.sanMax || "";  
+  document.getElementById("other1-name").value = data.other1Name || "";
   document.getElementById("other").value = data.other || "";
+  document.getElementById("other2-name").value = data.other2Name || "";
   document.getElementById("other2").value = data.other2 || "";
-  document.getElementById("other1Name").value = data.other1Name || "";
-  document.getElementById("other2Name").value = data.other2Name || "";
   document.getElementById("memo").value = data.memo || "";
   document.getElementById("palette").value = data.palette || "";
   // 画像プレビュー
