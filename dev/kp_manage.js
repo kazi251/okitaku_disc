@@ -82,7 +82,7 @@ async function saveCharacterFromForm(form, collectionName) {
   await setDoc(ref, data, { merge: true });
   showToast("KPCを保存しました！");
   form.reset();
-  form.querySelector(".image-preview").src = "default.png";
+  form.querySelector(".image-preview").src = "./seeker_vault/default.png";
   loadAll(); // 一覧再読み込み関数（後ほど定義）
 }
 
