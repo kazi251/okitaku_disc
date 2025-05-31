@@ -59,7 +59,7 @@ async function loadScenarios() {
         <div class="scenario-meta">
           <small class="scenario-id">ID: ${scenarioId}</small>
           <button onclick="copyToClipboard('${scenarioId}')">コピー</button>
-          <button onclick="location.href='kp_scenario.html?scenarioId=${scenarioId}&KpId=${accessKpId}'">管理へ</button>
+          <button onclick="location.href='kp_scenario.html?scenarioId=${scenarioId}&kpId=${accessKpId}'">管理へ</button>
         </div>
       `;
       scenarioListDiv.appendChild(wrapper);
