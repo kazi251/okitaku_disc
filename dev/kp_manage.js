@@ -24,6 +24,12 @@ async function loadKpcList() {
     div.textContent = `・${data.name}`;
     container.appendChild(div);
   });
+
+  const characters = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+
   const listElement = document.getElementById("kpc-list");
   listElement.innerHTML = "";
   renderCharacterList(listElement, characters, "kpc");
@@ -40,6 +46,12 @@ async function loadEnemyList() {
     div.textContent = `・${data.name}`;
     container.appendChild(div);
   });
+
+  const characters = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+
   const listElement = document.getElementById("enemy-list");
   listElement.innerHTML = "";
   renderCharacterList(listElement, characters, "enemy");
@@ -56,6 +68,12 @@ async function loadMobList() {
     div.textContent = `・${data.name}`;
     container.appendChild(div);
   });
+
+  const characters = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+
   const listElement = document.getElementById("mob-list");
   listElement.innerHTML = "";
   renderCharacterList(listElement, characters, "mobs");
