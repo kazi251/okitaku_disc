@@ -8,7 +8,7 @@ const db = getFirestore(app);
 
 // KP IDチェック
 const urlParams = new URLSearchParams(window.location.search);
-const kpId = urlParams.get("kpId");
+const accessKpId = urlParams.get("kpId");
 
 // UUID v4 形式をチェック
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -31,7 +31,7 @@ async function handleCreateScenario() {
 
   await addDoc(collection(db, "scenarios"), {
     name,
-    kpId,
+    accessKpId,
     createdAt: new Date().toISOString()
   });
 
@@ -50,7 +50,7 @@ async function loadScenarios() {
     const data = docSnap.data();
     const scenarioId = docSnap.id;
 
-    if (data.kpId === kpId) {
+    if (data.accessKpId === accessKpId) {
       const wrapper = document.createElement("div");
       wrapper.style.marginBottom = "16px";
 
@@ -59,7 +59,7 @@ async function loadScenarios() {
         <div class="scenario-meta">
           <small class="scenario-id">ID: ${scenarioId}</small>
           <button onclick="copyToClipboard('${scenarioId}')">コピー</button>
-          <button onclick="location.href='kp_scenario.html?scenarioId=${scenarioId}&kpId=${kpId}'">管理へ</button>
+          <button onclick="location.href='kp_scenario.html?scenarioId=${scenarioId}&accessKpId=${accessKpId}'">管理へ</button>
         </div>
       `;
       scenarioListDiv.appendChild(wrapper);
