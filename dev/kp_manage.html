@@ -39,26 +39,26 @@
     </label>
 
     <form id="shared-char-form" class="character-form">
-      <input type="hidden" name="id">
-      <label>名前: <input type="text" name="name" required></label><br>
-      <label>表示: <input type="checkbox" name="display" checked></label><br>
-      <label>画像: <img src="./seeker_vault/default.png" class="image-preview" width="80"></label><br>
+      <input type="hidden" id="id" name="id">
+      <label>名前: <input type="text" id="name" name="name" required></label><br>
+      <label>表示: <input type="checkbox" id="display" name="display" checked></label><br>
+      <label>画像: <img src="./seeker_vault/default.png" id="image-preview" width="80"></label><br>
 
       <!-- 以下、KPC/エネミー共通 -->
-      <label>HP: <input type="number" name="hp"></label>
-      <label>HP最大: <input type="number" name="hpMax"></label><br>
-      <label>MP: <input type="number" name="mp"></label>
-      <label>MP最大: <input type="number" name="mpMax"></label><br>
-      <label>SAN: <input type="number" name="san"></label>
-      <label>SAN最大: <input type="number" name="sanMax"></label><br>
+      <label>HP: <input type="number" id="edit-hp" placeholder="現在値" name="edit-hp"></label>
+      <label>HP最大: <input type="number" id="edit-hpMax" placeholder="最大値" name="edit-hpMax"></label><br>
+      <label>MP: <input type="number" id="edit-mp" placeholder="現在値" name="mp"></label>
+      <label>MP最大: <input type="number" id="edit-mpMax" placeholder="最大値" name="mpMax"></label><br>
+      <label>SAN: <input type="number" id="edit-san" placeholder="現在値" name="san"></label>
+      <label>SAN最大: <input type="number" id="edit-sanMax" placeholder="最大値" name="sanMax"></label><br>
 
-      <label>ラベル名1: <input type="text" name="other1Name"></label>
-      <label><input type="text" name="other"></label><br>
-      <label>ラベル名2: <input type="text" name="other2Name"></label>
-      <label><input type="text" name="other2"></label><br>
+      <label><input type="text" id="edit-other1-name" placeholder="その他1" name="other1Name"></label>
+      <label><input type="text" id="edit-other" name="other"></label><br>
+      <label><input type="text" id="edit-other2-name" placeholder="その他2" name="other2Name"></label>
+      <label><input type="text" id="edit-other2" name="other2"></label><br>
 
-      <label>メモ:<br><textarea name="memo" rows="3" cols="30"></textarea></label><br>
-      <label>チャットパレット:<br><textarea name="chatPalette" rows="4" cols="40"></textarea></label><br>
+      <label>メモ:<br><textarea id="edit-memo" name="memo" rows="3" cols="30"></textarea></label><br>
+      <label>チャットパレット:<br><textarea id="chatPalette" name="chatPalette" rows="4" cols="40"></textarea></label><br>
 
       <button type="submit">保存</button>
     </form>

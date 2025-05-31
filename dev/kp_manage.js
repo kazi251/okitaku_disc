@@ -88,7 +88,7 @@ async function saveCharacterFromForm(form, collectionName) {
     name: form.name.value,
     display: form.display.checked,
     imageUrl: isDefaultImage ? undefined : imageSrc,
-    chatPalette: form.chatPalette.value,
+    palette: form.palette.value,
     hp: form.hp.value,
     hpMax: form.hpMax.value,
     mp: form.mpMax.value,
@@ -150,24 +150,27 @@ async function loadCharacterToForm(id, collectionName) {
   if (!snap.exists()) return;
 
   const data = snap.data();
-  const form = document.getElementById("shared-char-form");
 
-  form.id.value = id;
-  form.name.value = data.name || "";
-  form.display.checked = data.display ?? true;
-  form.chatPalette.value = data.chatPalette || "";
-  form.hp.value = data.hp || "";
-  form.hpMax.value = data.hpMax || "";
-  form.mp.value = data.mp || "";
-  form.mpMax.value = data.mpMax || "";
-  form.san.value = data.san || "";
-  form.sanMax.value = data.sanMax || "";
-  form.other.value = data.other || "";
-  form.other2.value = data.other2 || "";
-  form.other1Name.value = data.other1Name || "";
-  form.other2Name.value = data.other2Name || "";
-  form.memo.value = data.memo || "";
-  form.querySelector(".image-preview").src = data.imageUrl || "./seeker_vault/default.png";
+  document.getElementById("id").value = id;
+  document.getElementById("name").value = data.name || "";
+  document.getElementById("display").checked = data.display ?? true;
+  document.getElementById("palette").value = data.palette || "";
+  document.getElementById("hp").value = data.hp || "";
+  document.getElementById("hpMax").value = data.hpMax || "";
+  document.getElementById("mp").value = data.mp || "";
+  document.getElementById("mpMax").value = data.mpMax || "";
+  document.getElementById("san").value = data.san || "";
+  document.getElementById("sanMax").value = data.sanMax || "";
+  document.getElementById("other").value = data.other || "";
+  document.getElementById("other2").value = data.other2 || "";
+  document.getElementById("other1Name").value = data.other1Name || "";
+  document.getElementById("other2Name").value = data.other2Name || "";
+  document.getElementById("memo").value = data.memo || "";
+  // 画像プレビュー
+  const preview = document.querySelector("#image-preview");
+  if (preview) {
+    preview.src = data.imageUrl || "./seeker_vault/default.png";
+  }
 
   // 選択されているコレクション名をセット（モブや敵でも再保存できるように）
   document.getElementById("collection-select").value = collectionName;
