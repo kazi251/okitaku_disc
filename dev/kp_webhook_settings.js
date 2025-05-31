@@ -20,7 +20,7 @@ const db = getFirestore(app);
 
 const urlParams = new URLSearchParams(window.location.search);
 const scenarioId = urlParams.get("scenarioId");
-const kpId = urlParams.get("kpId");
+const accessKpId = urlParams.get("kpId");
 
 const threadsColRef = collection(db, `scenarios/${scenarioId}/threads`);
 
@@ -34,8 +34,8 @@ const saveSettingsButton = document.getElementById("save-settings-button");
 let threadListCache = []; // { id, name }
 let editingThreadId = null;
 
-if (!scenarioId || !kpId) {
-  alert("URL に scenarioId と kpId を含めてください。");
+if (!scenarioId || !accessKpId) {
+  alert("URL に scenarioId と accessKpId を含めてください。");
   throw new Error("パラメータ不足");
 }
 
@@ -71,7 +71,7 @@ function renderThreadList() {
       const newRef = doc(threadsColRef);
       await setDoc(newRef, {
         name: thread.name + "_copy",
-        kpId,
+        accessKpId,
         createdAt: Date.now(),
         webhookUrl: thread.webhookUrl ?? "",
         threadId: thread.threadId ?? ""
@@ -100,7 +100,7 @@ createThreadButton.onclick = async () => {
   const newRef = doc(threadsColRef);
   await setDoc(newRef, {
     name,
-    kpId,
+    accessKpId,
     createdAt: Date.now()
   });
   newThreadNameInput.value = "";
@@ -108,7 +108,7 @@ createThreadButton.onclick = async () => {
 };
 
 async function renderCharacterSettings() {
-  const q = query(collectionGroup(db, "list"), where("kpId", "==", kpId));
+  const q = query(collectionGroup(db, "list"), where("accessKpId", "==", accessKpId));
   const charSnap = await getDocs(q);
   characterSettingsContainer.innerHTML = "";
 
@@ -187,7 +187,7 @@ saveSettingsButton.onclick = async () => {
     await setDoc(charRef, {
       sayWebhooks,
       statusWebhook,
-      kpId
+      accessKpId
     }, { merge: true });
   }
   showToast("保存しました");
