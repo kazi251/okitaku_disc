@@ -95,6 +95,12 @@ async function saveCharacterFromForm(form, collectionName) {
   await loadAll(); 
 }
 
+async function loadAll() {
+  await loadKpcList();
+  await loadEnemyList();
+  await loadMobList();
+}
+
 // 一括読み込み
 function initManagePage() {
   loadKpcList();
