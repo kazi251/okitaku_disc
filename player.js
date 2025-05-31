@@ -589,7 +589,7 @@ async function updateScenarioId() {
     }
 
     const scenarioData = scenarioSnap.data();
-    const kpId = scenarioData.kpId;
+    const kpId = scenarioData.accessKpId;
 
     const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
     await setDoc(charRef, {
