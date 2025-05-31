@@ -26,7 +26,34 @@
     <h2>モブ</h2>
     <div id="mob-list">読み込み中...</div>
   </section>
-  
+
+  <section>
+  <h2>KPC登録</h2>
+  <form id="kpc-form" class="character-form">
+    <input type="hidden" name="id">
+    <label>名前: <input type="text" name="name" required></label><br>
+    <label>表示: <input type="checkbox" name="display" checked></label><br>
+    <label>画像: <img src="default.png" class="image-preview" width="80"></label><br>
+
+    <label>HP: <input type="number" name="hp"></label>
+    <label>HP最大: <input type="number" name="hpMax"></label><br>
+    <label>MP: <input type="number" name="mp"></label>
+    <label>MP最大: <input type="number" name="mpMax"></label><br>
+    <label>SAN: <input type="number" name="san"></label>
+    <label>SAN最大: <input type="number" name="sanMax"></label><br>
+    
+    <label>その他1名: <input type="text" name="other1Name"></label>
+    <label>その他1: <input type="text" name="other"></label><br>
+    <label>その他2名: <input type="text" name="other2Name"></label>
+    <label>その他2: <input type="text" name="other2"></label><br>
+
+    <label>メモ:<br><textarea name="memo" rows="3" cols="30"></textarea></label><br>
+    <label>チャットパレット:<br><textarea name="chatPalette" rows="4" cols="40"></textarea></label><br>
+
+    <button type="submit">保存</button>
+  </form>
+</section>
+
 <script type="module" src="./kp_manage.js"></script>
 </body>
 </html>
