@@ -138,7 +138,7 @@ function renderCharacterList(listElement, characters, collectionName) {
     btn.addEventListener("click", async (e) => {
       const id = btn.dataset.id;
       const collection = btn.dataset.collection;
-      await loadCharacterToForm(id, collection); // 後述
+      await loadCharacterToForm(id, collection); 
     });
   });
 }
@@ -154,7 +154,6 @@ async function loadCharacterToForm(id, collectionName) {
   document.getElementById("id").value = id;
   document.getElementById("name").value = data.name || "";
   document.getElementById("display").checked = data.display ?? true;
-  document.getElementById("palette").value = data.palette || "";
   document.getElementById("hp").value = data.hp || "";
   document.getElementById("hpMax").value = data.hpMax || "";
   document.getElementById("mp").value = data.mp || "";
@@ -166,6 +165,7 @@ async function loadCharacterToForm(id, collectionName) {
   document.getElementById("other1Name").value = data.other1Name || "";
   document.getElementById("other2Name").value = data.other2Name || "";
   document.getElementById("memo").value = data.memo || "";
+  document.getElementById("palette").value = data.palette || "";
   // 画像プレビュー
   const preview = document.querySelector("#image-preview");
   if (preview) {
