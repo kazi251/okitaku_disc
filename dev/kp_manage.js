@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-  getFirestore, collection, getDocs, doc, setDoc
+  getFirestore, collection, getDocs, doc, setDoc, addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { showToast } from './utils.js';
 
@@ -53,9 +53,7 @@ async function loadMobList() {
 }
 
 async function saveCharacterFromForm(form, collectionName) {
-  const id = form.id.value || crypto.randomUUID();
-  const ref = doc(db, `scenarios/${scenarioId}/${collectionName}/${id}`);
-
+  const id = form.id.value;
   const imageSrc = form.querySelector(".image-preview")?.src || "";
   const isDefaultImage = imageSrc.includes("./seeker_vault/default.png");
 
@@ -66,7 +64,7 @@ async function saveCharacterFromForm(form, collectionName) {
     chatPalette: form.chatPalette.value,
     hp: form.hp.value,
     hpMax: form.hpMax.value,
-    mp: form.mp.value,
+    mp: form.mpMax.value,
     mpMax: form.mpMax.value,
     san: form.san.value,
     sanMax: form.sanMax.value,
@@ -76,13 +74,25 @@ async function saveCharacterFromForm(form, collectionName) {
     other2Name: form.other2Name.value,
     memo: form.memo.value,
     updatedAt: new Date().toISOString(),
+    accessKpId: accessKpId
   };
 
-  await setDoc(ref, data, { merge: true });
-  showToast("KPCを保存しました！");
+  if (id) {
+    // IDがある場合 → 既存キャラの更新
+    const ref = doc(db, "scenarios", scenarioId, collectionName, id);
+    await setDoc(ref, data, { merge: true });
+    showToast("キャラクターを更新しました！");
+  } else {
+    // IDがない場合 → 新規作成（IDはFirestore側が生成）
+    const colRef = collection(db, "scenarios", scenarioId, collectionName);
+    const docRef = await addDoc(colRef, data);
+    showToast("キャラクターを新規作成しました！");
+    form.id.value = docRef.id; // 保存後にIDセット
+  }
+
   form.reset();
   form.querySelector(".image-preview").src = "./seeker_vault/default.png";
-  loadAll(); // 一覧再読み込み関数（後ほど定義）
+  await loadAll(); 
 }
 
 // 一括読み込み
