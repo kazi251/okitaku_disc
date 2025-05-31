@@ -173,7 +173,7 @@ async function loadCharacterToForm(id, collectionName) {
   }
 
   // 選択されているコレクション名をセット（モブや敵でも再保存できるように）
-  document.getElementById("collection-select").value = collectionName;
+  document.getElementById("char-type").value = collectionName;
 }
 
 async function loadAll() {
