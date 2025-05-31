@@ -24,6 +24,7 @@ async function loadKpcList() {
     div.textContent = `・${data.name}`;
     container.appendChild(div);
   });
+  renderCharacterList(listElement, characters, "kpc");
 }
 
 // エネミー一覧
@@ -36,6 +37,7 @@ async function loadEnemyList() {
     const div = document.createElement("div");
     div.textContent = `・${data.name}`;
     container.appendChild(div);
+    renderCharacterList(listElement, characters, "enemies");
   });
 }
 
@@ -49,6 +51,7 @@ async function loadMobList() {
     const div = document.createElement("div");
     div.textContent = `・${data.name}`;
     container.appendChild(div);
+    renderCharacterList(listElement, characters, "mobs");
   });
 }
 
@@ -93,6 +96,57 @@ async function saveCharacterFromForm(form, collectionName) {
   form.reset();
   form.querySelector(".image-preview").src = "./seeker_vault/default.png";
   await loadAll(); 
+}
+
+function renderCharacterList(listElement, characters, collectionName) {
+  listElement.innerHTML = ""; // 一度リセット
+
+  characters.forEach((char) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${char.name}
+      <button class="edit-button" data-id="${char.id}" data-collection="${collectionName}">編集</button>
+    `;
+    listElement.appendChild(li);
+  });
+
+  listElement.querySelectorAll(".edit-button").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      const id = btn.dataset.id;
+      const collection = btn.dataset.collection;
+      await loadCharacterToForm(id, collection); // 後述
+    });
+  });
+}
+
+// フォームに反映する関数
+async function loadCharacterToForm(id, collectionName) {
+  const ref = doc(db, `scenarios/${scenarioId}/${collectionName}/${id}`);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const form = document.getElementById("character-form");
+
+  form.id.value = id;
+  form.name.value = data.name || "";
+  form.display.checked = data.display ?? true;
+  form.chatPalette.value = data.chatPalette || "";
+  form.hp.value = data.hp || "";
+  form.hpMax.value = data.hpMax || "";
+  form.mp.value = data.mp || "";
+  form.mpMax.value = data.mpMax || "";
+  form.san.value = data.san || "";
+  form.sanMax.value = data.sanMax || "";
+  form.other.value = data.other || "";
+  form.other2.value = data.other2 || "";
+  form.other1Name.value = data.other1Name || "";
+  form.other2Name.value = data.other2Name || "";
+  form.memo.value = data.memo || "";
+  form.querySelector(".image-preview").src = data.imageUrl || "./seeker_vault/default.png";
+
+  // 選択されているコレクション名をセット（モブや敵でも再保存できるように）
+  document.getElementById("collection-select").value = collectionName;
 }
 
 async function loadAll() {
