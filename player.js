@@ -5,6 +5,11 @@ import { showToast } from './utils.js';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const FIREBASE_ROLL_WEBHOOK_URL = "https://us-central1-kazi251-trpg-workers-64def.cloudfunctions.net/rollWebhook";
+const FIREBASE_SAY_WEBHOOK_URL = "https://us-central1-kazi251-trpg-workers-64def.cloudfunctions.net/sayWebhook"; 
+// const FIREBASE_ROLL_WEBHOOK_URL = "https://rollworker.kai-chan-tsuru.workers.dev/";
+// const FIREBASE_SAY_WEBHOOK_URL = "https://sayworker.kai-chan-tsuru.workers.dev/";
+
 const urlParams = new URLSearchParams(window.location.search);
 const playerId = urlParams.get("playerId");
 
@@ -99,7 +104,7 @@ async function sendSay() {
     }
 
     try {
-        const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+        const response = await fetch(FIREBASE_SAY_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: currentCharacterName, message: content, avatar_url: avatarUrl , webhook: webhook })
@@ -144,7 +149,7 @@ async function rollDice() {
     return;
   }
 
-  const workerUrl = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+  const workerUrl = new URL(FIREBASE_ROLL_WEBHOOK_URL);
   workerUrl.searchParams.append("command", command);
   workerUrl.searchParams.append("name", userName);
   workerUrl.searchParams.append("avatar_url", avatarUrl);
@@ -435,7 +440,7 @@ async function saveCharacterData() {
       }
 
       try {
-        await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+        await fetch(FIREBASE_SAY_WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
