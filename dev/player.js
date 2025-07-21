@@ -751,12 +751,12 @@ async function deleteFace(event) {
 
         await setDoc(charRef, {
             faceImages: faceImages,
-            playerId: playerId,
+            playerId: playerId, // セキュリティルール対策
             updatedAt: new Date().toISOString()
         }, { merge: true });
 
         showToast(`表情「${faceName}」を削除しました。`);
-        await loadCharacterData(currentCharacterId);
+        await loadCharacterData(currentCharacterId); // 再読み込み
     } catch (error) {
         console.error("表情の削除に失敗:", error);
         showToast("表情の削除に失敗しました。");
