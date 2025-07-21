@@ -291,6 +291,7 @@ input[type="text"]{ /* テキストボックス */
 
 .face-add-form {
   display: flex;
+  flex-direction: column; /* 縦に並べる */
   gap: 10px;
   margin-top: 10px;
 }
