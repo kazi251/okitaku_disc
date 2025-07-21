@@ -268,20 +268,6 @@ input[type="text"]{ /* テキストボックス */
     flex-direction: row;
 }
 
-/* PC表示用のスタイル */
-@media screen and (min-width: 600px) {
-  .edit-item {
-    flex-direction: row; /* PCでは横に並べる */
-    align-items: flex-start;
-  }
-  .edit-item .char-edit-label {
-    width: 80px; /* ラベルの幅を固定 */
-  }
-  .edit-control {
-    flex-grow: 1;
-  }
-}
-
 /* 表情差分 */
 .face-select-container {
   margin-top: 10px;
@@ -422,4 +408,14 @@ input[type="text"]{ /* テキストボックス */
     min-height: 150px; /* 最小の高さ */
   }
 
+  .edit-item {
+    flex-direction: row; 
+    align-items: flex-start;
+  }
+  .edit-item .char-edit-label {
+    width: 80px; /* ラベルの幅を固定 */
+  }
+  .edit-control {
+    flex-grow: 1;
+  }
 }
