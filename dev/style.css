@@ -31,13 +31,18 @@ input[type="text"]{ /* テキストボックス */
   padding: 8px 10px; /* パディングを調整 */
 }
 
+.send-options-container {
+  display: flex;
+  gap: 10px; /* ドロップダウン間の間隔 */
+  align-items: flex-end; /* 下揃え */
+}
+
 #say-webhook-select,
 #face-select {
   height: auto;
-  font-size: 0.8em; /* さらに小さめのフォント */
-  padding: 4px 6px; /* さらに小さめのパディング */
-  width: auto; /* 100%幅を上書き */
-  max-width: 150px; /* 最大幅を調整 */
+  font-size: 0.9em; /* フォントサイズを少し大きく */
+  padding: 6px 8px; /* パディングを調整 */
+  width: 180px; /* 幅を固定 */
   box-sizing: border-box;
   margin-bottom: 0px; /* 間隔を0に */
 }
