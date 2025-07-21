@@ -782,6 +782,18 @@ async function uploadFaceImage(file) {
     }
 }
 
+// ファイル選択時にファイル名を表示する汎用リスナーを設定する関数
+function setupFileUploadListener(inputId, nameFieldId) {
+  const fileInput = document.getElementById(inputId);
+  const nameField = document.getElementById(nameFieldId);
+  if (fileInput && nameField) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      nameField.textContent = file ? file.name : "ファイルが選択されていません";
+    });
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   // ボタンイベント
   document.getElementById("send-button").addEventListener("click", sendSay);
@@ -866,11 +878,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // 選択されたファイル名を表示（ファイルが選択されていない場合のフォールバックも含む）
-  document.getElementById("image-upload")?.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    const nameField = document.getElementById("image-file-name");
-    nameField.textContent = file ? file.name : "ファイルが選択されていません";
-  });
+  setupFileUploadListener("image-upload", "image-file-name");
 
   // 画像アップロード処理
   document.getElementById("image-save-button")?.addEventListener("click", uploadImage);
@@ -882,6 +890,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("new-face-image-select-button").addEventListener("click", () => {
     document.getElementById("new-face-image-upload").click();
   });
+  setupFileUploadListener("new-face-image-upload", "new-face-file-name");
 
   // キャラクター編集の再読み込み
   document.getElementById("edit-load-button")?.addEventListener("click", async () => {
