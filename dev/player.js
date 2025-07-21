@@ -535,6 +535,29 @@ function loadCharacterPaletteOnly(data) {
   updateChatPalette();
 }
 
+// 汎用的なファイルアップロード関数
+async function uploadFile(file) {
+  if (!file) {
+    throw new Error("ファイルが選択されていません。");
+  }
+  showToast('画像アップロード中...');
+  const formData = new FormData();
+  formData.append('image', file);
+  const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+
+  const response = await fetch(workerUrl, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (response.ok) {
+    const result = await response.json();
+    return result.imageUrl;
+  } else {
+    throw new Error('アップロード失敗: ' + response.statusText);
+  }
+}
+
 async function uploadImage() {
   const fileInput = document.getElementById('image-upload');
   const file = fileInput?.files?.[0];
@@ -543,37 +566,21 @@ async function uploadImage() {
     return;
   }
 
-  showToast('画像アップロード中...');
-
   try {
-    const formData = new FormData();
-    formData.append('image', file);
-    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+    const imageUrl = await uploadFile(file);
+    showToast('アップロード成功！画像を保存中...');
 
-    const response = await fetch(workerUrl, {
-      method: 'POST',
-      body: formData,
-    });
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    await setDoc(ref, {
+      imageUrl,
+      playerId: playerId,
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
 
-    if (response.ok) {
-      const result = await response.json();
-      const imageUrl = result.imageUrl;
+    const imageElement = document.getElementById("explorer-image");
+    imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
 
-      showToast('アップロード成功！画像を保存中...');
-
-      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-      await setDoc(ref, {
-        imageUrl,
-        updatedAt: new Date().toISOString(),
-      }, { merge: true });
-
-      const imageElement = document.getElementById("explorer-image");
-      imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
-
-      showToast("画像が保存されました ✅");
-    } else {
-      showToast('アップロード失敗: ' + response.statusText);
-    }
+    showToast("画像が保存されました ✅");
   } catch (error) {
     console.error(error);
     showToast('エラーが発生しました: ' + error.message);
@@ -693,15 +700,23 @@ async function addFace() {
         return;
     }
 
-    showToast('画像アップロード中...');
     try {
-        const imageUrl = await uploadFaceImage(file);
+        const imageUrl = await uploadFile(file);
         const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
         
+        // Read-Modify-Write パターン
+        const charSnap = await getDoc(charRef);
+        if (!charSnap.exists()) {
+            throw new Error("キャラクターデータが見つかりません。");
+        }
+        const charData = charSnap.data();
+        const faceImages = charData.faceImages || {};
+        faceImages[faceName] = imageUrl;
+
         await setDoc(charRef, {
-            faceImages: {
-                [faceName]: imageUrl
-            }
+            faceImages: faceImages,
+            playerId: playerId,
+            updatedAt: new Date().toISOString()
         }, { merge: true });
 
         showToast(`表情「${faceName}」を追加しました。`);
@@ -723,10 +738,20 @@ async function deleteFace(event) {
 
     try {
         const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+
+        // Read-Modify-Write パターン
+        const charSnap = await getDoc(charRef);
+        if (!charSnap.exists()) {
+            throw new Error("キャラクターデータが見つかりません。");
+        }
+        const charData = charSnap.data();
+        const faceImages = charData.faceImages || {};
+        delete faceImages[faceName]; // メモリ上で削除
+
         await setDoc(charRef, {
-            faceImages: {
-                [faceName]: deleteField()
-            }
+            faceImages: faceImages,
+            playerId: playerId,
+            updatedAt: new Date().toISOString()
         }, { merge: true });
 
         showToast(`表情「${faceName}」を削除しました。`);
