@@ -404,6 +404,13 @@ async function initKpScenarioPage() {
 
   document.getElementById("kp-send-button")?.addEventListener("click", sendKpSay);
   document.getElementById("kp-roll-button")?.addEventListener("click", rollKpDice);
+  document.getElementById("back-to-home-button").addEventListener("click", () => {
+    if (accessKpId) {
+      window.location.href = `kp.html?kpId=${accessKpId}`;
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
   
   await loadScenario();
 
