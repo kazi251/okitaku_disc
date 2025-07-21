@@ -25,11 +25,21 @@ input[type="text"]{ /* テキストボックス */
   gap: 10px; /* 要素間の間隔 */
 }
 
-#character-select,
-#say-webhook-select {
+#character-select {
   height: auto; /* 高さを自動調整 */
   font-size: 1em; /* フォントサイズを標準に */
   padding: 8px 10px; /* パディングを調整 */
+}
+
+#say-webhook-select,
+#face-select {
+  height: auto;
+  font-size: 0.8em; /* さらに小さめのフォント */
+  padding: 4px 6px; /* さらに小さめのパディング */
+  width: auto; /* 100%幅を上書き */
+  max-width: 150px; /* 最大幅を調整 */
+  box-sizing: border-box;
+  margin-bottom: 0px; /* 間隔を0に */
 }
 
 .explorer-image-container {
@@ -264,7 +274,7 @@ input[type="text"]{ /* テキストボックス */
 
 /* 表情差分 */
 .face-select-container {
-  margin-top: 10px;
+  margin-top: 0px; /* 間隔を0に */
 }
 
 .face-management {
