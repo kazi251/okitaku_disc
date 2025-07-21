@@ -222,50 +222,44 @@ input[type="text"]{ /* テキストボックス */
   float: right;
 }
 
-.character-edit {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column; /* 縦方向に並べる */
-  gap: 10px;            /* 子要素間の余白を設定 */
-}
-
-.character-edit .char-edit-label {
-  display: inline-block;
-  width: 5em;
-  text-align: left; /* 左寄せ */
-}
-
-.character-edit .button-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.character-edit-grid {
+.character-edit-container {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* 各編集項目間の余白 */
+  gap: 15px;
 }
 
 .edit-item {
   display: flex;
-  flex-direction: column; /* スマホでは縦に並べる */
-  gap: 8px; /* ラベルとコントロールの間の余白 */
+  flex-direction: column; /* default to column for mobile */
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #555;
 }
 
-.edit-item .char-edit-label {
+.edit-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.edit-label {
+  font-size: 1em;
   font-weight: bold;
-  width: auto;
+  margin: 0;
+  width: 100px;
+  flex-shrink: 0;
 }
 
 .edit-control {
   display: flex;
-  flex-direction: column; /* コントロール内の要素も縦に */
+  flex-direction: column;
   gap: 10px;
+  width: 100%;
 }
 
 .edit-control .button-group {
-    flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 /* 表情差分 */
