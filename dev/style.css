@@ -1,4 +1,41 @@
-/* デフォルトのスタイル（PCなど） */
+/* ... (既存のスタイル) ... */
+
+.face-select-container {
+  margin-top: 10px;
+}
+
+.face-management {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.face-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.delete-face-button {
+  background-color: #f44336; /* 赤色 */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.face-add-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.face-add-form input[type="text"] {
+  flex-grow: 1;
+}
+
 body {
   font-family: sans-serif;
   margin: 20px;

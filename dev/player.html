@@ -21,14 +21,19 @@
 <div id="explorer-container">
   <div id="explorer-header" class="explorer-section">
     <div class="explorer-image-container">
-    <img src="./seeker_vault/default.png"
-      id="explorer-image"
-      alt="探索者画像"
-      class="explorer-image"
-      onerror="this.onerror=null; this.src='./seeker_vault/onerror.png';"
-      oncontextmenu="return false;"
-      draggable="false">
+      <img src="./seeker_vault/default.png"
+        id="explorer-image"
+        alt="探索者画像"
+        class="explorer-image"
+        onerror="this.onerror=null; this.src='./seeker_vault/onerror.png';"
+        oncontextmenu="return false;"
+        draggable="false">
       <div><strong id="character-name">探索者 太郎</strong></div>
+      <!-- 表情切り替えUI -->
+      <div class="face-select-container">
+        <label for="face-select">表情:</label>
+        <select id="face-select"></select>
+      </div>
     </div>
     <div class="explorer-stats">
       <div><span class="stat-label">HP</span>:<span id="hp">-</span>／<span id="hp-max">-</span></div>
@@ -117,9 +122,20 @@
           <label><span class="char-edit-label">画像</span>: 
           <span id="image-file-name">ファイルが選択されていません</span>
           <div class="button-group">
-            <input type="file" id="image-upload" style="display: none;"　accept="image/*"></label>
+            <input type="file" id="image-upload" style="display: none;" accept="image/*"></label>
             <button type="button" id="image-select-button">ファイル選択</button>
             <button id="image-save-button">アップロード</button>
+          </div>
+        </div>
+        <!-- 表情登録UI -->
+        <div class="face-management">
+          <label><span class="char-edit-label">表情差分</span>:</label>
+          <div id="face-list"></div>
+          <div class="face-add-form">
+            <input type="text" id="new-face-name" placeholder="表情名 (例: 笑顔)">
+            <input type="file" id="new-face-image-upload" style="display: none;" accept="image/*">
+            <button type="button" id="new-face-image-select-button">ファイル選択</button>
+            <button id="add-face-button">追加</button>
           </div>
         </div>
         <div><label><span class="char-edit-label">シナリオ</span>: 
