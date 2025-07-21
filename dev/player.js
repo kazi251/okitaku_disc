@@ -95,7 +95,7 @@ async function getSelectedWebhookUrl() {
 async function sendSay() {
     const content = document.getElementById("say-content").value.trim();
     if (!content) return;
-    const avatarUrl = document.getElementById("explorer-image").src;
+    const avatarUrl = document.getElementById("explorer-image").src; // 現在表示されている画像URLを使用
     const webhook = await getSelectedWebhookUrl();
     
     if (!webhook) {
@@ -345,6 +345,9 @@ async function loadCharacterData(charId) {
         saySelect.value = sayWebhooks[0]; 
       }
     }
+
+    // 表情UIを更新
+    updateFaceUI(data.faceImages, data.imageUrl);
 
     showToast("キャラクターを読み込みました！");
   } catch (error) {
@@ -636,6 +639,123 @@ async function clearScenarioId() {
   }
 }
 
+// --- 表情差分機能 ---
+
+// 表情UIの更新
+function updateFaceUI(faceImages, defaultImageUrl) {
+    const faceSelect = document.getElementById("face-select");
+    const faceListContainer = document.getElementById("face-list");
+    faceSelect.innerHTML = "";
+    faceListContainer.innerHTML = "";
+
+    const faces = { '通常': defaultImageUrl, ...(faceImages || {}) };
+
+    for (const [name, url] of Object.entries(faces)) {
+        if (!url) continue; // URLがなければスキップ
+        // ドロップダウンの生成
+        const option = document.createElement("option");
+        option.value = url;
+        option.textContent = name;
+        faceSelect.appendChild(option);
+
+        // 管理リストの生成
+        const listItem = document.createElement("div");
+        listItem.className = "face-list-item";
+        listItem.innerHTML = `
+            <span>${name}</span>
+            ${name !== '通常' ? `<button class="delete-face-button" data-face-name="${name}">削除</button>` : ''}
+        `;
+        faceListContainer.appendChild(listItem);
+    }
+}
+
+// 表情の切り替え
+function switchFace(event) {
+    const selectedUrl = event.target.value;
+    if (selectedUrl) {
+        document.getElementById("explorer-image").src = selectedUrl;
+    }
+}
+
+// 新しい表情の追加
+async function addFace() {
+    const nameInput = document.getElementById("new-face-name");
+    const fileInput = document.getElementById("new-face-image-upload");
+    const faceName = nameInput.value.trim();
+    const file = fileInput.files[0];
+
+    if (!faceName || !file) {
+        showToast("表情名とファイルを選択してください。");
+        return;
+    }
+    if (faceName === "通常") {
+        showToast("「通常」という名前は使用できません。");
+        return;
+    }
+
+    showToast('画像アップロード中...');
+    try {
+        const imageUrl = await uploadFaceImage(file);
+        const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+        
+        await setDoc(charRef, {
+            faceImages: {
+                [faceName]: imageUrl
+            }
+        }, { merge: true });
+
+        showToast(`表情「${faceName}」を追加しました。`);
+        nameInput.value = "";
+        fileInput.value = "";
+        await loadCharacterData(currentCharacterId);
+    } catch (error) {
+        console.error("表情の追加に失敗:", error);
+        showToast("表情の追加に失敗しました。");
+    }
+}
+
+// 表情の削除
+async function deleteFace(event) {
+    if (!event.target.classList.contains('delete-face-button')) return;
+
+    const faceName = event.target.dataset.faceName;
+    if (!confirm(`表情「${faceName}」を削除しますか？`)) return;
+
+    try {
+        const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+        await setDoc(charRef, {
+            faceImages: {
+                [faceName]: deleteField()
+            }
+        }, { merge: true });
+
+        showToast(`表情「${faceName}」を削除しました。`);
+        await loadCharacterData(currentCharacterId);
+    } catch (error) {
+        console.error("表情の削除に失敗:", error);
+        showToast("表情の削除に失敗しました。");
+    }
+}
+
+// 表情画像アップロード用の関数
+async function uploadFaceImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+
+    const response = await fetch(workerUrl, {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        return result.imageUrl;
+    } else {
+        throw new Error('アップロード失敗: ' + response.statusText);
+    }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   // ボタンイベント
   document.getElementById("send-button").addEventListener("click", sendSay);
@@ -728,6 +848,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 画像アップロード処理
   document.getElementById("image-save-button")?.addEventListener("click", uploadImage);
+
+  // 表情差分関連のイベントリスナー
+  document.getElementById("face-select").addEventListener("change", switchFace);
+  document.getElementById("add-face-button").addEventListener("click", addFace);
+  document.getElementById("face-list").addEventListener("click", deleteFace);
+  document.getElementById("new-face-image-select-button").addEventListener("click", () => {
+    document.getElementById("new-face-image-upload").click();
+  });
 
   // キャラクター編集の再読み込み
   document.getElementById("edit-load-button")?.addEventListener("click", async () => {
