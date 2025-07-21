@@ -108,7 +108,7 @@ createThreadButton.onclick = async () => {
 };
 
 async function renderCharacterSettings() {
-  const q = query(collectionGroup(db, "list"), where("accessKpId", "==", accessKpId));
+  const q = query(collectionGroup(db, "list"), where("accessKpId", "==", accessKpId), where("scenarioId", "==", scenarioId));
   const charSnap = await getDocs(q);
   characterSettingsContainer.innerHTML = "";
 
