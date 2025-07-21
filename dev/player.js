@@ -346,5 +346,17 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("new-face-image-upload").click();
   });
 
+  // アコーディオン処理
+  document.querySelectorAll(".toggle-button").forEach(button => {
+    button.addEventListener("click", () => {
+      const content = button.nextElementSibling;
+      if (!content || !content.classList.contains("toggle-content")) return;
+
+      const isOpen = content.style.display === "block";
+      content.style.display = isOpen ? "none" : "block";
+      button.classList.toggle("open", !isOpen);
+    });
+  });
+
   loadCharacterList();
 });
