@@ -39,8 +39,8 @@
       <div class="stat-item"><span class="label">SAN</span><span class="value"><span id="san">-</span> / <span id="san-max">-</span></span></div>
       <div class="stat-item"><span class="label" id="other1-label">その他</span><span class="value" id="other">-</span></div>
       <div class="stat-item"><span class="label" id="other2-label">その他</span><span class="value" id="other2">-</span></div>
+      <div class="stat-item"><span class="label">メモ</span><span class="value" id="memo">-</span></div>
     </div>
-     <div class="stat-item"><span class="label">メモ</span><span class="value" id="memo">-</span></div>
   </div>
 
   <!-- セリフ・ダイス -->
@@ -54,7 +54,9 @@
       <div>
         <label for="say-content">セリフ</label>
         <textarea id="say-content" placeholder="セリフを入力..." rows="3"></textarea>
-        <button id="send-button" class="button-primary">送信</button>
+        <div class="button-group">
+            <button id="send-button" class="button-primary">送信</button>
+        </div>
       </div>
       <div>
         <label for="dice-command">ダイスロール</label>

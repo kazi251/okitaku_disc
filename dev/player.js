@@ -766,10 +766,9 @@ window.addEventListener("DOMContentLoaded", () => {
   // アコーディオン処理
   document.querySelectorAll(".toggle-button").forEach(button => {
     button.addEventListener("click", () => {
-      const parent = button.closest(".section");
-      const content = parent?.querySelector(".toggle-content");
+      const content = button.nextElementSibling;
 
-      if (!content) return;
+      if (!content || !content.classList.contains("toggle-content")) return;
 
       const isOpen = content.style.display === "block";
       content.style.display = isOpen ? "none" : "block";
