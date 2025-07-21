@@ -402,15 +402,4 @@ input[type="text"]{ /* テキストボックス */
     width: 85%; /* 幅を親要素の85%に */
     min-height: 150px; /* 最小の高さ */
   }
-
-  .edit-item {
-    flex-direction: row; 
-    align-items: flex-start;
-  }
-  .edit-item .char-edit-label {
-    width: 80px; /* ラベルの幅を固定 */
-  }
-  .edit-control {
-    flex-grow: 1;
-  }
 }
