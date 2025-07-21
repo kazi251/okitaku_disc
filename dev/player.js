@@ -655,7 +655,8 @@ function updateFaceUI(faceImages, defaultImageUrl) {
     faceSelect.innerHTML = "";
     faceListContainer.innerHTML = "";
 
-    const faces = { '通常': defaultImageUrl, ...(faceImages || {}) };
+    const effectiveDefaultUrl = defaultImageUrl || './seeker_vault/default.png';
+    const faces = { '通常': effectiveDefaultUrl, ...(faceImages || {}) };
 
     for (const [name, url] of Object.entries(faces)) {
         if (!url) continue; // URLがなければスキップ
