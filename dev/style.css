@@ -1,347 +1,181 @@
-/* デフォルトのスタイル（PCなど） */
+/* 基本スタイル */
 body {
-  font-family: sans-serif;
-  margin: 20px;
-  background-color: #333333;
-  color: #F8F8F2;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin: 0;
+  background-color: #f0f2f5;
+  color: #333;
+  -webkit-tap-highlight-color: transparent; /* スマホでのタップ時のハイライトを無効化 */
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* カード */
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 h2 {
-  margin-bottom: 5px; 
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.2em;
+  color: #1a202c;
 }
 
-.section {
-  margin-top: 20px;
-}
-
-input[type="text"]{ /* テキストボックス */
-  margin-bottom: 5px; 
-}
-
-.character-select-area {
-  margin-bottom: 20px;
-  display: flex; /* Flexbox レイアウト */
-  align-items: center; /* 垂直方向に中央揃え */
-  gap: 10px; /* 要素間の間隔 */
-}
-
-#character-select,
-#say-webhook-select {
-  height: 30px; /* ボタンの高さに合わせる */
-  font-size: 16px; /* ボタンの文字サイズに合わせる */
-  padding: 5px 10px; /* ボタンのpaddingに合わせて調整 */
-}
-
-.explorer-image-container {
+/* ヘッダー */
+.character-header {
   display: flex;
-  flex-direction: column; /* 名前を画像の下に配置 */
-  align-items: center; /* 名前を中央揃え */
-  width: 150px;
+  flex-direction: column; /* スマホでは常に縦 */
+  align-items: center;
+  text-align: center;
+  gap: 12px;
 }
 
 .explorer-image {
-  width: 128px;
-  height: 128px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.explorer-image-container strong {
-  margin-top: 10px; /* 画像との間隔 */
+.character-info h1 {
+  margin: 0;
+  font-size: 1.6em;
+}
+
+.character-info .scenario-label {
+  font-size: 0.9em;
+  color: #718096;
+  word-break: break-all;
+}
+
+/* ステータス */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* スマホでは2列 */
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.stat-item {
+  background-color: #f7fafc;
+  padding: 12px;
+  border-radius: 8px;
   text-align: center;
 }
 
-#result {
-  margin-top: 10px;
+.stat-item .label {
+  font-size: 0.8em;
+  color: #718096;
+  margin-bottom: 4px;
+  display: block;
 }
 
-.scenario-label {
-  font-size: 13px;
+.stat-item .value {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #4a5568;
 }
 
-#current-scenario-name {
-  word-break: break-word;
-}
-
-#say-content,
-#dice-command{
-  width: 400px; /* 例：400pxに設定。必要に応じて調整してください。 */
-  max-width: 100%; /* 親要素の幅を超えないように */
-}
-
-#chat-palette-input {
-  width: 400px; /* 例：400pxに設定。必要に応じて調整してください。 */
-  max-width: 100%; /* 親要素の幅を超えないように */
-  min-height: 150px; /* 高さを確保 */
-}
-
-.input-wrapper {
-  position: relative; /* 子要素のabsolute位置指定の基準にする */
-  display: inline-block;
+/* フォーム要素 */
+textarea,
+input[type="text"],
+input[type="number"],
+select {
   width: 100%;
-}
-
-#suggestions {
-  width: 100%;
-  max-width: 300px;
-  background: #444;              /* 濃いグレー背景 */
-  border: 1px solid #666;        /* 少し明るめの境界線 */
-  max-height: 120px;
-  overflow-y: auto;
-  position: absolute;
-  bottom: 100%;               /* 入力欄の上に表示 */
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  display: none;
-  color: #F8F8F2;                /* 明るい文字色 */
-  margin-bottom: 0;         /* 入力欄との間隔 */
-}
-
-#suggestions div {
-  padding: 6px 10px;
-  cursor: pointer;
-  color: #F8F8F2;
-}
-
-#suggestions div:hover {
-  background-color: #555;        /* ホバー時の背景 */
-}
-
-#toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #444; 
-  color: #F8F8F2;
-  padding: 10px 20px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  font-size: 14px;
-  z-index: 1000;
-  opacity: 0;
-  transition: opacity 0.5s;
+  font-size: 16px; /* スマホでの読みやすさのため */
+  background-color: #fff;
+  box-sizing: border-box;
+  -webkit-appearance: none; /* iOSでのデフォルトスタイル解除 */
+  margin-bottom: 12px;
 }
 
-#explorer-container {
-  display: flex;
-  align-items: flex-start;
-  gap: 40px;
-}
-
-.explorer-section {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-.explorer-image-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.explorer-stats {
-  margin-top: 10px;
-}
-
-.explorer-stats div {
-  display: flex; /* 行内要素を横並びにする */
-  align-items: baseline; /* ベースラインを揃える */
-  gap: 10px; /* ラベルと値の間隔 */
-}
-
-.explorer-stats .stat-label {
-  display: inline-block;
-  width: 4em; /* ラベルの幅を固定 */
-  text-align: left; /* 左寄せ */
-}
-
-.parameter-section {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.parameter-section .stat-label {
-  width: 4em; /* ラベルの幅を固定 */
-  text-align: left; /* 左寄せ */
-}
-
-.parameter-section label {
-  display: flex; /* ラベル内の要素を横並びにする */
-  align-items: center; /* 縦方向中央揃え */
-  gap: 5px; /* ラベル内の要素間の間隔 */
-  min-width: 100px; /* 項目名4文字分のスペースを確保（目安） */
-}
-
-.parameter-section input[type="number"] {
-  width: 60px; /* 半角数字4桁程度の幅 */
-}
-
-.parameter-section input[type="text"] {
-  width: 100px; /* ラベル名入力欄の幅 */
-}
-
-#other1-name,
-#other2-name {
-  width: 100px; /* 全角6文字程度が入る幅の目安 */
-}
-
-#memo-input {
+button {
   width: 100%;
-  resize: vertical;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.button-primary {
+  background-color: #4299e1;
+  color: white;
+}
+
+.button-secondary {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column; /* スマホでは縦 */
+  gap: 10px;
+}
+
+/* アコーディオン */
+.toggle-button {
+  width: 100%;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.1em;
+  background-color: #fff;
+  color: #2d3748;
+  border: 1px solid #e2e8f0;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .toggle-content {
   display: none;
-  margin-top: 10px;
-  width: 400px; /* 固定幅を指定 */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.toggle-button {
-  width: 450px; /* 固定幅 */
-  text-align: left;
-  font-weight: bold;
-  font-size: 1.2em;               /* h2 に近い大きさ */
-  background-color: #444;         /* ダークテーマに合う背景色 */
-  color: #F8F8F2;                 /* 明るい文字色 */
-  border: 1px solid #666;         /* やや明るい枠線 */
-  padding: 10px;
-  cursor: pointer;
-}
-
-.toggle-button.open::after {
-  content: '▲';
-  float: right;
-}
-.toggle-button::after {
-  content: '▼';
-  float: right;
-}
-
-.character-edit {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column; /* 縦方向に並べる */
-  gap: 10px;            /* 子要素間の余白を設定 */
-}
-
-.character-edit .char-edit-label {
-  display: inline-block;
-  width: 5em;
-  text-align: left; /* 左寄せ */
-}
-
-.character-edit .button-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-/* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
-@media screen and (max-width: 600px) {
-  body {
-    margin: 10px; /* 余白を小さく */
-    font-size: 16px; /* 文字サイズを少し大きく */
+/* PC表示 (768px以上) */
+@media screen and (min-width: 768px) {
+  .container {
+    padding: 40px;
   }
 
-  .character-select-area {
-    flex-direction: column; /* 縦並びにする */
-    align-items: flex-start; /* 上詰めに変更 */
-    gap: 5px;
-  }
-
-  #character-select {
-    width: 95%; /* 親要素の幅いっぱいに広げる */
-    font-size: 1.2em;
-    height: auto;
-    padding: 10px;
-  }
-
-  #explorer-container {
-    flex-direction: column; /* 縦並びにする */
-    align-items: center; /* 中央揃え */
-    gap: 10px; /* 要素間の縦方向の間隔 */
-  }
-
-  .scenario-label {
-  font-size: 13px;
-  text-align: center; /* 中央揃え */
-  margin-top: 1em;
-  }
-
-  .explorer-section {
-    flex-direction: column; /* 縦並びにする */
-    align-items: center; /* 中央揃え */
-    gap: 10px; /* 要素間の縦方向の間隔 */
-    text-align: center; /* テキストを中央揃え */
-  }
-
-  .explorer-image-container {
-    width: auto; /* 画像コンテナの幅 */
-    margin-bottom: 0.5em;
-  }
-
-  .explorer-image {
-    width: 128px; /* 画像の幅 */
-    height: 128px; /* 画像の高さ */
-    -webkit-user-drag: none;
-    user-select: none;
-  }
-
-  .explorer-stats {
-    margin-top: 0.5em; /* 上方向の余白（em単位で調整） */
-  }
-
-  .explorer-stats div {
-    display: flex; /* ラベルと値を横並びにする */
-    align-items: baseline; /* ベースラインで揃える */
-    gap: 5px; /* ラベルと値の間の間隔 */
-  }
-
-  .explorer-stats .stat-label { 
-    display: inline-block;
-    width: 3em;
+  .character-header {
+    flex-direction: row; /* PCでは横 */
     text-align: left;
   }
 
-  #other1-label,
-  #other2-label {
-    width: auto; /* 幅を自動調整 */
-    min-width: 4em; /* 最小幅を4文字分に設定 */
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr); /* PCでは3列 */
   }
 
-  .parameter-section {
-    gap: 5px; /* パラメータ要素間の縦方向の間隔 */
+  .button-group {
+    flex-direction: row; /* PCでは横 */
   }
 
-  input[type="number"],
-  input[type="text"],
-  textarea,
   button {
-    font-size: 16px; /* 入力フォームとボタンの文字サイズ */
-    padding: 8px; /* 入力フォームとボタンの内側の余白 */
+      width: auto; /* PCでは幅を自動に */
   }
-
-  #say-content,
-  #dice-command,
-  #suggestions {
-    width: 95%; /* 幅を親要素の95%に */
-  }
-
-  .toggle-button {
-    width: 100%; /* 幅を親要素の95%に */
-  }
-
-  #memo-input {
-    width: 85%;
-  }
-  #chat-palette-input {
-    width: 85%; /* 幅を親要素の85%に */
-    min-height: 150px; /* 最小の高さ */
-  }
-
 }
