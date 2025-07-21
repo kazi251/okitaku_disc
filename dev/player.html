@@ -109,46 +109,61 @@
 <!-- キャラクター変更 -->
 <div class="section">
   <button class="toggle-button">キャラクター編集</button>
-    <div class="toggle-content">
-      <div class="character-edit">
-        <div>
-          <label><span class="char-edit-label">名前</span>: 
-          <input type="text" id="name-input" placeholder="変更後の名前を入力"><br></label>
-            <div class="button-group">
-              <button id="update-name-button">更新</button>
-            </div>
+  <div class="toggle-content">
+    <div class="character-edit-grid">
+
+      <!-- 名前編集 -->
+      <div class="edit-item">
+        <label for="name-input" class="char-edit-label">名前</label>
+        <div class="edit-control">
+          <input type="text" id="name-input" placeholder="変更後の名前を入力">
+          <button id="update-name-button">更新</button>
         </div>
-        <div>
-          <label><span class="char-edit-label">画像</span>: 
+      </div>
+
+      <!-- 画像編集 -->
+      <div class="edit-item">
+        <label class="char-edit-label">画像</label>
+        <div class="edit-control">
           <span id="image-file-name">ファイルが選択されていません</span>
           <div class="button-group">
-            <input type="file" id="image-upload" style="display: none;" accept="image/*"></label>
-            <button type="button" id="image-select-button">ファイル選択</button>
+            <input type="file" id="image-upload" style="display: none;" accept="image/*">
+            <button type="button" id="image-select-button">選択</button>
             <button id="image-save-button">アップロード</button>
           </div>
         </div>
-        <!-- 表情登録UI -->
-        <div class="face-management">
-          <label><span class="char-edit-label">表情差分</span>:</label>
+      </div>
+
+      <!-- 表情差分 -->
+      <div class="edit-item">
+        <label class="char-edit-label">表情差分</label>
+        <div class="edit-control">
           <div id="face-list"></div>
           <div class="face-add-form">
-            <input type="text" id="new-face-name" placeholder="表情名 (例: 笑顔)">
-            <span id="new-face-file-name">ファイルが選択されていません</span>
+            <input type="text" id="new-face-name" placeholder="表情名">
+            <span id="new-face-file-name">ファイル未選択</span>
             <input type="file" id="new-face-image-upload" style="display: none;" accept="image/*">
-            <button type="button" id="new-face-image-select-button">ファイル選択</button>
+            <button type="button" id="new-face-image-select-button">選択</button>
             <button id="add-face-button">追加</button>
           </div>
         </div>
-        <div><label><span class="char-edit-label">シナリオ</span>: 
-          <input type="text" id="scenario-id-input" placeholder="例:GQVMCy8GX7yibMMTO8MN"><br></label>
+      </div>
+
+      <!-- シナリオ編集 -->
+      <div class="edit-item">
+        <label for="scenario-id-input" class="char-edit-label">シナリオ</label>
+        <div class="edit-control">
+          <input type="text" id="scenario-id-input" placeholder="シナリオIDを入力">
           <div class="button-group">
             <button id="scenario-update-button">登録</button>
             <button id="scenario-clear-button">削除</button>
-            <button id="edit-load-button">再読み込み</button>
+            <button id="edit-load-button">再読込</button>
           </div>
         </div>
       </div>
+
     </div>
+  </div>
 </div>
 
 <!-- トースト -->
