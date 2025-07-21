@@ -95,7 +95,7 @@ async function getSelectedWebhookUrl() {
 async function sendSay() {
     const content = document.getElementById("say-content").value.trim();
     if (!content) return;
-    const avatarUrl = document.getElementById("explorer-image").src;
+    const avatarUrl = document.getElementById("explorer-image").src; // 現在表示されている画像URLを使用
     const webhook = await getSelectedWebhookUrl();
     
     if (!webhook) {
@@ -346,6 +346,9 @@ async function loadCharacterData(charId) {
       }
     }
 
+    // 表情UIを更新
+    updateFaceUI(data.faceImages, data.imageUrl);
+
     showToast("キャラクターを読み込みました！");
   } catch (error) {
     console.error("キャラクター読み込み失敗:", error);
@@ -532,6 +535,29 @@ function loadCharacterPaletteOnly(data) {
   updateChatPalette();
 }
 
+// 汎用的なファイルアップロード関数
+async function uploadFile(file) {
+  if (!file) {
+    throw new Error("ファイルが選択されていません。");
+  }
+  showToast('画像アップロード中...');
+  const formData = new FormData();
+  formData.append('image', file);
+  const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+
+  const response = await fetch(workerUrl, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (response.ok) {
+    const result = await response.json();
+    return result.imageUrl;
+  } else {
+    throw new Error('アップロード失敗: ' + response.statusText);
+  }
+}
+
 async function uploadImage() {
   const fileInput = document.getElementById('image-upload');
   const file = fileInput?.files?.[0];
@@ -540,37 +566,21 @@ async function uploadImage() {
     return;
   }
 
-  showToast('画像アップロード中...');
-
   try {
-    const formData = new FormData();
-    formData.append('image', file);
-    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+    const imageUrl = await uploadFile(file);
+    showToast('アップロード成功！画像を保存中...');
 
-    const response = await fetch(workerUrl, {
-      method: 'POST',
-      body: formData,
-    });
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    await setDoc(ref, {
+      imageUrl,
+      playerId: playerId,
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
 
-    if (response.ok) {
-      const result = await response.json();
-      const imageUrl = result.imageUrl;
+    const imageElement = document.getElementById("explorer-image");
+    imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
 
-      showToast('アップロード成功！画像を保存中...');
-
-      const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-      await setDoc(ref, {
-        imageUrl,
-        updatedAt: new Date().toISOString(),
-      }, { merge: true });
-
-      const imageElement = document.getElementById("explorer-image");
-      imageElement.src = imageUrl + "?t=" + Date.now(); // キャッシュ防止
-
-      showToast("画像が保存されました ✅");
-    } else {
-      showToast('アップロード失敗: ' + response.statusText);
-    }
+    showToast("画像が保存されました ✅");
   } catch (error) {
     console.error(error);
     showToast('エラーが発生しました: ' + error.message);
@@ -633,6 +643,155 @@ async function clearScenarioId() {
   } catch (e) {
     console.error("シナリオ解除失敗", e);
     showToast("解除に失敗しました");
+  }
+}
+
+// --- 表情差分機能 ---
+
+// 表情UIの更新
+function updateFaceUI(faceImages, defaultImageUrl) {
+    const faceSelect = document.getElementById("face-select");
+    const faceListContainer = document.getElementById("face-list");
+    faceSelect.innerHTML = "";
+    faceListContainer.innerHTML = "";
+
+    const effectiveDefaultUrl = defaultImageUrl || './seeker_vault/default.png';
+    const faces = { '通常': effectiveDefaultUrl, ...(faceImages || {}) };
+
+    for (const [name, url] of Object.entries(faces)) {
+        if (!url) continue; // URLがなければスキップ
+        // ドロップダウンの生成
+        const option = document.createElement("option");
+        option.value = url;
+        option.textContent = name;
+        faceSelect.appendChild(option);
+
+        // 管理リストの生成
+        const listItem = document.createElement("div");
+        listItem.className = "face-list-item";
+        listItem.innerHTML = `
+            <span>${name}</span>
+            ${name !== '通常' ? `<button class="delete-face-button" data-face-name="${name}">削除</button>` : ''}
+        `;
+        faceListContainer.appendChild(listItem);
+    }
+}
+
+// 表情の切り替え
+function switchFace(event) {
+    const selectedUrl = event.target.value;
+    if (selectedUrl) {
+        document.getElementById("explorer-image").src = selectedUrl;
+    }
+}
+
+// 新しい表情の追加
+async function addFace() {
+    const nameInput = document.getElementById("new-face-name");
+    const fileInput = document.getElementById("new-face-image-upload");
+    const faceName = nameInput.value.trim();
+    const file = fileInput.files[0];
+
+    if (!faceName || !file) {
+        showToast("表情名とファイルを選択してください。");
+        return;
+    }
+    if (faceName === "通常") {
+        showToast("「通常」という名前は使用できません。");
+        return;
+    }
+
+    try {
+        const imageUrl = await uploadFile(file);
+        showToast('アップロード成功！表情を保存中...');
+        const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+        
+        // Read-Modify-Write パターン
+        const charSnap = await getDoc(charRef);
+        if (!charSnap.exists()) {
+            throw new Error("キャラクターデータが見つかりません。");
+        }
+        const charData = charSnap.data();
+        const faceImages = charData.faceImages || {};
+        faceImages[faceName] = imageUrl;
+
+        await setDoc(charRef, {
+            faceImages: faceImages,
+            playerId: playerId,
+            updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        showToast(`表情「${faceName}」が保存されました ✅`);
+        nameInput.value = "";
+        fileInput.value = "";
+        await loadCharacterData(currentCharacterId);
+    } catch (error) {
+        console.error("表情の追加に失敗:", error);
+        showToast("表情の追加に失敗しました。");
+    }
+}
+
+// 表情の削除
+async function deleteFace(event) {
+    if (!event.target.classList.contains('delete-face-button')) return;
+
+    const faceName = event.target.dataset.faceName;
+    if (!confirm(`表情「${faceName}」を削除しますか？`)) return;
+
+    try {
+        const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+
+        // Read-Modify-Write パターン
+        const charSnap = await getDoc(charRef);
+        if (!charSnap.exists()) {
+            throw new Error("キャラクターデータが見つかりません。");
+        }
+        const charData = charSnap.data();
+        const faceImages = charData.faceImages || {};
+        delete faceImages[faceName]; // メモリ上で削除
+
+        await setDoc(charRef, {
+            faceImages: faceImages,
+            playerId: playerId, // セキュリティルール対策
+            updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        showToast(`表情「${faceName}」が削除されました ✅`);
+        await loadCharacterData(currentCharacterId); // 再読み込み
+    } catch (error) {
+        console.error("表情の削除に失敗:", error);
+        showToast("表情の削除に失敗しました。");
+    }
+}
+
+// 表情画像アップロード用の関数
+async function uploadFaceImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
+
+    const response = await fetch(workerUrl, {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        return result.imageUrl;
+    } else {
+        throw new Error('アップロード失敗: ' + response.statusText);
+    }
+}
+
+// ファイル選択時にファイル名を表示する汎用リスナーを設定する関数
+function setupFileUploadListener(inputId, nameFieldId) {
+  const fileInput = document.getElementById(inputId);
+  const nameField = document.getElementById(nameFieldId);
+  if (fileInput && nameField) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      nameField.textContent = file ? file.name : "ファイルが選択されていません";
+    });
   }
 }
 
@@ -720,14 +879,19 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // 選択されたファイル名を表示（ファイルが選択されていない場合のフォールバックも含む）
-  document.getElementById("image-upload")?.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    const nameField = document.getElementById("image-file-name");
-    nameField.textContent = file ? file.name : "ファイルが選択されていません";
-  });
+  setupFileUploadListener("image-upload", "image-file-name");
 
   // 画像アップロード処理
   document.getElementById("image-save-button")?.addEventListener("click", uploadImage);
+
+  // 表情差分関連のイベントリスナー
+  document.getElementById("face-select").addEventListener("change", switchFace);
+  document.getElementById("add-face-button").addEventListener("click", addFace);
+  document.getElementById("face-list").addEventListener("click", deleteFace);
+  document.getElementById("new-face-image-select-button").addEventListener("click", () => {
+    document.getElementById("new-face-image-upload").click();
+  });
+  setupFileUploadListener("new-face-image-upload", "new-face-file-name");
 
   // キャラクター編集の再読み込み
   document.getElementById("edit-load-button")?.addEventListener("click", async () => {

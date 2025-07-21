@@ -25,11 +25,26 @@ input[type="text"]{ /* テキストボックス */
   gap: 10px; /* 要素間の間隔 */
 }
 
-#character-select,
-#say-webhook-select {
-  height: 30px; /* ボタンの高さに合わせる */
-  font-size: 16px; /* ボタンの文字サイズに合わせる */
-  padding: 5px 10px; /* ボタンのpaddingに合わせて調整 */
+#character-select {
+  height: auto; /* 高さを自動調整 */
+  font-size: 1em; /* フォントサイズを標準に */
+  padding: 8px 10px; /* パディングを調整 */
+}
+
+.send-options-container {
+  display: flex;
+  gap: 10px; /* ドロップダウン間の間隔 */
+  align-items: flex-end; /* 下揃え */
+}
+
+#say-webhook-select,
+#face-select {
+  height: auto;
+  font-size: 0.9em; /* フォントサイズを少し大きく */
+  padding: 6px 8px; /* パディングを調整 */
+  width: 180px; /* 幅を固定 */
+  box-sizing: border-box;
+  margin-bottom: 0px; /* 間隔を0に */
 }
 
 .explorer-image-container {
@@ -222,23 +237,82 @@ input[type="text"]{ /* テキストボックス */
   float: right;
 }
 
-.character-edit {
-  margin-top: 10px;
+.character-edit-container {
   display: flex;
-  flex-direction: column; /* 縦方向に並べる */
-  gap: 10px;            /* 子要素間の余白を設定 */
+  flex-direction: column;
+  gap: 15px;
 }
 
-.character-edit .char-edit-label {
-  display: inline-block;
-  width: 5em;
-  text-align: left; /* 左寄せ */
+.edit-item {
+  display: flex;
+  flex-direction: column; /* default to column for mobile */
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #555;
 }
 
-.character-edit .button-group {
+.edit-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.edit-label {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.edit-control {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.edit-control .button-group {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+}
+
+/* 表情差分 */
+.face-select-container {
+  margin-top: 0px; /* 間隔を0に */
+}
+
+.face-management {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.face-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.delete-face-button {
+  background-color: #f44336; /* 赤色 */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.face-add-form {
+  display: flex;
+  flex-direction: column; /* 縦に並べる */
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.face-add-form input[type="text"] {
+  flex-grow: 1;
 }
 
 /* 画面幅が600px以下の場合に適用されるスタイル（スマホなど） */
@@ -343,5 +417,4 @@ input[type="text"]{ /* テキストボックス */
     width: 85%; /* 幅を親要素の85%に */
     min-height: 150px; /* 最小の高さ */
   }
-
 }
