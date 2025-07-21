@@ -3,9 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>置き卓補助ツール</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="./firebaseConfig.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,122 +10,129 @@
 </head>
 <body>
 
-<div class="container">
+<!-- キャラ選択エリア -->
+<div class="character-select-area">
+  <label for="character-select">キャラクター選択：</label>
+  <select id="character-select"></select>
+  <button id="new-character-button">＋新規作成</button>
+</div>
 
-  <!-- キャラクター選択 -->
-  <div class="card">
-    <div class="character-select-area">
-      <label for="character-select">キャラクター:</label>
-      <select id="character-select"></select>
-      <button id="new-character-button" class="button-secondary">＋ 新規作成</button>
+<!-- 探索者表示セクション -->
+<div id="explorer-container">
+  <div id="explorer-header" class="explorer-section">
+    <div class="explorer-image-container">
+    <img src="./seeker_vault/default.png"
+      id="explorer-image"
+      alt="探索者画像"
+      class="explorer-image"
+      onerror="this.onerror=null; this.src='./seeker_vault/onerror.png';"
+      oncontextmenu="return false;"
+      draggable="false">
+      <div><strong id="character-name">探索者 太郎</strong></div>
+    </div>
+    <div class="explorer-stats">
+      <div><span class="stat-label">HP</span>:<span id="hp">-</span>／<span id="hp-max">-</span></div>
+      <div><span class="stat-label">MP</span>:<span id="mp">-</span>／<span id="mp-max">-</span></div>
+      <div><span class="stat-label">SAN</span>:<span id="san">-</span>／<span id="san-max">-</span>（<span id="san-indef">-</span>）</div>
+      <div><span id="other1-label">その他</span>:<span id="other">-</span></div>
+      <div><span id="other2-label">その他</span>:<span id="other2">-</span></div>
+      <div><span id="memo">-</span></div>
     </div>
   </div>
+</div>
+<div class="scenario-label">探索中: <span id="current-scenario-name">-</span></div>
 
-  <!-- キャラクターヘッダー -->
-  <div class="card">
-    <div class="character-header">
-      <img src="./seeker_vault/default.png" id="explorer-image" alt="探索者画像" class="explorer-image">
-      <div class="character-info">
-        <h1 id="character-name">探索者 太郎</h1>
-        <div class="scenario-label">探索中: <span id="current-scenario-name">-</span></div>
-      </div>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-item"><span class="label">HP</span><span class="value"><span id="hp">-</span> / <span id="hp-max">-</span></span></div>
-      <div class="stat-item"><span class="label">MP</span><span class="value"><span id="mp">-</span> / <span id="mp-max">-</span></span></div>
-      <div class="stat-item"><span class="label">SAN</span><span class="value"><span id="san">-</span> / <span id="san-max">-</span></span></div>
-      <div class="stat-item"><span class="label" id="other1-label">その他</span><span class="value" id="other">-</span></div>
-      <div class="stat-item"><span class="label" id="other2-label">その他</span><span class="value" id="other2">-</span></div>
-      <div class="stat-item"><span class="label">メモ</span><span class="value" id="memo">-</span></div>
-    </div>
+<!-- 送信の選択 -->
+<div class="section">
+  <h2>送信先</h2>
+  <select id="say-webhook-select">
+    <!-- JSで動的に選択肢を追加 -->
+  </select>
+</div>
+
+<!-- セリフ送信 -->
+<div class="section">
+  <h2>セリフ送信</h2>
+  <textarea id="say-content" placeholder="セリフを入力..."></textarea><br>
+  <button id="send-button">送信</button>
+</div>
+
+<!-- ダイスロール -->
+<div class="section">
+  <h2>ダイスロール</h2>
+  <div class="input-wrapper">
+    <input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off"><br>
+    <div id="suggestions"></div>
   </div>
+  <button id="roll-button">ダイス実行</button>
+  <div id="result">🎲 結果がここに表示されます</div>
+</div>
 
-  <!-- セリフ・ダイス -->
-  <div class="card">
-    <h2>アクション</h2>
-    <div class="action-grid">
-      <div>
-        <label for="say-webhook-select">送信先</label>
-        <select id="say-webhook-select"></select>
-      </div>
-      <div>
-        <label for="say-content">セリフ</label>
-        <textarea id="say-content" placeholder="セリフを入力..." rows="3"></textarea>
-        <div class="button-group">
-            <button id="send-button" class="button-primary">送信</button>
-        </div>
-      </div>
-      <div>
-        <label for="dice-command">ダイスロール</label>
-        <div class="input-wrapper">
-          <input type="text" id="dice-command" placeholder="コマンドを入力または検索" autocomplete="off">
-          <div id="suggestions"></div>
-        </div>
-        <button id="roll-button" class="button-primary">ダイス実行</button>
-        <div id="result" class="dice-result">🎲 結果がここに表示されます</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- パラメータ編集 -->
+<!-- パラメータ -->
+<div class="section">
   <button class="toggle-button">パラメータ編集</button>
-  <div class="toggle-content">
-    <div class="form-grid">
-      <div><label>HP: <input type="number" id="hp-input"> / <input type="number" id="hp-max-input"></label></div>
-      <div><label>MP: <input type="number" id="mp-input"> / <input type="number" id="mp-max-input"></label></div>
-      <div><label>SAN: <input type="number" id="san-input"> / <input type="number" id="san-max-input"></label></div>
-      <div><label><input type="text" id="other1-name" placeholder="ラベル名">: <input type="number" id="other-input"></label></div>
-      <div><label><input type="text" id="other2-name" placeholder="ラベル名">: <input type="number" id="other2-input"></label></div>
-      <div><label>メモ: <textarea id="memo-input" rows="2"></textarea></label></div>
-    </div>
-    <div class="button-group">
-      <button id="status-save-button" class="button-primary">保存</button>
-      <button id="legacy-status-load" class="button-secondary">再読み込み</button>
-      <button id="legacy-status-save" class="button-primary">保存＆送信</button>
-    </div>
-  </div>
-
-  <!-- チャットパレット -->
-  <button class="toggle-button">チャットパレット</button>
-  <div class="toggle-content">
-    <textarea id="chat-palette-input" placeholder="ここにチャットパレットを貼り付けてください" rows="8"></textarea>
-    <div class="button-group">
-      <button id="palette-save-button" class="button-primary">保存</button>
-      <button id="load-button" class="button-secondary">再読み込み</button>
-    </div>
-  </div>
-
-  <!-- キャラクター設定 -->
-  <button class="toggle-button">キャラクター設定</button>
-  <div class="toggle-content">
-    <div class="form-grid">
+    <div class="toggle-content">
       <div>
-        <label for="name-input">名前</label>
-        <input type="text" id="name-input" placeholder="変更後の名前を入力">
-        <button id="update-name-button" class="button-primary">更新</button>
-      </div>
-      <div>
-        <label>画像</label>
-        <div class="button-group">
-          <input type="file" id="image-upload" style="display: none;" accept="image/*">
-          <button type="button" id="image-select-button" class="button-secondary">ファイル選択</button>
-          <button id="image-save-button" class="button-primary">アップロード</button>
+        <div class="parameter-section">
+          <div><label><span class="stat-label">HP</span>: <input type="number" id="hp-input"> ／ <input type="number" id="hp-max-input"></label></div>
+          <div><label><span class="stat-label">MP</span>: <input type="number" id="mp-input"> ／ <input type="number" id="mp-max-input"></label></div>
+          <div><label><span class="stat-label">SAN</span>: <input type="number" id="san-input"> ／ <input type="number" id="san-max-input"></label></div>
+          <div><label><input type="text" id="other1-name" placeholder="ラベル名">: <input type="number" id="other-input"></label></div>
+          <div><label><input type="text" id="other2-name" placeholder="ラベル名">: <input type="number" id="other2-input"></label></div>
+          <div><label><textarea id="memo-input" rows="2" placeholder="キャラクターに関するメモなど"></textarea></label></div>
+
         </div>
-        <span id="image-file-name">ファイルが選択されていません</span>
-      </div>
-      <div>
-        <label for="scenario-id-input">シナリオ</label>
-        <input type="text" id="scenario-id-input" placeholder="例:GQVMCy8GX7yibMMTO8MN">
-        <div class="button-group">
-          <button id="scenario-update-button" class="button-primary">登録</button>
-          <button id="scenario-clear-button" class="button-secondary">削除</button>
-          <button id="edit-load-button" class="button-secondary">再読み込み</button>
+        <div>
+          <button id="status-save-button">保存</button>
+          <button id="legacy-status-load">再読み込み</button>
+          <button id="legacy-status-save">保存＆送信</button>
         </div>
       </div>
-    </div>
   </div>
+</div>
 
-</div><!-- /.container -->
+<!-- チャットパレット -->
+<div class="section">
+  <button class="toggle-button">チャットパレット貼り付け</button>
+    <div class="toggle-content">
+      <textarea id="chat-palette-input" placeholder="ここにチャットパレットを貼り付けてください"></textarea><br>
+      <button id="palette-save-button">保存</button>
+      <button id="load-button">再読み込み</button>
+    </div>
+</div>
+
+<!-- キャラクター変更 -->
+<div class="section">
+  <button class="toggle-button">キャラクター編集</button>
+    <div class="toggle-content">
+      <div class="character-edit">
+        <div>
+          <label><span class="char-edit-label">名前</span>: 
+          <input type="text" id="name-input" placeholder="変更後の名前を入力"><br></label>
+            <div class="button-group">
+              <button id="update-name-button">更新</button>
+            </div>
+        </div>
+        <div>
+          <label><span class="char-edit-label">画像</span>: 
+          <span id="image-file-name">ファイルが選択されていません</span>
+          <div class="button-group">
+            <input type="file" id="image-upload" style="display: none;"　accept="image/*"></label>
+            <button type="button" id="image-select-button">ファイル選択</button>
+            <button id="image-save-button">アップロード</button>
+          </div>
+        </div>
+        <div><label><span class="char-edit-label">シナリオ</span>: 
+          <input type="text" id="scenario-id-input" placeholder="例:GQVMCy8GX7yibMMTO8MN"><br></label>
+          <div class="button-group">
+            <button id="scenario-update-button">登録</button>
+            <button id="scenario-clear-button">削除</button>
+            <button id="edit-load-button">再読み込み</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
 
 <!-- トースト -->
 <div id="toast"></div>
