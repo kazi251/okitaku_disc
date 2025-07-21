@@ -27,9 +27,9 @@ input[type="text"]{ /* テキストボックス */
 
 #character-select,
 #say-webhook-select {
-  height: 30px; /* ボタンの高さに合わせる */
-  font-size: 16px; /* ボタンの文字サイズに合わせる */
-  padding: 5px 10px; /* ボタンのpaddingに合わせて調整 */
+  height: auto; /* 高さを自動調整 */
+  font-size: 1em; /* フォントサイズを標準に */
+  padding: 8px 10px; /* パディングを調整 */
 }
 
 .explorer-image-container {

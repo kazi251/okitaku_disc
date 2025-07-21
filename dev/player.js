@@ -703,6 +703,7 @@ async function addFace() {
 
     try {
         const imageUrl = await uploadFile(file);
+        showToast('アップロード成功！表情を保存中...');
         const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
         
         // Read-Modify-Write パターン
@@ -720,7 +721,7 @@ async function addFace() {
             updatedAt: new Date().toISOString()
         }, { merge: true });
 
-        showToast(`表情「${faceName}」を追加しました。`);
+        showToast(`表情「${faceName}」が保存されました ✅`);
         nameInput.value = "";
         fileInput.value = "";
         await loadCharacterData(currentCharacterId);
@@ -755,7 +756,7 @@ async function deleteFace(event) {
             updatedAt: new Date().toISOString()
         }, { merge: true });
 
-        showToast(`表情「${faceName}」を削除しました。`);
+        showToast(`表情「${faceName}」が削除されました ✅`);
         await loadCharacterData(currentCharacterId); // 再読み込み
     } catch (error) {
         console.error("表情の削除に失敗:", error);
