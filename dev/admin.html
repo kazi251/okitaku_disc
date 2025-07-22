@@ -15,20 +15,28 @@
     }
     th, td {
       border: 1px solid #666;
-      padding: 6px;
+      padding: 8px;
       text-align: left;
+      vertical-align: middle;
     }
     th {
       background-color: #444;
       color: #fff;
     }
-    td input[type="text"],
-    td input[type="url"],
-    td select {
-      width: 100%;
+    td input[type="text"] {
+      width: calc(100% - 16px);
+      padding: 6px;
     }
     td button {
-      width: 100%;
+      cursor: pointer;
+      padding: 6px 12px;
+    }
+    .copy-btn {
+      margin-left: 8px;
+    }
+    .id-cell {
+      word-break: break-all;
+      font-family: monospace;
     }
   </style>
 </head>
@@ -38,81 +46,57 @@
 <button id="googleLoginBtn">Googleでログイン</button>
 
 <section>
-<h2>プレイヤー新規作成</h2>
-<label for="newPlayerName">プレイヤー名:</label>
-<input type="text" id="newPlayerName" placeholder="例：プレイヤー太郎" />
-<button id="createPlayerBtn">プレイヤー作成</button>
-<div id="playerResult"></div>
-</p>
+  <h2>プレイヤー新規作成</h2>
+  <input type="text" id="newPlayerName" placeholder="プレイヤー名" />
+  <input type="text" id="newPlayerDiscordId" placeholder="DiscordユーザーID" />
+  <button id="createPlayerBtn">プレイヤー作成</button>
+  <div id="playerResult"></div>
 </section>
 
 <section>
   <h2>KP新規作成</h2>
-  <div style="margin-bottom: 1em;">
-    <input type="text" id="kpName" placeholder="KP名を入力" style="padding: 4px; width: 200px;">
-    <button id="registerKP">KPを登録</button>
-  </div>
+  <input type="text" id="newKpName" placeholder="KP名" />
+  <input type="text" id="newKpDiscordId" placeholder="DiscordユーザーID" />
+  <button id="createKpBtn">KP作成</button>
   <div id="kpResult"></div>
 </section>
 
 <section>
-  <h2>シナリオ作成※機能廃止</h2>
-  <input type="text" id="new-scenario-name" placeholder="シナリオ名" />
-  <button id="create-scenario">作成</button>
-</section>
-
-<section>
-<h2>KP一覧</h2>
-<table id="kp-matrix">
-  <thead>
-    <tr>
-      <th>KP名</th>
-      <th>KP専用URL</th>
-      <th>担当シナリオ</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- JSで表示されます -->
-  </tbody>
-</table>
-</section>
-
-<section>
-  <h2>キャラクター新規登録</h2>
-  <label>プレイヤー: 
-    <select id="new-player-id">
-      <option value="">選択してください</option>
-      <!-- loadPlayerList() により選択肢が自動追加される -->
-    </select>
-  </label><br>
-  <label>キャラクター名: <input type="text" id="new-character-name"></label><br>
-  <label>画像URL: <input type="text" id="new-character-image" placeholder="./seeker_vault/default.png"></label><br>
-  <label>Webhook URL: <input type="url" id="new-character-webhook"></label><br>
-  <button id="create-character">作成</button>
-</section>
-
-<section>
-  <h2>キャラクター管理マトリクス</h2>
-  <table id="character-matrix">
+  <h2>プレイヤー管理</h2>
+  <table id="player-table">
     <thead>
       <tr>
-        <th>プレイヤーID</th>
         <th>プレイヤー名</th>
-        <th>キャラクター名</th>
-        <th>現在のシナリオ</th>
-        <th>Webhook URL</th>
-        <th>画像URL</th>
+        <th>Player ID</th>
+        <th>Discord User ID</th>
         <th>操作</th>
       </tr>
     </thead>
     <tbody>
-      <!-- JavaScriptにより動的に行が追加されます -->
+      <!-- JSで表示されます -->
     </tbody>
   </table>
 </section>
 
-  <div id="toast"></div>
+<section>
+  <h2>KP管理</h2>
+  <table id="kp-table">
+    <thead>
+      <tr>
+        <th>KP名</th>
+        <th>KP ID</th>
+        <th>Discord User ID</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- JSで表示されます -->
+    </tbody>
+  </table>
+</section>
 
-  <script type="module" src="admin.js"></script>
+<div id="toast"></div>
+
+<script type="module" src="admin.js"></script>
 </body>
 </html>

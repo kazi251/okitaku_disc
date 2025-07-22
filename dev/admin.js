@@ -3,277 +3,152 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebas
 import {
   getFirestore,
   collection,
-  collectionGroup,
   doc,
-  getDoc,
   getDocs,
   setDoc,
-  addDoc
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
-
 import {
   getAuth,
   signInWithPopup,
   GoogleAuthProvider,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-
 import { showToast } from "./utils.js";
 
+// --- 初期化 ---
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const scenarioMap = new Map();
-
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-/**
- * 認証状態を監視して、ログイン後に callback を呼び出す
- * @param {Function} callback - ログイン後に呼び出される関数（例: initAdminPage）
- */
+// --- 認証 ---
 function handleAuthState(callback) {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      console.log("✅ ログイン済み:", user.uid);
       try {
-        await callback(); // 認証済みユーザーでコールバック実行
+        await callback();
       } catch (e) {
-        console.error("コールバック実行時のエラー:", e);
+        console.error("コールバック実行エラー:", e);
+        showToast("ページの初期化に失敗しました。");
       }
     } else {
-      console.log("⛔ 未ログイン。ログインを試行中...");
-      try {
-        await signInWithPopup(auth, provider);
-        // ログイン後は onAuthStateChanged が再び呼ばれて callback が呼ばれる
-      } catch (e) {
-        console.error("ログインエラー:", e);
-        alert("ログインに失敗しました。");
-      }
+      // 未ログインの場合はログインを促す
     }
   });
 }
 
-// ✅ 各種ロード関数
-async function loadScenarios() {
-  const snapshot = await getDocs(collection(db, "scenarios"));
-  scenarioMap.clear();
-  snapshot.forEach(docSnap => {
-    scenarioMap.set(docSnap.id, docSnap.data().name);
-  });
-}
+// --- データ読み込み & テーブル描画 ---
 
-async function loadKpTable() {
-  const tbody = document.querySelector("#kp-matrix tbody");
+async function loadPlayerTable() {
+  const tbody = document.querySelector("#player-table tbody");
   tbody.innerHTML = "";
+  const snapshot = await getDocs(collection(db, "players"));
 
-  const snapshot = await getDocs(collection(db, "kpUsers"));
-  snapshot.forEach(docSnap => {
+  snapshot.forEach((docSnap) => {
     const data = docSnap.data();
-    const kpId = docSnap.id;
-
-    const row = document.createElement("tr");
-
-    // KP名
-    const tdName = document.createElement("td");
-    tdName.textContent = data.name || "No Name";
-    row.appendChild(tdName);
-
-    // KP専用URL
-    const tdUrl = document.createElement("td");
-    const url = `kp.html?kpId=${kpId}`;
-    const code = document.createElement("code");
-    code.textContent = url;
-    tdUrl.appendChild(code);
-    row.appendChild(tdUrl);
-
-    // 担当シナリオ名
-    const tdScenario = document.createElement("td");
-    const scenarioId = data.scenarios;
-    tdScenario.textContent = scenarioMap.get(scenarioId) || "（未設定）";
-    row.appendChild(tdScenario);
-
+    const playerId = docSnap.id;
+    const row = createRow(playerId, data.name, data.discordUserId, "players");
     tbody.appendChild(row);
   });
 }
 
-async function fetchPlayerName(playerId) {
-  const playerDocRef = doc(db, "players", playerId);
-  const playerDocSnap = await getDoc(playerDocRef);
-  return playerDocSnap.exists() ? playerDocSnap.data().name || "(名前未設定)" : "(名前未設定)";
-}
-
-
-async function loadCharacterMatrix() {
-  const tbody = document.querySelector("#character-matrix tbody");
+async function loadKpTable() {
+  const tbody = document.querySelector("#kp-table tbody");
   tbody.innerHTML = "";
+  const snapshot = await getDocs(collection(db, "kpUsers"));
 
-  const snapshot = await getDocs(collectionGroup(db, "list"));
-  for (const docSnap of snapshot.docs) {
+  snapshot.forEach((docSnap) => {
     const data = docSnap.data();
-    const pathParts = docSnap.ref.path.split("/");
-    // players/{playerId}/list/{characterId} の形式なら要素数は4
-    if (pathParts.length >= 2 && pathParts[0] === "characters" && pathParts[2] === "list") {
-      const playerId = pathParts[1];
-      const row = document.createElement("tr");
-
-    // プレイヤーID
-    const tdPlayer = document.createElement("td");
-    tdPlayer.textContent = playerId;
-    row.appendChild(tdPlayer);
-
-    // プレイヤー名
-    let playerName = "(未設定)";
-    if (playerId) {
-      playerName = await fetchPlayerName(playerId);
-    }
-    const tdName = document.createElement("td");
-    tdName.textContent = playerName;
-    row.appendChild(tdName);
-
-    // キャラクター名
-    const tdChar = document.createElement("td");
-    tdChar.textContent = data.name || "No Name";
-    row.appendChild(tdChar);
-
-    // シナリオ選択
-    const tdScenario = document.createElement("td");
-    const select = document.createElement("select");
-
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "（未設定）";
-    select.appendChild(defaultOption);
-
-    scenarioMap.forEach((name, id) => {
-      const opt = document.createElement("option");
-      opt.value = id;
-      opt.textContent = name;
-      if (data.scenarioId === id) opt.selected = true;
-      select.appendChild(opt);
-    });
-
-    if (!data.scenarioId) {
-      select.value = "";
-    }
-
-    tdScenario.appendChild(select);
-    row.appendChild(tdScenario);
-
-    // Webhook
-    const tdWebhook = document.createElement("td");
-    const webhookInput = document.createElement("input");
-    webhookInput.type = "url";
-    webhookInput.value = data.webhook || "";
-    webhookInput.style.width = "100%";
-    tdWebhook.appendChild(webhookInput);
-    row.appendChild(tdWebhook);
-
-    // 画像URL
-    const tdImage = document.createElement("td");
-    const imageInput = document.createElement("input");
-    imageInput.type = "text";
-    imageInput.value = data.imageUrl || "./seeker_vault/default.png";
-    imageInput.placeholder = "画像URL";
-    imageInput.style.width = "100%";
-    tdImage.appendChild(imageInput);
-    row.appendChild(tdImage);
-
-    // 保存ボタン
-    const tdSave = document.createElement("td");
-    const saveBtn = document.createElement("button");
-    saveBtn.textContent = "保存";
-    saveBtn.addEventListener("click", async () => {
-
-      const scenarioId = select.value || null;
-      let kpId = null;
-
-      if (scenarioId) {
-        const scenarioRef = doc(db, "scenarios", scenarioId);
-        const scenarioSnap = await getDoc(scenarioRef);
-        if (scenarioSnap.exists()) {
-          const scenarioData = scenarioSnap.data();
-          kpId = scenarioData.kpId || null;
-        }
-      }
-
-      await setDoc(docSnap.ref, {
-        ...data,
-        scenarioId: select.value || null, 
-        webhook: webhookInput.value,
-        imageUrl: imageInput.value,
-        accessKpId: kpId
-      }, { merge: true });
-      showToast(`${data.name} を更新しました`);
-    });
-    tdSave.appendChild(saveBtn);
-
-    row.appendChild(tdSave);
-
-      tbody.appendChild(row);
-    } else {
-      // 意図しないパスのドキュメントはスキップ
-      const row = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 7; // テーブルの列数に合わせて調整
-      td.textContent = "（不正なデータ形式）";
-      row.appendChild(td);
-      tbody.appendChild(row);
-    }
-  }
-}
-
-async function loadPlayerList() {
-  const select = document.getElementById("new-player-id");
-  if (!select) return;
-
-  select.innerHTML = ""; // 初期化
-  const snapshot = await getDocs(collection(db, "players"));
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const option = document.createElement("option");
-    option.value = doc.id;
-    option.textContent = `${data.name}（${doc.id.slice(0, 8)}…）`;
-    select.appendChild(option);
+    const kpId = docSnap.id;
+    const row = createRow(kpId, data.name, data.discordUserId, "kpUsers");
+    tbody.appendChild(row);
   });
 }
 
-async function initAdminPage() {
-  console.log(auth.currentUser?.uid); 
-  console.log("🔁 initAdminPage 実行");
-  try {
-    await loadScenarios();
-  } catch (e) {
-    console.error("loadScenariosで失敗:", e);
-  }
+function createRow(id, name, discordUserId, collectionName) {
+  const row = document.createElement("tr");
 
-  try {
-    await loadPlayerList();
-  } catch (e) {
-    console.error("loadPlayerListで失敗:", e);
-  }
+  // Name
+  const tdName = document.createElement("td");
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.value = name || "";
+  tdName.appendChild(nameInput);
+  row.appendChild(tdName);
 
-  try {
-    await loadCharacterMatrix();
-  } catch (e) {
-    console.error("loadCharacterMatrixで失敗:", e);
-  }
+  // ID
+  const tdId = document.createElement("td");
+  tdId.textContent = id;
+  tdId.classList.add("id-cell");
+  const copyBtn = document.createElement("button");
+  copyBtn.textContent = "📋";
+  copyBtn.classList.add("copy-btn");
+  copyBtn.title = "IDをコピー";
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(id);
+    showToast("IDをコピーしました");
+  };
+  tdId.appendChild(copyBtn);
+  row.appendChild(tdId);
 
-  await loadKpTable();
-  setupEventListeners();
+  // Discord User ID
+  const tdDiscordId = document.createElement("td");
+  const discordIdInput = document.createElement("input");
+  discordIdInput.type = "text";
+  discordIdInput.value = discordUserId || "";
+  tdDiscordId.appendChild(discordIdInput);
+  row.appendChild(tdDiscordId);
+
+  // Actions
+  const tdSave = document.createElement("td");
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "保存";
+  saveBtn.addEventListener("click", async () => {
+    const newName = nameInput.value.trim();
+    const newDiscordId = discordIdInput.value.trim();
+    if (!newName) {
+      showToast("名前は必須です。");
+      return;
+    }
+    try {
+      const docRef = doc(db, collectionName, id);
+      await updateDoc(docRef, {
+        name: newName,
+        discordUserId: newDiscordId,
+      });
+      showToast(`${newName} の情報を更新しました`);
+    } catch (error) {
+      console.error("更新エラー:", error);
+      showToast("更新に失敗しました。");
+    }
+  });
+  tdSave.appendChild(saveBtn);
+  row.appendChild(tdSave);
+
+  return row;
 }
 
-// ✅ イベント登録
+
+// --- イベントリスナー設定 ---
+
 function setupEventListeners() {
-  const createCharBtn = document.getElementById("create-character");
-  const createScenBtn = document.getElementById("create-scenario");
-  const registerKPBtn = document.getElementById("registerKP");
-  const createPlayerBtn = document.getElementById("createPlayerBtn");
+  // Googleログイン
+  document.getElementById("googleLoginBtn").addEventListener("click", async () => {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Googleログインエラー:", error);
+      showToast("Googleログインに失敗しました。");
+    }
+  });
 
   // プレイヤー作成
-  createPlayerBtn?.addEventListener("click", async () => {
+  document.getElementById("createPlayerBtn").addEventListener("click", async () => {
     const nameInput = document.getElementById("newPlayerName");
-    const resultDiv = document.getElementById("playerResult");
+    const discordIdInput = document.getElementById("newPlayerDiscordId");
     const name = nameInput.value.trim();
+    const discordUserId = discordIdInput.value.trim();
 
     if (!name) {
       showToast("プレイヤー名を入力してください");
@@ -281,112 +156,62 @@ function setupEventListeners() {
     }
 
     const playerId = crypto.randomUUID();
-
     try {
-      const ref = doc(db, "players", playerId);
-      await setDoc(ref, {
+      await setDoc(doc(db, "players", playerId), {
         name: name,
-        createdAt: new Date().toISOString()
+        discordUserId: discordUserId,
+        createdAt: new Date().toISOString(),
       });
-
-      // 表示とコピー
-      resultDiv.innerHTML = `
-        <p><strong>プレイヤー「${name}」を登録しました！</strong></p>
-        <p>ログイン用URL: <code>index.html?playerId=${playerId}</code></p>
-        <button onclick="navigator.clipboard.writeText('index.html?playerId=${playerId}')">コピー</button>
-      `;
+      showToast(`プレイヤー「${name}」を作成しました`);
       nameInput.value = "";
-      showToast("プレイヤーを登録しました");
-
-      await loadCharacterMatrix();
-      await loadPlayerList(); 
-
-      await loadCharacterMatrix(); // 必要であれば
+      discordIdInput.value = "";
+      await loadPlayerTable(); // テーブルを再読み込み
     } catch (error) {
       console.error("プレイヤー作成失敗:", error);
       showToast("プレイヤー作成に失敗しました");
     }
   });
 
-    // KP登録
-  registerKPBtn?.addEventListener("click", async () => {
-    const nameInput = document.getElementById("kpName");
-    const resultDiv = document.getElementById("kpResult");
+  // KP作成
+  document.getElementById("createKpBtn").addEventListener("click", async () => {
+    const nameInput = document.getElementById("newKpName");
+    const discordIdInput = document.getElementById("newKpDiscordId");
     const name = nameInput.value.trim();
+    const discordUserId = discordIdInput.value.trim();
+
     if (!name) {
       showToast("KP名を入力してください");
       return;
     }
 
+    const kpId = crypto.randomUUID();
     try {
-      const kpId = crypto.randomUUID();
-      const ref = doc(db, "kpUsers", kpId);
-      await setDoc(ref, {
+      await setDoc(doc(db, "kpUsers", kpId), {
         name: name,
-        createdAt: new Date().toISOString()
-      });
-
-      resultDiv.innerHTML = `
-        <p><strong>KP「${name}」を登録しました</strong></p>
-        <p>KP専用URL: <code>kp.html?kpId=${kpId}</code></p>
-        <button onclick="navigator.clipboard.writeText('kp.html?kpId=${kpId}')">コピー</button>
-      `;
-      nameInput.value = "";
-      showToast("KPを登録しました");
-
-      await loadCharacterMatrix();
-    } catch (error) {
-      console.error("KP登録エラー:", error);
-      showToast("KP登録に失敗しました");
-    }
-  });
-
-  // シナリオ作成※廃止
-  createScenBtn?.addEventListener("click", async () => {
-    const input = document.getElementById("new-scenario-name");
-    const name = input.value.trim();
-    if (!name) return showToast("シナリオ名を入力してください");
-
-    const ref = doc(collection(db, "scenarios"));
-    await setDoc(ref, { name, createdAt: new Date().toISOString() });
-    input.value = "";
-    await loadScenarios();
-    await loadCharacterMatrix();
-    showToast(`シナリオ「${name}」を追加しました`);
-  });
-
-  // キャラ作成
-  createCharBtn?.addEventListener("click", async () => {
-    const playerId = document.getElementById("new-player-id").value.trim();
-    const name = document.getElementById("new-character-name").value.trim();
-    const imageUrl = document.getElementById("new-character-image").value.trim() || "./seeker_vault/default.png";
-    const webhook = document.getElementById("new-character-webhook").value.trim();
-
-    if (!playerId || !name) {
-      showToast("プレイヤーIDとキャラクター名は必須です");
-      return;
-    }
-
-    try {
-      const ref = collection(db, "characters", playerId, "list");
-      await addDoc(ref, {
-        name,
-        imageUrl,
-        webhook, 
+        discordUserId: discordUserId,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
       });
-      showToast(`キャラクター「${name}」を ${playerId} に作成しました`);
-      await loadCharacterMatrix();
+      showToast(`KP「${name}」を作成しました`);
+      nameInput.value = "";
+      discordIdInput.value = "";
+      await loadKpTable(); // テーブルを再読み込み
     } catch (error) {
-      console.error("キャラ作成失敗:", error);
-      showToast("作成に失敗しました");
+      console.error("KP作成失敗:", error);
+      showToast("KP作成に失敗しました");
     }
   });
 }
 
+// --- 初期化処理 ---
 
-// ✅ 初期化トリガー
+async function initAdminPage() {
+  console.log("🚀 管理者ページを初期化します...");
+  await Promise.all([loadPlayerTable(), loadKpTable()]);
+  setupEventListeners();
+  console.log("✅ 初期化完了");
+}
+
+// --- DOM読み込み完了後 ---
 window.addEventListener("DOMContentLoaded", () => {
   handleAuthState(initAdminPage);
 });
