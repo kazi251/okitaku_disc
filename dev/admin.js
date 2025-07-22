@@ -7,6 +7,7 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import {
   getAuth,
@@ -101,7 +102,7 @@ function createRow(id, name, discordUserId, collectionName) {
   row.appendChild(tdDiscordId);
 
   // Actions
-  const tdSave = document.createElement("td");
+  const tdActions = document.createElement("td");
   const saveBtn = document.createElement("button");
   saveBtn.textContent = "保存";
   saveBtn.addEventListener("click", async () => {
@@ -123,8 +124,27 @@ function createRow(id, name, discordUserId, collectionName) {
       showToast("更新に失敗しました。");
     }
   });
-  tdSave.appendChild(saveBtn);
-  row.appendChild(tdSave);
+  tdActions.appendChild(saveBtn);
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "削除";
+  deleteBtn.style.marginLeft = "8px";
+  deleteBtn.addEventListener("click", async () => {
+    if (!confirm(`「${name}」を本当に削除しますか？この操作は元に戻せません。`)) {
+      return;
+    }
+    try {
+      const docRef = doc(db, collectionName, id);
+      await deleteDoc(docRef);
+      row.remove();
+      showToast(`「${name}」を削除しました`);
+    } catch (error) {
+      console.error("削除エラー:", error);
+      showToast("削除に失敗しました。");
+    }
+  });
+  tdActions.appendChild(deleteBtn);
+  row.appendChild(tdActions);
 
   return row;
 }
