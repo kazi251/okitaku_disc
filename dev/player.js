@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField, deleteDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 const app = initializeApp(firebaseConfig);
@@ -515,29 +515,6 @@ function saveNameOnly() {
   showToast("名前を保存しました ✅");
 }
 
-async function deleteCharacter() {
-  if (!currentCharacterId) {
-    showToast("キャラクターが選択されていません");
-    return;
-  }
-
-  if (!confirm("本当にこのキャラクターを削除しますか？この操作は元に戻せません。")) {
-    return;
-  }
-
-  try {
-    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
-    await deleteDoc(ref); // ドキュメントを削除
-
-    showToast("キャラクターを削除しました ✅");
-    currentCharacterId = null; // 現在のキャラクターをクリア
-    await loadCharacterList(); // キャラクターリストを再読み込み
-  } catch (error) {
-    console.error("キャラクター削除失敗:", error);
-    showToast("キャラクターの削除に失敗しました。");
-  }
-}
-
 async function saveEmbedColor() {
   if (!currentCharacterId) {
     showToast("キャラクターが選択されていません");
@@ -902,7 +879,6 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("update-name-button").addEventListener("click", saveNameOnly);
   document.getElementById("embed-color-save-button")?.addEventListener("click", saveEmbedColor);
   document.getElementById("show-in-bot-save-button")?.addEventListener("click", saveShowInBot);
-  document.getElementById("delete-character-button")?.addEventListener("click", deleteCharacter);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
 
