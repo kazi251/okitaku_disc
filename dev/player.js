@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField, deleteDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 const app = initializeApp(firebaseConfig);
@@ -303,6 +303,12 @@ async function loadCharacterData(charId) {
     if (embedColorInput) {
       embedColorInput.value = data.embedColor || "";
     }
+
+    // Bot表示チェックボックスに反映
+    const showInBotCheckbox = document.getElementById("show-in-bot-checkbox");
+    if (showInBotCheckbox) {
+      showInBotCheckbox.checked = data.showInBot === true; // boolean値として扱う
+    }
     
     updateDisplay();
     updateChatPalette();
@@ -388,6 +394,7 @@ async function saveCharacterData() {
       other2Name: document.getElementById("other2-name").value,
       memo: document.getElementById("memo-input").value,
       embedColor: document.getElementById("embed-color-input").value.toUpperCase(), // 大文字に変換して保存
+      showInBot: document.getElementById("show-in-bot-checkbox")?.checked || false, // Bot表示設定
       playerId: playerId, 
       updatedAt: new Date().toISOString()
     };
@@ -506,6 +513,29 @@ function saveNameOnly() {
   }, { merge: true });
 
   showToast("名前を保存しました ✅");
+}
+
+async function deleteCharacter() {
+  if (!currentCharacterId) {
+    showToast("キャラクターが選択されていません");
+    return;
+  }
+
+  if (!confirm("本当にこのキャラクターを削除しますか？この操作は元に戻せません。")) {
+    return;
+  }
+
+  try {
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    await deleteDoc(ref); // ドキュメントを削除
+
+    showToast("キャラクターを削除しました ✅");
+    currentCharacterId = null; // 現在のキャラクターをクリア
+    await loadCharacterList(); // キャラクターリストを再読み込み
+  } catch (error) {
+    console.error("キャラクター削除失敗:", error);
+    showToast("キャラクターの削除に失敗しました。");
+  }
 }
 
 async function saveEmbedColor() {
@@ -847,6 +877,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
   document.getElementById("update-name-button").addEventListener("click", saveNameOnly);
   document.getElementById("embed-color-save-button")?.addEventListener("click", saveEmbedColor);
+  document.getElementById("delete-character-button")?.addEventListener("click", deleteCharacter);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
 
