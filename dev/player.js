@@ -575,6 +575,30 @@ async function saveEmbedColor() {
   showToast("Embedカラーを保存しました ✅");
 }
 
+async function saveShowInBot() {
+  if (!currentCharacterId) {
+    showToast("キャラクターが選択されていません");
+    return;
+  }
+
+  const showInBotCheckbox = document.getElementById("show-in-bot-checkbox");
+  const showInBot = showInBotCheckbox?.checked || false;
+
+  try {
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    await setDoc(ref, {
+      showInBot: showInBot,
+      playerId: playerId, // セキュリティルール対策
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+
+    showToast("Bot表示設定を保存しました ✅");
+  } catch (error) {
+    console.error("Bot表示設定の保存失敗:", error);
+    showToast("Bot表示設定の保存に失敗しました。");
+  }
+}
+
 function loadCharacterStatusOnly(data) {
   document.getElementById("hp-input").value = data.hp || "";
   document.getElementById("hp-max-input").value = data.hpMax || "";
@@ -877,6 +901,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
   document.getElementById("update-name-button").addEventListener("click", saveNameOnly);
   document.getElementById("embed-color-save-button")?.addEventListener("click", saveEmbedColor);
+  document.getElementById("show-in-bot-save-button")?.addEventListener("click", saveShowInBot);
   document.getElementById("delete-character-button")?.addEventListener("click", deleteCharacter);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);

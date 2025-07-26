@@ -245,28 +245,24 @@ input[type="text"]{ /* テキストボックス */
 
 .edit-item {
   display: flex;
-  flex-direction: column; /* default to column for mobile */
+  flex-direction: row; /* 縦並びから横並びに変更 */
+  align-items: flex-start; /* 上揃え */
   gap: 10px;
   padding-top: 15px;
   border-top: 1px solid #555;
-}
-
-.edit-item:first-child {
-  border-top: none;
-  padding-top: 0;
 }
 
 .edit-label {
   font-size: 1em;
   font-weight: bold;
   margin: 0;
-  width: 100px;
+  min-width: 100px; /* ラベルの最小幅を設定して改行を防ぐ */
   flex-shrink: 0;
 }
 
 .edit-control {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* その中の要素は縦に並べる */
   gap: 10px;
   width: 100%;
 }
