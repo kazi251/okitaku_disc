@@ -245,11 +245,15 @@ input[type="text"]{ /* テキストボックス */
 
 .edit-item {
   display: flex;
-  flex-direction: row; /* 縦並びから横並びに変更 */
-  align-items: flex-start; /* 上揃え */
+  flex-direction: column; /* 横並びから縦並びに戻す */
   gap: 10px;
   padding-top: 15px;
   border-top: 1px solid #555;
+}
+
+.edit-item:first-child {
+  border-top: none;
+  padding-top: 0;
 }
 
 .edit-label {
@@ -262,9 +266,9 @@ input[type="text"]{ /* テキストボックス */
 
 .edit-control {
   display: flex;
-  flex-direction: column; /* その中の要素は縦に並べる */
+  flex-direction: column;
   gap: 10px;
-  width: 100%;
+  width: auto; /* 幅を自動調整 */
 }
 
 .edit-control .button-group {
