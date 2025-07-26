@@ -913,7 +913,8 @@ window.addEventListener("DOMContentLoaded", () => {
         imageUrl: "./seeker_vault/default.png", 
         playerId: playerId, 
         accessKpId: "",
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        showInBot: true
       });
 
       showToast("キャラクターを作成しました");
