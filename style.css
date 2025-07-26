@@ -245,7 +245,7 @@ input[type="text"]{ /* テキストボックス */
 
 .edit-item {
   display: flex;
-  flex-direction: column; /* default to column for mobile */
+  flex-direction: column; /* 横並びから縦並びに戻す */
   gap: 10px;
   padding-top: 15px;
   border-top: 1px solid #555;
@@ -260,7 +260,7 @@ input[type="text"]{ /* テキストボックス */
   font-size: 1em;
   font-weight: bold;
   margin: 0;
-  width: 100px;
+  min-width: 100px; /* ラベルの最小幅を設定して改行を防ぐ */
   flex-shrink: 0;
 }
 
@@ -268,7 +268,7 @@ input[type="text"]{ /* テキストボックス */
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
+  width: auto; /* 幅を自動調整 */
 }
 
 .edit-control .button-group {
