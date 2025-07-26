@@ -297,6 +297,12 @@ async function loadCharacterData(charId) {
     if (scenarioInput) {
       scenarioInput.value = data.scenarioId || "";
     }
+
+    // Embedカラー入力欄にも反映
+    const embedColorInput = document.getElementById("embed-color-input");
+    if (embedColorInput) {
+      embedColorInput.value = data.embedColor || "";
+    }
     
     updateDisplay();
     updateChatPalette();
@@ -381,6 +387,7 @@ async function saveCharacterData() {
       other1Name: document.getElementById("other1-name").value,
       other2Name: document.getElementById("other2-name").value,
       memo: document.getElementById("memo-input").value,
+      embedColor: document.getElementById("embed-color-input").value.toUpperCase(), // 大文字に変換して保存
       playerId: playerId, 
       updatedAt: new Date().toISOString()
     };
@@ -499,6 +506,43 @@ function saveNameOnly() {
   }, { merge: true });
 
   showToast("名前を保存しました ✅");
+}
+
+async function saveEmbedColor() {
+  if (!currentCharacterId) {
+    showToast("キャラクターが選択されていません");
+    return;
+  }
+
+  const embedColorInput = document.getElementById("embed-color-input");
+  const newColor = embedColorInput.value.trim().toUpperCase();
+
+  if (!newColor) {
+    // 空の場合はFirestoreからフィールドを削除
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    await setDoc(ref, {
+      embedColor: deleteField(),
+      playerId: playerId,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+    showToast("Embedカラーを削除しました ✅");
+    return;
+  }
+
+  // HEXカラーコードの形式を検証 (6桁の英数字)
+  if (!/^[0-9A-F]{6}$/.test(newColor)) {
+    showToast("無効なHEXカラーコードです。例: FF0000");
+    return;
+  }
+
+  const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+  await setDoc(ref, {
+    embedColor: newColor,
+    playerId: playerId,
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
+
+  showToast("Embedカラーを保存しました ✅");
 }
 
 function loadCharacterStatusOnly(data) {
@@ -802,6 +846,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
   document.getElementById("update-name-button").addEventListener("click", saveNameOnly);
+  document.getElementById("embed-color-save-button")?.addEventListener("click", saveEmbedColor);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
 
