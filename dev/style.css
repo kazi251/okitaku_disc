@@ -295,7 +295,8 @@ input[type="text"]{ /* テキストボックス */
   padding: 5px 0;
 }
 
-.delete-face-button {
+.delete-face-button,
+.delete-button {
   background-color: #f44336; /* 赤色 */
   color: white;
   border: none;
