@@ -431,9 +431,9 @@ async function saveCharacterData() {
 
       const message =
         `\`\`\`\n` +
-        `HP: ${hp} / ${hpMax} ` +
-        `MP: ${mp} / ${mpMax} ` +
-        `SAN: ${san} / ${sanMax}（不定: ${Math.floor(sanMax * 0.8)}）\n` +
+        `HP: ${hp}/${hpMax} ` +
+        `MP: ${mp}/${mpMax} ` +
+        `SAN: ${san}/${sanMax}（不定:${Math.floor(sanMax * 0.8)}）\n` +
         `${other1Name || "その他1"}: ${other || "-"} ` +
         `${other2Name || "その他2"}: ${other2 || "-"}\n` +
         (memo ? `メモ: ${memo}` : "") + 
