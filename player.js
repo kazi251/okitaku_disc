@@ -733,7 +733,14 @@ function updateFaceUI(faceImages, defaultImageUrl) {
     const effectiveDefaultUrl = defaultImageUrl || './seeker_vault/default.png';
     const faces = { '通常': effectiveDefaultUrl, ...(faceImages || {}) };
 
-    for (const [name, url] of Object.entries(faces)) {
+    // 表情名を日本語対応でソート
+    const sortedFaces = Object.entries(faces).sort((a, b) => {
+        if (a[0] === '通常') return -1; // 「通常」を常に先頭に
+        if (b[0] === '通常') return 1;
+        return a[0].localeCompare(b[0], 'ja');
+    });
+
+    for (const [name, url] of sortedFaces) {
         if (!url) continue; // URLがなければスキップ
         // ドロップダウンの生成
         const option = document.createElement("option");
