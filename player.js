@@ -818,50 +818,48 @@ async function deleteFace(event) {
     if (!event.target.classList.contains('delete-face-button')) return;
 
     const faceName = event.target.dataset.faceName;
-    if (!confirm(`表情「${faceName}」を削除しますか？`)) return;
+
+    if (!confirm(`表情「${faceName}」を削除しますか？`)) {
+        return;
+    }
 
     try {
         const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
 
-        // Read-Modify-Write パターン
         const charSnap = await getDoc(charRef);
         if (!charSnap.exists()) {
+            console.error("deleteFace: キャラクターデータが見つかりません。");
             throw new Error("キャラクターデータが見つかりません。");
         }
-        const charData = charSnap.data();
-        const faceImages = charData.faceImages || {};
-        delete faceImages[faceName]; // メモリ上で削除
 
-        await setDoc(charRef, {
-            faceImages: faceImages,
-            playerId: playerId, // セキュリティルール対策
-            updatedAt: new Date().toISOString()
-        }, { merge: true });
+        // ★ charDataを直接変更する
+        const charData = charSnap.data();
+
+        if (charData.faceImages && charData.faceImages[faceName]) {
+            delete charData.faceImages[faceName]; // charDataから直接削除
+
+            // faceImagesが空オブジェクトになったら、フィールド自体を削除
+            if (Object.keys(charData.faceImages).length === 0) {
+                delete charData.faceImages;
+            }
+        } else {
+            console.warn("deleteFace: 削除対象の表情が見つかりませんでした。");
+            return; // 処理を中断
+        }
+
+        // 更新時刻とplayerIdをセット
+        charData.updatedAt = new Date().toISOString();
+        charData.playerId = playerId; 
+
+        // ★ mergeなしでcharData全体を上書き
+        await setDoc(charRef, charData);
 
         showToast(`表情「${faceName}」が削除されました ✅`);
         await loadCharacterData(currentCharacterId); // 再読み込み
+
     } catch (error) {
         console.error("表情の削除に失敗:", error);
         showToast("表情の削除に失敗しました。");
-    }
-}
-
-// 表情画像アップロード用の関数
-async function uploadFaceImage(file) {
-    const formData = new FormData();
-    formData.append('image', file);
-    const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
-
-    const response = await fetch(workerUrl, {
-        method: 'POST',
-        body: formData,
-    });
-
-    if (response.ok) {
-        const result = await response.json();
-        return result.imageUrl;
-    } else {
-        throw new Error('アップロード失敗: ' + response.statusText);
     }
 }
 
