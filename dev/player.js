@@ -818,7 +818,6 @@ async function deleteFace(event) {
     if (!event.target.classList.contains('delete-face-button')) return;
 
     const faceName = event.target.dataset.faceName;
-    console.log(`deleteFace: 削除対象の表情名: ${faceName}`);
 
     if (!confirm(`表情「${faceName}」を削除しますか？`)) {
         return;
@@ -826,7 +825,6 @@ async function deleteFace(event) {
 
     try {
         const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
-        console.log(`deleteFace: Firestore参照を作成: ${charRef.path}`);
 
         const charSnap = await getDoc(charRef);
         if (!charSnap.exists()) {
