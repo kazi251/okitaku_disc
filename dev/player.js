@@ -830,43 +830,45 @@ async function deleteFace(event) {
         const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
         console.log(`deleteFace: Firestore参照を作成: ${charRef.path}`);
 
-        // Read-Modify-Write パターン
         const charSnap = await getDoc(charRef);
         if (!charSnap.exists()) {
             console.error("deleteFace: キャラクターデータが見つかりません。");
             throw new Error("キャラクターデータが見つかりません。");
         }
+
+        // ★ charDataを直接変更する
         const charData = charSnap.data();
         console.log("deleteFace: 取得したキャラクターデータ:", charData);
 
-        const faceImages = charData.faceImages || {};
-        console.log("deleteFace: 削除前のfaceImages:", JSON.parse(JSON.stringify(faceImages)));
+        if (charData.faceImages && charData.faceImages[faceName]) {
+            console.log("deleteFace: 削除前のfaceImages:", JSON.parse(JSON.stringify(charData.faceImages)));
+            delete charData.faceImages[faceName]; // charDataから直接削除
+            console.log("deleteFace: 削除後のfaceImages:", JSON.parse(JSON.stringify(charData.faceImages)));
 
-        // 該当の表情を削除
-        delete faceImages[faceName];
-        console.log("deleteFace: 削除後のfaceImages:", JSON.parse(JSON.stringify(faceImages)));
-
-        const updateData = {
-            playerId: playerId,
-            updatedAt: new Date().toISOString()
-        };
-
-        // faceImagesが空になったらフィールドごと削除、そうでなければ更新
-        if (Object.keys(faceImages).length === 0) {
-            console.log("deleteFace: faceImagesが空になったため、フィールドごと削除します。");
-            updateData.faceImages = deleteField();
+            // faceImagesが空オブジェクトになったら、フィールド自体を削除
+            if (Object.keys(charData.faceImages).length === 0) {
+                delete charData.faceImages;
+                console.log("deleteFace: faceImagesフィールドを削除しました。");
+            }
         } else {
-            console.log("deleteFace: faceImagesを更新します。");
-            updateData.faceImages = faceImages;
+            console.warn("deleteFace: 削除対象の表情が見つかりませんでした。");
+            return; // 処理を中断
         }
-        console.log("deleteFace: Firestoreに保存するデータ:", updateData);
 
-        await setDoc(charRef, updateData, { merge: true });
+        // 更新時刻とplayerIdをセット
+        charData.updatedAt = new Date().toISOString();
+        charData.playerId = playerId; 
+
+        console.log("deleteFace: Firestoreに保存するデータ:", charData);
+
+        // ★ mergeなしでcharData全体を上書き
+        await setDoc(charRef, charData);
         console.log("deleteFace: Firestoreへの保存が完了しました。");
 
         showToast(`表情「${faceName}」が削除されました ✅`);
         await loadCharacterData(currentCharacterId); // 再読み込み
         console.log("deleteFace: キャラクターデータの再読み込みが完了しました。");
+
     } catch (error) {
         console.error("表情の削除に失敗:", error);
         showToast("表情の削除に失敗しました。");
