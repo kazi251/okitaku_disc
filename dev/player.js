@@ -830,13 +830,23 @@ async function deleteFace(event) {
         }
         const charData = charSnap.data();
         const faceImages = charData.faceImages || {};
-        delete faceImages[faceName]; // メモリ上で削除
 
-        await setDoc(charRef, {
-            faceImages: faceImages,
-            playerId: playerId, // セキュリティルール対策
+        // 該当の表情を削除
+        delete faceImages[faceName];
+
+        const updateData = {
+            playerId: playerId,
             updatedAt: new Date().toISOString()
-        }, { merge: true });
+        };
+
+        // faceImagesが空になったらフィールドごと削除、そうでなければ更新
+        if (Object.keys(faceImages).length === 0) {
+            updateData.faceImages = deleteField();
+        } else {
+            updateData.faceImages = faceImages;
+        }
+
+        await setDoc(charRef, updateData, { merge: true });
 
         showToast(`表情「${faceName}」が削除されました ✅`);
         await loadCharacterData(currentCharacterId); // 再読み込み
