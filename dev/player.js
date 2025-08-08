@@ -863,25 +863,6 @@ async function deleteFace(event) {
     }
 }
 
-// // 表情画像アップロード用の関数
-// async function uploadFaceImage(file) {
-//     const formData = new FormData();
-//     formData.append('image', file);
-//     const workerUrl = 'https://imageworker.kai-chan-tsuru.workers.dev/';
-
-//     const response = await fetch(workerUrl, {
-//         method: 'POST',
-//         body: formData,
-//     });
-
-//     if (response.ok) {
-//         const result = await response.json();
-//         return result.imageUrl;
-//     } else {
-//         throw new Error('アップロード失敗: ' + response.statusText);
-//     }
-// }
-
 // ファイル選択時にファイル名を表示する汎用リスナーを設定する関数
 function setupFileUploadListener(inputId, nameFieldId) {
   const fileInput = document.getElementById(inputId);
