@@ -816,23 +816,35 @@ async function addFace() {
 // 表情の削除
 async function deleteFace(event) {
     if (!event.target.classList.contains('delete-face-button')) return;
+    console.log("deleteFace: 処理開始");
 
     const faceName = event.target.dataset.faceName;
-    if (!confirm(`表情「${faceName}」を削除しますか？`)) return;
+    console.log(`deleteFace: 削除対象の表情名: ${faceName}`);
+
+    if (!confirm(`表情「${faceName}」を削除しますか？`)) {
+        console.log("deleteFace: ユーザーがキャンセルしました。");
+        return;
+    }
 
     try {
         const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+        console.log(`deleteFace: Firestore参照を作成: ${charRef.path}`);
 
         // Read-Modify-Write パターン
         const charSnap = await getDoc(charRef);
         if (!charSnap.exists()) {
+            console.error("deleteFace: キャラクターデータが見つかりません。");
             throw new Error("キャラクターデータが見つかりません。");
         }
         const charData = charSnap.data();
+        console.log("deleteFace: 取得したキャラクターデータ:", charData);
+
         const faceImages = charData.faceImages || {};
+        console.log("deleteFace: 削除前のfaceImages:", JSON.parse(JSON.stringify(faceImages)));
 
         // 該当の表情を削除
         delete faceImages[faceName];
+        console.log("deleteFace: 削除後のfaceImages:", JSON.parse(JSON.stringify(faceImages)));
 
         const updateData = {
             playerId: playerId,
@@ -841,15 +853,20 @@ async function deleteFace(event) {
 
         // faceImagesが空になったらフィールドごと削除、そうでなければ更新
         if (Object.keys(faceImages).length === 0) {
+            console.log("deleteFace: faceImagesが空になったため、フィールドごと削除します。");
             updateData.faceImages = deleteField();
         } else {
+            console.log("deleteFace: faceImagesを更新します。");
             updateData.faceImages = faceImages;
         }
+        console.log("deleteFace: Firestoreに保存するデータ:", updateData);
 
         await setDoc(charRef, updateData, { merge: true });
+        console.log("deleteFace: Firestoreへの保存が完了しました。");
 
         showToast(`表情「${faceName}」が削除されました ✅`);
         await loadCharacterData(currentCharacterId); // 再読み込み
+        console.log("deleteFace: キャラクターデータの再読み込みが完了しました。");
     } catch (error) {
         console.error("表情の削除に失敗:", error);
         showToast("表情の削除に失敗しました。");
