@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>R2 画像管理</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; padding: 18px; }
+    header { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+    input[type=text]{ padding:6px; width:260px }
+    button{ padding:6px 10px; }
+    #list { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
+    .card { border:1px solid #e0e0e0; border-radius:8px; padding:8px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    .thumb { width:100%; height:120px; object-fit:cover; border-radius:6px; background:#fafafa; }
+    .meta { font-size:12px; color:#333; margin-top:6px; display:flex; justify-content:space-between; align-items:center; gap:8px }
+    .meta .name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:120px }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Cloudflare R2 — 画像一覧 & 削除</h2>
+    <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+      <input id="prefix" type="text" placeholder="prefix を絞る (例: images/)" />
+      <input id="limit" type="number" min="1" max="1000" value="100" style="width:90px" />
+      <button id="refresh">更新</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="list"></div>
+  </main>
+
+  <template id="card-template">
+    <div class="card">
+      <img class="thumb" src="" alt="thumb">
+      <div class="meta">
+        <div class="name"></div>
+        <div style="display:flex; gap:6px;">
+          <button class="view-btn">表示</button>
+          <button class="del-btn">削除</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const WORKER_BASE = 'https://r2-manager.kai-chan-tsuru.workers.dev'; // ここはご自身のWorker URLに置き換えてください
+    const ADMIN_KEY = 'eS8QGtgyAHtQDyM2cYx4'; // wrangler.tomlのBETA_ADMIN_KEYと同じものに
+
+    const $list = document.getElementById('list');
+    const $refresh = document.getElementById('refresh');
+    const $prefix = document.getElementById('prefix');
+    const $limit = document.getElementById('limit');
+
+    async function fetchList() {
+      $list.innerHTML = '読み込み中...';
+      try {
+        const params = new URLSearchParams();
+        if ($prefix.value.trim()) params.set('prefix', $prefix.value.trim());
+        params.set('limit', $limit.value || '100');
+
+        const res = await fetch(WORKER_BASE + '/api/list?' + params.toString(), {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + ADMIN_KEY
+          }
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        renderList(data || []);
+      } catch (e) {
+        $list.innerHTML = 'エラー: ' + e.message;
+      }
+    }
+
+    function renderList(objects) {
+      $list.innerHTML = '';
+      if (!objects.length) {
+        $list.innerHTML = '<p>オブジェクトが見つかりません。</p>';
+        return;
+      }
+
+      const tpl = document.getElementById('card-template');
+      objects.forEach(obj => {
+        const el = tpl.content.cloneNode(true);
+        const card = el.querySelector('.card');
+        const img = el.querySelector('.thumb');
+        const name = el.querySelector('.name');
+        const viewBtn = el.querySelector('.view-btn');
+        const delBtn = el.querySelector('.del-btn');
+
+        name.textContent = obj.key + ' (' + formatSize(obj.size) + ')';
+        img.src = WORKER_BASE + '/api/object?key=' + encodeURIComponent(obj.key);
+        img.alt = obj.key;
+
+        viewBtn.addEventListener('click', () => {
+          const u = WORKER_BASE + '/api/object?key=' + encodeURIComponent(obj.key);
+          window.open(u, '_blank');
+        });
+
+        delBtn.addEventListener('click', async () => {
+          if (!confirm('"' + obj.key + '" を削除します。よろしいですか？')) return;
+          try {
+            const res = await fetch(WORKER_BASE + '/api/delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + ADMIN_KEY
+              },
+              body: JSON.stringify({ key: obj.key })
+            });
+            if (!res.ok) throw new Error(await res.text());
+            const j = await res.json();
+            if (j.success) {
+              alert('削除しました');
+              fetchList();
+            } else {
+              alert('削除に失敗しました: ' + JSON.stringify(j));
+            }
+          } catch (e) {
+            alert('エラー: ' + e.message);
+          }
+        });
+
+        $list.appendChild(el);
+      });
+    }
+
+    function formatSize(n) {
+      if (n === undefined || n === null) return '-';
+      if (n < 1024) return n + ' B';
+      if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+      return (n/(1024*1024)).toFixed(2) + ' MB';
+    }
+
+    $refresh.addEventListener('click', fetchList);
+    fetchList();
+  </script>
+</body>
+</html>
