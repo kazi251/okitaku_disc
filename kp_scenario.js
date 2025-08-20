@@ -15,6 +15,11 @@ import { showToast } from './utils.js';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const FIREBASE_ROLL_WEBHOOK_URL = "https://us-central1-kazi251-trpg-workers-64def.cloudfunctions.net/rollWebhook";
+const FIREBASE_SAY_WEBHOOK_URL = "https://us-central1-kazi251-trpg-workers-64def.cloudfunctions.net/sayWebhook"; 
+// const FIREBASE_ROLL_WEBHOOK_URL = "https://rollworker.kai-chan-tsuru.workers.dev/";
+// const FIREBASE_SAY_WEBHOOK_URL = "https://sayworker.kai-chan-tsuru.workers.dev/";
+
 // URLパラメータから scenarioId を取得
 const urlParams = new URLSearchParams(window.location.search);
 const scenarioId = urlParams.get("scenarioId");
@@ -308,7 +313,7 @@ async function sendKpSay() {
   }
   
   try {
-    const response = await fetch("https://sayworker.kai-chan-tsuru.workers.dev/", {
+    const response = await fetch(FIREBASE_SAY_WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -363,7 +368,7 @@ async function rollKpDice() {
   }
 
   const command = input.replace(/\{SAN\}/g, char.san ?? ""); // 必要に応じて変数展開
-  const url = new URL("https://rollworker.kai-chan-tsuru.workers.dev/");
+  const url = new URL(FIREBASE_ROLL_WEBHOOK_URL);
   url.searchParams.append("command", command);
   url.searchParams.append("name", char.name);
   url.searchParams.append("avatar_url", avatar_url);
