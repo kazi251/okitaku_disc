@@ -270,8 +270,9 @@ async function loadCharacterData(charId) {
 
     // 画像の設定（エラー時に fallback 画像を設定）
     const imageElement = document.getElementById("explorer-image");
-    const imageUrl = data.imageUrl;
-    imageElement.src = imageUrl && imageUrl.trim() !== ""
+    // 新しいデータ構造に対応
+    const imageUrl = data.imageUrl?.r2Url || data.imageUrl; // オブジェクトならr2Urlを、そうでなければ(古いデータ)そのままの値を使用
+    imageElement.src = imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== ""
       ? imageUrl
       : "./seeker_vault/default.png";
     imageElement.onerror = () => {
@@ -376,10 +377,6 @@ async function saveCharacterData() {
   try {
     const ref = doc(db, "characters", playerId, "list", currentCharacterId);
 
-    const imageSrc = document.getElementById("explorer-image").src;
-    const isDefaultImage = imageSrc.includes("default.png");
-    const imageUrl = isDefaultImage ? undefined : imageSrc;
-
     const characterData = {
       name: document.getElementById("character-select").selectedOptions[0].text,
       hp: document.getElementById("hp-input").value,
@@ -399,17 +396,14 @@ async function saveCharacterData() {
       updatedAt: new Date().toISOString()
     };
 
+    // 既存のデータを保持するために、webhookとscenarioIdをマージ
     if (currentCharacterData?.webhook) {
       characterData.webhook = currentCharacterData.webhook;
     }
-
     if (currentCharacterData?.scenarioId) {
       characterData.scenarioId = currentCharacterData.scenarioId;
     }
 
-    if (imageUrl) {
-      characterData.imageUrl = imageUrl;
-    }
     await setDoc(ref, characterData, { merge: true });
 
     showToast("キャラクターを保存しました！");
@@ -430,16 +424,21 @@ async function saveCharacterData() {
       const memo = document.getElementById("memo-input").value;
 
       const message =
-        `\`\`\`\n` +
+        `\
+` +
         `HP: ${hp}/${hpMax} ` +
         `MP: ${mp}/${mpMax} ` +
-        `SAN: ${san}/${sanMax}（不定:${Math.floor(sanMax * 0.8)}）\n` +
+        `SAN: ${san}/${sanMax}（不定:${Math.floor(sanMax * 0.8)}）\
+` +
         `${other1Name || "その他1"}: ${other || "-"} ` +
-        `${other2Name || "その他2"}: ${other2 || "-"}\n` +
-        (memo ? `メモ: ${memo}` : "") + 
-        `\`\`\``;
+        `${other2Name || "その他2"}: ${other2 || "-"}\
+` +
+        (memo ? `メモ: ${memo}` : ``) + 
+        `\
+```;
 
-      const avatarUrl = imageSrc;
+      // 現在表示されている画像のr2Urlを取得
+      const imageSrc = document.getElementById("explorer-image").src;
       const statusThreadId = currentCharacterData?.statusWebhook || null;
       let webhook = null;
 
@@ -463,7 +462,7 @@ async function saveCharacterData() {
           body: JSON.stringify({
             name: currentCharacterName,
             message,
-            avatar_url: avatarUrl,
+            avatar_url: imageSrc, // r2Urlを通知に使用
             webhook
           })
         });
@@ -480,6 +479,7 @@ async function saveCharacterData() {
   }
 
 }
+
 
 function savePaletteOnly() {
   if (!currentCharacterId) return;
@@ -646,8 +646,14 @@ async function uploadImage() {
     showToast('アップロード成功！画像を保存中...');
 
     const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    // 新しいデータ構造で保存
+    const newImageData = {
+      r2Url: imageUrl,
+      discordUrl: null // discordUrlはBotが後で設定するのでnull
+    };
+
     await setDoc(ref, {
-      imageUrl,
+      imageUrl: newImageData,
       playerId: playerId,
       updatedAt: new Date().toISOString(),
     }, { merge: true });
@@ -730,7 +736,7 @@ function updateFaceUI(faceImages, defaultImageUrl) {
     faceSelect.innerHTML = "";
     faceListContainer.innerHTML = "";
 
-    const effectiveDefaultUrl = defaultImageUrl || './seeker_vault/default.png';
+    const effectiveDefaultUrl = (defaultImageUrl?.r2Url || defaultImageUrl) || './seeker_vault/default.png';
     const faces = { '通常': effectiveDefaultUrl, ...(faceImages || {}) };
 
     // 表情名を日本語対応でソート
@@ -740,8 +746,10 @@ function updateFaceUI(faceImages, defaultImageUrl) {
         return a[0].localeCompare(b[0], 'ja');
     });
 
-    for (const [name, url] of sortedFaces) {
-        if (!url) continue; // URLがなければスキップ
+    for (const [name, data] of sortedFaces) {
+        const url = data?.r2Url || data; // オブジェクトならr2Url、文字列ならそのまま
+        if (!url || typeof url !== 'string') continue; // URLがなければスキップ
+
         // ドロップダウンの生成
         const option = document.createElement("option");
         option.value = url;
@@ -795,7 +803,12 @@ async function addFace() {
         }
         const charData = charSnap.data();
         const faceImages = charData.faceImages || {};
-        faceImages[faceName] = imageUrl;
+        
+        // 新しいデータ構造で表情を保存
+        faceImages[faceName] = {
+            r2Url: imageUrl,
+            discordUrl: null
+        };
 
         await setDoc(charRef, {
             faceImages: faceImages,
@@ -915,7 +928,10 @@ window.addEventListener("DOMContentLoaded", () => {
         other: "", other2: "", other1Name: "", other2Name: "", memo: "",
         palette: "",
         webhook: defaultWebhook, 
-        imageUrl: "./seeker_vault/default.png", 
+        imageUrl: { // 新しいデータ構造
+          r2Url: "./seeker_vault/default.png",
+          discordUrl: null
+        }, 
         playerId: playerId, 
         accessKpId: "",
         updatedAt: new Date().toISOString(),
