@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField, deleteDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 const app = initializeApp(firebaseConfig);
@@ -931,6 +931,37 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("show-in-bot-save-button")?.addEventListener("click", saveShowInBot);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
+
+  document.getElementById("delete-character-button")?.addEventListener("click", async () => {
+    if (!currentCharacterId) {
+      showToast("キャラクターが選択されていません。");
+      return;
+    }
+
+    const characterName = document.getElementById("character-select").selectedOptions[0].text;
+    if (!confirm(`キャラクター「${characterName}」を本当に削除しますか？\nこの操作は元に戻せません。`)) {
+      return;
+    }
+
+    try {
+      const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+      await deleteDoc(charRef);
+
+      showToast(`「${characterName}」を削除しました。`);
+      
+      // キャラクターリストを再読み込み
+      await loadCharacterList();
+      
+      const characterSelect = document.getElementById("character-select");
+      if (characterSelect.options.length === 0) {
+        location.reload();
+      }
+
+    } catch (error) {
+      console.error("キャラクターの削除に失敗しました:", error);
+      showToast("キャラクターの削除に失敗しました。セキュリティルールを確認してください。");
+    }
+  });
 
   // 貼り付けボタンのイベントリスナー
   document.getElementById("import-character-button").addEventListener("click", async () => {

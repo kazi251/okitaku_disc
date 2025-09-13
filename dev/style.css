@@ -447,3 +447,14 @@ input[type="text"]{ /* テキストボックス */
   display: flex;
   gap: 10px;
 }
+
+.danger-button {
+  background-color: #dc3545; /* Bootstrapのdangerカラーに似た赤 */
+  color: white;
+  border: 1px solid #dc3545;
+}
+
+.danger-button:hover {
+  background-color: #c82333; /* ホバー時にもう少し濃い赤 */
+  border-color: #bd2130;
+}
