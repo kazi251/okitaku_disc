@@ -232,6 +232,9 @@ async function loadCharacterData(charId) {
       nameDisplay.textContent = currentCharacterName;
     }
 
+    // 名前編集欄にも現在の名前を反映
+    document.getElementById("name-input").value = data.name || "";
+
     // 進行中のシナリオ名を取得
     const scenarioNameEl = document.getElementById("current-scenario-name");
     const scenarioId = data.scenarioId;
