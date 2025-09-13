@@ -955,15 +955,16 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       const characterName = data.name || "名称未設定";
-      const chatPalette = data.memo || "";
+      const chatPalette = data.commands || ""; // commandsからチャットパレットを取得
       const params = data.params || [];
+      const status = data.status || []; // status配列を取得
 
       const newCharData = {
         name: characterName,
         palette: chatPalette,
         hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
         str: "", con: "", pow: "", dex: "", app: "", siz: "", int: "", edu: "",
-        other: "", other2: "", other1Name: "", other2Name: "", memo: "",
+        other: "", other2: "", other1Name: "", other2Name: "", memo: data.memo || "", // memoはメモとして保持
         imageUrl: "./seeker_vault/default.png",
         playerId: playerId,
         accessKpId: "",
@@ -971,11 +972,22 @@ window.addEventListener("DOMContentLoaded", () => {
         showInBot: true
       };
 
-      // パラメータを抽出
+      // status配列からHP, MP, SANを抽出
+      status.forEach(s => {
+        if (s.label.toUpperCase() === 'HP') {
+          newCharData.hp = s.value;
+          newCharData.hpMax = s.max;
+        } else if (s.label.toUpperCase() === 'MP') {
+          newCharData.mp = s.value;
+          newCharData.mpMax = s.max;
+        } else if (s.label.toUpperCase() === 'SAN') {
+          newCharData.san = s.value;
+          newCharData.sanMax = s.max;
+        }
+      });
+
+      // パラメータを抽出 (能力値)
       const paramMap = {
-        "HP": "hpMax",
-        "MP": "mpMax",
-        "SAN": "sanMax",
         "STR": "str",
         "CON": "con",
         "POW": "pow",
@@ -993,10 +1005,28 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // 現在値を最大値と同じにする
-      newCharData.hp = newCharData.hpMax;
-      newCharData.mp = newCharData.mpMax;
-      newCharData.san = newCharData.sanMax;
+      // HP/MP/SANがstatusになかった場合、paramsからフォールバック
+      if (newCharData.hpMax === "") {
+          const hpParam = params.find(p => p.label.toUpperCase() === 'HP');
+          if (hpParam) {
+              newCharData.hpMax = hpParam.value;
+              newCharData.hp = hpParam.value;
+          }
+      }
+      if (newCharData.mpMax === "") {
+          const mpParam = params.find(p => p.label.toUpperCase() === 'MP');
+          if (mpParam) {
+              newCharData.mpMax = mpParam.value;
+              newCharData.mp = mpParam.value;
+          }
+      }
+      if (newCharData.sanMax === "") {
+          const sanParam = params.find(p => p.label.toUpperCase() === 'SAN');
+          if (sanParam) {
+              newCharData.sanMax = sanParam.value;
+              newCharData.san = sanParam.value;
+          }
+      }
 
       showToast(`『${characterName}』をインポート中...`);
 
