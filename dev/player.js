@@ -309,6 +309,16 @@ async function loadCharacterData(charId) {
     if (showInBotCheckbox) {
       showInBotCheckbox.checked = data.showInBot === true; // boolean値として扱う
     }
+
+    // 能力値フォームに反映
+    document.getElementById("str-input").value = data.str || "";
+    document.getElementById("con-input").value = data.con || "";
+    document.getElementById("pow-input").value = data.pow || "";
+    document.getElementById("dex-input").value = data.dex || "";
+    document.getElementById("app-input").value = data.app || "";
+    document.getElementById("siz-input").value = data.siz || "";
+    document.getElementById("int-input").value = data.int || "";
+    document.getElementById("edu-input").value = data.edu || "";
     
     updateDisplay();
     updateChatPalette();
@@ -573,6 +583,37 @@ async function saveShowInBot() {
   } catch (error) {
     console.error("Bot表示設定の保存失敗:", error);
     showToast("Bot表示設定の保存に失敗しました。");
+  }
+}
+
+// 能力値を保存する関数
+async function saveStats() {
+  if (!currentCharacterId) {
+    showToast("キャラクターが選択されていません");
+    return;
+  }
+
+  try {
+    const ref = doc(db, "characters", playerId, "list", currentCharacterId);
+    const statsData = {
+      str: document.getElementById("str-input").value,
+      con: document.getElementById("con-input").value,
+      pow: document.getElementById("pow-input").value,
+      dex: document.getElementById("dex-input").value,
+      app: document.getElementById("app-input").value,
+      siz: document.getElementById("siz-input").value,
+      int: document.getElementById("int-input").value,
+      edu: document.getElementById("edu-input").value,
+      playerId: playerId,
+      updatedAt: new Date().toISOString()
+    };
+
+    await setDoc(ref, statsData, { merge: true });
+    showToast("能力値を保存しました ✅");
+
+  } catch (error) {
+    console.error("能力値の保存失敗:", error);
+    showToast("能力値の保存に失敗しました。");
   }
 }
 
@@ -882,10 +923,99 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("status-save-button")?.addEventListener("click", saveCharacterData);
   document.getElementById("palette-save-button")?.addEventListener("click", savePaletteOnly);
   document.getElementById("update-name-button").addEventListener("click", saveNameOnly);
+  document.getElementById("stats-save-button")?.addEventListener("click", saveStats); // 能力値保存ボタン
   document.getElementById("embed-color-save-button")?.addEventListener("click", saveEmbedColor);
   document.getElementById("show-in-bot-save-button")?.addEventListener("click", saveShowInBot);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
+
+  // 貼り付けボタンのイベントリスナー
+  document.getElementById("import-character-button").addEventListener("click", async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!text) {
+        showToast("クリップボードが空です。");
+        return;
+      }
+
+      let jsonData;
+      try {
+        jsonData = JSON.parse(text);
+      } catch (e) {
+        showToast("クリップボードの内容がJSON形式ではありません。");
+        console.error("JSON Parse Error:", e);
+        return;
+      }
+
+      // ココフォリアのデータ形式を想定
+      const data = jsonData.data;
+      if (!data) {
+        showToast("キャラクターデータが見つかりません。");
+        return;
+      }
+
+      const characterName = data.name || "名称未設定";
+      const chatPalette = data.memo || "";
+      const params = data.params || [];
+
+      const newCharData = {
+        name: characterName,
+        palette: chatPalette,
+        hp: "", hpMax: "", mp: "", mpMax: "", san: "", sanMax: "",
+        str: "", con: "", pow: "", dex: "", app: "", siz: "", int: "", edu: "",
+        other: "", other2: "", other1Name: "", other2Name: "", memo: "",
+        imageUrl: "./seeker_vault/default.png",
+        playerId: playerId,
+        accessKpId: "",
+        updatedAt: new Date().toISOString(),
+        showInBot: true
+      };
+
+      // パラメータを抽出
+      const paramMap = {
+        "HP": "hpMax",
+        "MP": "mpMax",
+        "SAN": "sanMax",
+        "STR": "str",
+        "CON": "con",
+        "POW": "pow",
+        "DEX": "dex",
+        "APP": "app",
+        "SIZ": "siz",
+        "INT": "int",
+        "EDU": "edu"
+      };
+
+      params.forEach(p => {
+        const key = Object.keys(paramMap).find(k => k.toLowerCase() === p.label.toLowerCase());
+        if (key) {
+          newCharData[paramMap[key]] = p.value;
+        }
+      });
+
+      // 現在値を最大値と同じにする
+      newCharData.hp = newCharData.hpMax;
+      newCharData.mp = newCharData.mpMax;
+      newCharData.san = newCharData.sanMax;
+
+      showToast(`『${characterName}』をインポート中...`);
+
+      const newChar = await addDoc(collection(db, "characters", playerId, "list"), newCharData);
+
+      showToast("キャラクターを作成しました");
+      await loadCharacterList();
+      document.getElementById("character-select").value = newChar.id;
+      await loadCharacterData(newChar.id);
+
+    } catch (error) {
+      if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
+        showToast("クリップボードへのアクセスが許可されませんでした。");
+      } else {
+        showToast("インポート中にエラーが発生しました。");
+      }
+      console.error("Import Error:", error);
+    }
+  });
 
   
   document.getElementById("load-button").addEventListener("click", async () => {

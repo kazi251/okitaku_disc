@@ -15,6 +15,7 @@
   <label for="character-select">キャラクター選択：</label>
   <select id="character-select"></select>
   <button id="new-character-button">＋新規作成</button>
+  <button id="import-character-button">貼り付け</button>
 </div>
 
 <!-- 探索者表示セクション -->
@@ -147,6 +148,26 @@
             <button id="scenario-clear-button">削除</button>
             <button id="edit-load-button">再読込</button>
           </div>
+        </div>
+      </div>
+
+      <!-- 能力値編集 -->
+      <div class="edit-item">
+        <h4 class="edit-label">能力値</h4>
+        <div class="edit-control main-stats-inputs">
+            <label>STR: <input type="number" id="str-input"></label>
+            <label>CON: <input type="number" id="con-input"></label>
+            <label>POW: <input type="number" id="pow-input"></label>
+            <label>DEX: <input type="number" id="dex-input"></label>
+            <label>APP: <input type="number" id="app-input"></label>
+            <label>SIZ: <input type="number" id="siz-input"></label>
+            <label>INT: <input type="number" id="int-input"></label>
+            <label>EDU: <input type="number" id="edu-input"></label>
+        </div>
+        <div class="edit-control">
+            <div class="button-group">
+                <button id="stats-save-button">能力値 保存</button>
+            </div>
         </div>
       </div>
 
