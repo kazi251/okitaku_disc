@@ -442,3 +442,8 @@ input[type="text"]{ /* テキストボックス */
   width: 60px; /* 入力欄の幅を固定 */
   margin-left: 5px;
 }
+
+.character-create-buttons {
+  display: flex;
+  gap: 10px;
+}
