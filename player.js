@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc , deleteField, deleteDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import { showToast } from './utils.js';
 
 const app = initializeApp(firebaseConfig);
@@ -931,6 +931,45 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("show-in-bot-save-button")?.addEventListener("click", saveShowInBot);
   document.getElementById("scenario-update-button")?.addEventListener("click", updateScenarioId);
   document.getElementById("scenario-clear-button")?.addEventListener("click", clearScenarioId);
+
+  document.getElementById("delete-character-button")?.addEventListener("click", async () => {
+    if (!currentCharacterId) {
+      showToast("キャラクターが選択されていません。");
+      return;
+    }
+
+    const characterName = document.getElementById("character-select").selectedOptions[0].text;
+    if (!confirm(`キャラクター「${characterName}」を本当に削除しますか？\nこの操作は元に戻せません。`)) {
+      return;
+    }
+
+    try {
+      const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
+      await deleteDoc(charRef);
+
+      // 削除がDBに反映されたかを確認する（タイミング問題の回避）
+      const checkSnap = await getDoc(charRef);
+      if (checkSnap.exists()) {
+        // 稀に削除が即時反映されないことがあるため、UIを強制的に同期させる
+        console.warn("削除処理の反映が遅延しているため、ページをリロードします。");
+        location.reload();
+        return;
+      }
+
+      showToast(`「${characterName}」を削除しました。`);
+      
+      await loadCharacterList();
+      
+      const characterSelect = document.getElementById("character-select");
+      if (characterSelect.options.length === 0) {
+        location.reload();
+      }
+
+    } catch (error) {
+      console.error("キャラクターの削除に失敗しました:", error);
+      showToast("キャラクターの削除に失敗しました。");
+    }
+  });
 
   // 貼り付けボタンのイベントリスナー
   document.getElementById("import-character-button").addEventListener("click", async () => {
