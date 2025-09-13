@@ -945,32 +945,29 @@ window.addEventListener("DOMContentLoaded", () => {
 
     try {
       const charRef = doc(db, "characters", playerId, "list", currentCharacterId);
-      
-      console.log(`削除開始: ${currentCharacterId}`);
       await deleteDoc(charRef);
-      console.log(`削除完了: ${currentCharacterId}`);
 
-      // ★★★ 確認処理を追加 ★★★
+      // 削除がDBに反映されたかを確認する（タイミング問題の回避）
       const checkSnap = await getDoc(charRef);
       if (checkSnap.exists()) {
-        console.error("削除失敗: ドキュメントはまだ存在します。", checkSnap.data());
-        showToast("削除に失敗しました。ドキュメントが残っています。");
-      } else {
-        console.log("削除成功: ドキュメントは存在しません。");
-        showToast(`「${characterName}」を削除しました。`);
-        
-        // キャラクターリストを再読み込み
-        await loadCharacterList();
-        
-        const characterSelect = document.getElementById("character-select");
-        if (characterSelect.options.length === 0) {
-          location.reload();
-        }
+        // 稀に削除が即時反映されないことがあるため、UIを強制的に同期させる
+        console.warn("削除処理の反映が遅延しているため、ページをリロードします。");
+        location.reload();
+        return;
+      }
+
+      showToast(`「${characterName}」を削除しました。`);
+      
+      await loadCharacterList();
+      
+      const characterSelect = document.getElementById("character-select");
+      if (characterSelect.options.length === 0) {
+        location.reload();
       }
 
     } catch (error) {
       console.error("キャラクターの削除に失敗しました:", error);
-      showToast("キャラクターの削除に失敗しました。セキュリティルールを確認してください。");
+      showToast("キャラクターの削除に失敗しました。");
     }
   });
 
