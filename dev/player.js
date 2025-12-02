@@ -395,12 +395,12 @@ async function saveCharacterData() {
 
     const characterData = {
       name: document.getElementById("character-select").selectedOptions[0].text,
-      hp: document.getElementById("hp-input").value,
-      hpMax: document.getElementById("hp-max-input").value,
-      mp: document.getElementById("mp-input").value,
-      mpMax: document.getElementById("mp-max-input").value,
-      san: document.getElementById("san-input").value,
-      sanMax: document.getElementById("san-max-input").value,
+      hp: Number(document.getElementById("hp-input").value) || 0,
+      hpMax: Number(document.getElementById("hp-max-input").value) || 0,
+      mp: Number(document.getElementById("mp-input").value) || 0,
+      mpMax: Number(document.getElementById("mp-max-input").value) || 0,
+      san: Number(document.getElementById("san-input").value) || 0,
+      sanMax: Number(document.getElementById("san-max-input").value) || 0,
       other: document.getElementById("other-input").value,
       other2: document.getElementById("other2-input").value,
       other1Name: document.getElementById("other1-name").value,
@@ -599,14 +599,14 @@ async function saveStats() {
   try {
     const ref = doc(db, "characters", playerId, "list", currentCharacterId);
     const statsData = {
-      str: document.getElementById("str-input").value,
-      con: document.getElementById("con-input").value,
-      pow: document.getElementById("pow-input").value,
-      dex: document.getElementById("dex-input").value,
-      app: document.getElementById("app-input").value,
-      siz: document.getElementById("siz-input").value,
-      int: document.getElementById("int-input").value,
-      edu: document.getElementById("edu-input").value,
+      str: Number(document.getElementById("str-input").value) || 0,
+      con: Number(document.getElementById("con-input").value) || 0,
+      pow: Number(document.getElementById("pow-input").value) || 0,
+      dex: Number(document.getElementById("dex-input").value) || 0,
+      app: Number(document.getElementById("app-input").value) || 0,
+      siz: Number(document.getElementById("siz-input").value) || 0,
+      int: Number(document.getElementById("int-input").value) || 0,
+      edu: Number(document.getElementById("edu-input").value) || 0,
       playerId: playerId,
       updatedAt: new Date().toISOString()
     };
@@ -1017,14 +1017,14 @@ window.addEventListener("DOMContentLoaded", () => {
       // status配列からHP, MP, SANを抽出
       status.forEach(s => {
         if (s.label.toUpperCase() === 'HP') {
-          newCharData.hp = s.value;
-          newCharData.hpMax = s.max;
+          newCharData.hp = Number(s.value) || 0;
+          newCharData.hpMax = Number(s.max) || 0;
         } else if (s.label.toUpperCase() === 'MP') {
-          newCharData.mp = s.value;
-          newCharData.mpMax = s.max;
+          newCharData.mp = Number(s.value) || 0;
+          newCharData.mpMax = Number(s.max) || 0;
         } else if (s.label.toUpperCase() === 'SAN') {
-          newCharData.san = s.value;
-          newCharData.sanMax = s.max;
+          newCharData.san = Number(s.value) || 0;
+          newCharData.sanMax = Number(s.max) || 0;
         }
       });
 
@@ -1043,7 +1043,7 @@ window.addEventListener("DOMContentLoaded", () => {
       params.forEach(p => {
         const key = Object.keys(paramMap).find(k => k.toLowerCase() === p.label.toLowerCase());
         if (key) {
-          newCharData[paramMap[key]] = p.value;
+          newCharData[paramMap[key]] = Number(p.value) || 0;
         }
       });
 
@@ -1051,22 +1051,22 @@ window.addEventListener("DOMContentLoaded", () => {
       if (newCharData.hpMax === "") {
           const hpParam = params.find(p => p.label.toUpperCase() === 'HP');
           if (hpParam) {
-              newCharData.hpMax = hpParam.value;
-              newCharData.hp = hpParam.value;
+              newCharData.hpMax = Number(hpParam.value) || 0;
+              newCharData.hp = Number(hpParam.value) || 0;
           }
       }
       if (newCharData.mpMax === "") {
           const mpParam = params.find(p => p.label.toUpperCase() === 'MP');
           if (mpParam) {
-              newCharData.mpMax = mpParam.value;
-              newCharData.mp = mpParam.value;
+              newCharData.mpMax = Number(mpParam.value) || 0;
+              newCharData.mp = Number(mpParam.value) || 0;
           }
       }
       if (newCharData.sanMax === "") {
           const sanParam = params.find(p => p.label.toUpperCase() === 'SAN');
           if (sanParam) {
-              newCharData.sanMax = sanParam.value;
-              newCharData.san = sanParam.value;
+              newCharData.sanMax = Number(sanParam.value) || 0;
+              newCharData.san = Number(sanParam.value) || 0;
           }
       }
 
